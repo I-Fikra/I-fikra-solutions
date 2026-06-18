@@ -1,0 +1,215 @@
+{
+  "branding": {
+    "title": "Branding & Identity",
+    "description": "Set your application's visual identity — logo, name, and all metadata used across web, mobile, and social platforms.",
+    "nav": {
+      "previous": "Previous",
+      "reset": "Reset",
+      "next": "Next",
+      "save": "Save Branding"
+    },
+    "steps": {
+      "components": "Components",
+      "identity": "Identity",
+      "metadata": "Metadata",
+      "social": "Social",
+      "pwa": "PWA"
+    },
+    "messages": {
+      "incomplete": {
+        "summary": "Incomplete",
+        "detail": "Please fill in all required fields before continuing."
+      },
+      "saved": {
+        "summary": "Saved",
+        "detail": "Branding settings saved successfully."
+      },
+      "invalidFavicon": {
+        "summary": "Invalid Favicon",
+        "detail": "The favicon must be a square image (equal width and height)."
+      },
+      "invalidFileType": {
+        "summary": "Invalid File Type",
+        "detail": "Only HTML, TXT, and DOCX files are accepted. PDF files are not allowed."
+      }
+    },
+    "components": {
+      "title": "Platform Components",
+      "hint": "Choose which products you want generated, and how many of each",
+      "error": "Select at least one platform component.",
+      "help": "Click a card to add it to your platform, then use +/− to set how many you need",
+      "summaryTitle": "Your Platform ({{ count }} components)",
+      "types": {
+        "mobile-app": {
+          "label": "Mobile Application",
+          "description": "A native/cross-platform app for end users on iOS and Android."
+        },
+        "landing-page": {
+          "label": "Landing Page",
+          "description": "A public marketing page that introduces your product to visitors."
+        },
+        "dashboard": {
+          "label": "Dashboard",
+          "description": "An admin/management web console for your internal team."
+        }
+      }
+    },
+    "identity": {
+      "languages": {
+        "title": "App Languages",
+        "hint": "Choose which language(s) the generated app ships with",
+        "error": "Select at least one language.",
+        "minHint": "At least one language must stay selected"
+      },
+      "logo": {
+        "title": "Application Logo",
+        "hint": "PNG, SVG, JPEG — max 2MB",
+        "alt": "App Logo",
+        "replaceTip": "Replace logo",
+        "removeTip": "Remove logo",
+        "uploadTitle": "Click to upload logo",
+        "uploadHint": "PNG, SVG, JPEG (max 2MB)",
+        "error": "Application logo is required."
+      },
+      "favicon": {
+        "label": "Favicon",
+        "hint": "32×32 ICO / PNG",
+        "alt": "Favicon",
+        "error": "Favicon is required."
+      },
+      "appName": {
+        "label": "Application Name",
+        "placeholder": "e.g. MyApp",
+        "error": "Application name is required."
+      },
+      "version": {
+        "label": "Version",
+        "major": "Major",
+        "minor": "Minor",
+        "patch": "Patch"
+      },
+      "showName": {
+        "label": "Show name next to logo",
+        "hint": "Display the app name in the sidebar header alongside the logo"
+      },
+      "preview": {
+        "label": "Identity Preview",
+        "alt": "preview",
+        "appNameFallback": "App Name"
+      }
+    },
+    "metadata": {
+      "seo": {
+        "title": "SEO Metadata",
+        "hint": "Used by search engines"
+      },
+      "metaTitle": {
+        "label": "Page Title (meta title)",
+        "placeholder": "e.g. MyApp — Modern Enterprise Platform",
+        "error": "Page title is required.",
+        "hint": "Recommended: 50–60 characters per language"
+      },
+      "metaDescription": {
+        "label": "Meta Description",
+        "placeholder": "Brief description of your application for search results...",
+        "error": "Meta description is required.",
+        "hint": "Recommended: 120–160 characters per language"
+      },
+      "keywords": {
+        "label": "Keywords",
+        "placeholder": "e.g. enterprise, crm, management, dashboard",
+        "hint": "Comma-separated keywords",
+        "hintMulti": "Comma-separated keywords, per language"
+      },
+      "legal": {
+        "title": "Legal & Support"
+      },
+      "copyright": {
+        "label": "Copyright Text",
+        "placeholder": "e.g. © 2025 Acme Corp. All rights reserved."
+      },
+      "author": {
+        "label": "Author / Company",
+        "placeholder": "e.g. Acme Corp.",
+        "hint": "Shown in the application footer"
+      },
+      "authorUrl": {
+        "label": "Author Link",
+        "placeholder": "https://acme.com",
+        "hint": "Turns the author/company name in the footer copyright into a clickable link"
+      },
+      "supportEmail": {
+        "label": "Support Email",
+        "placeholder": "support@acme.com"
+      },
+      "supportUrl": {
+        "label": "Support URL",
+        "placeholder": "https://help.acme.com"
+      },
+      "privacyPolicy": {
+        "label": "Privacy Policy Document",
+        "viewDoc": "View document",
+        "replaceTip": "Replace document",
+        "removeTip": "Remove document",
+        "uploadTitle": "Upload document",
+        "uploadHint": "HTML, TXT or DOCX",
+        "acceptedHint": "Accepted formats: HTML, TXT, DOCX — one file per language"
+      },
+      "terms": {
+        "label": "Terms of Service Document",
+        "viewDoc": "View document",
+        "replaceTip": "Replace document",
+        "removeTip": "Remove document",
+        "uploadTitle": "Upload document",
+        "uploadHint": "HTML, TXT or DOCX",
+        "acceptedHint": "Accepted formats: HTML, TXT, DOCX — one file per language"
+      }
+    },
+    "social": {
+      "title": "Open Graph (Social Preview)",
+      "hint": "How your app looks when shared on social media",
+      "siteUrl": {
+        "label": "Website URL",
+        "placeholder": "https://yourapp.com",
+        "error": "Website URL is required.",
+        "hint": "Shown as the domain in the social preview below"
+      },
+      "ogTitle": {
+        "label": "OG Title",
+        "placeholder": "Leave blank to use App Name"
+      },
+      "ogDescription": {
+        "label": "OG Description",
+        "placeholder": "Leave blank to use Meta Description"
+      },
+      "ogImage": {
+        "label": "OG Image",
+        "alt": "OG Image",
+        "uploadTitle": "Upload OG Image",
+        "uploadHint": "1200×630px recommended"
+      },
+      "socialLinks": {
+        "label": "Social Links",
+        "hint": "Leave a platform blank to omit it from the generated app"
+      }
+    },
+    "pwa": {
+      "title": "PWA & Install",
+      "hint": "Progressive Web App configuration",
+      "shortName": {
+        "label": "Short Name",
+        "placeholder": "e.g. MyApp",
+        "error": "Short name is required.",
+        "hint": "Used as the app label when installed on a device home screen (keep under 12 characters)"
+      },
+      "themeColor": {
+        "label": "Theme Color",
+        "hint": "Browser chrome / status bar color"
+      },
+      "backgroundColor": {
+        "label": "Background Color",
+        "hint": "Splash screen background"
+      }
+    }
+  }
+}

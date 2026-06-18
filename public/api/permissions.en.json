@@ -1,0 +1,1233 @@
+{
+  "success": 1,
+  "messages": null,
+  "result": {
+    "modules": [
+      {
+        "name": "Users Module",
+        "entities": [
+          {
+            "key": "user_management",
+            "code": "USER_MANAGEMENT",
+            "name": "User Management",
+            "category": "User Management",
+            "status": "Active",
+            "assignedRolesCount": 5,
+            "createdBy": "admin",
+            "createdAt": "2024-01-01T08:00:00",
+            "updatedBy": "admin",
+            "updatedAt": "2025-01-10T10:00:00",
+            "permissions": [
+              {
+                "key": "users.view",
+                "code": "USERS_VIEW",
+                "name": "View Users",
+                "category": "User Management",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 5,
+                "fieldPermissions": [
+                  {
+                    "key": "users.view.name",
+                    "code": "USERS_VIEW_NAME",
+                    "name": "Name",
+                    "status": "Active",
+                    "assignedRolesCount": 5,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "users.view.email",
+                    "code": "USERS_VIEW_EMAIL",
+                    "name": "Email",
+                    "status": "Active",
+                    "assignedRolesCount": 4,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "users.view.phone",
+                    "code": "USERS_VIEW_PHONE",
+                    "name": "Phone",
+                    "status": "Active",
+                    "assignedRolesCount": 3,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "users.view.role",
+                    "code": "USERS_VIEW_ROLE",
+                    "name": "Role",
+                    "status": "Active",
+                    "assignedRolesCount": 5,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "users.view.status",
+                    "code": "USERS_VIEW_STATUS",
+                    "name": "Status",
+                    "status": "Active",
+                    "assignedRolesCount": 5,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "users.view.createdAt",
+                    "code": "USERS_VIEW_CREATED_AT",
+                    "name": "Created At",
+                    "status": "Active",
+                    "assignedRolesCount": 2,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "users.view.lastLogin",
+                    "code": "USERS_VIEW_LAST_LOGIN",
+                    "name": "Last Login",
+                    "status": "Pending",
+                    "assignedRolesCount": 2,
+                    "statusLabel": "Pending"
+                  }
+                ],
+                "statusLabel": "Active"
+              },
+              {
+                "key": "users.create",
+                "code": "USERS_CREATE",
+                "name": "Create User",
+                "category": "User Management",
+                "action": "Create",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "users.edit",
+                "code": "USERS_EDIT",
+                "name": "Edit User",
+                "category": "User Management",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 4,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "users.delete",
+                "code": "USERS_DELETE",
+                "name": "Delete User",
+                "category": "User Management",
+                "action": "Delete",
+                "status": "Inactive",
+                "assignedRolesCount": 1,
+                "statusLabel": "Inactive"
+              },
+              {
+                "key": "users.export",
+                "code": "USERS_EXPORT",
+                "name": "Export Users",
+                "category": "User Management",
+                "action": "Export",
+                "status": "Active",
+                "assignedRolesCount": 3,
+                "statusLabel": "Active"
+              }
+            ],
+            "statusLabel": "Active"
+          },
+          {
+            "key": "role_management",
+            "code": "ROLE_MANAGEMENT",
+            "name": "Role Management",
+            "category": "Security",
+            "status": "Active",
+            "assignedRolesCount": 6,
+            "createdBy": "admin",
+            "createdAt": "2024-01-05T09:00:00",
+            "updatedBy": "manager",
+            "updatedAt": "2025-01-15T11:00:00",
+            "permissions": [
+              {
+                "key": "roles.view",
+                "code": "ROLES_VIEW",
+                "name": "View Roles",
+                "category": "Security",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 6,
+                "fieldPermissions": [
+                  {
+                    "key": "roles.view.name",
+                    "code": "ROLES_VIEW_NAME",
+                    "name": "Name",
+                    "status": "Active",
+                    "assignedRolesCount": 6,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "roles.view.type",
+                    "code": "ROLES_VIEW_TYPE",
+                    "name": "Type",
+                    "status": "Active",
+                    "assignedRolesCount": 4,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "roles.view.permissions",
+                    "code": "ROLES_VIEW_PERMISSIONS",
+                    "name": "Permissions",
+                    "status": "Active",
+                    "assignedRolesCount": 3,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "roles.view.createdAt",
+                    "code": "ROLES_VIEW_CREATED_AT",
+                    "name": "Created At",
+                    "status": "Pending",
+                    "assignedRolesCount": 2,
+                    "statusLabel": "Pending"
+                  }
+                ],
+                "statusLabel": "Active"
+              },
+              {
+                "key": "roles.create",
+                "code": "ROLES_CREATE",
+                "name": "Create Role",
+                "category": "Security",
+                "action": "Create",
+                "status": "Active",
+                "assignedRolesCount": 1,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "roles.edit",
+                "code": "ROLES_EDIT",
+                "name": "Edit Role",
+                "category": "Security",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 3,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "roles.delete",
+                "code": "ROLES_DELETE",
+                "name": "Delete Role",
+                "category": "Security",
+                "action": "Delete",
+                "status": "Inactive",
+                "assignedRolesCount": 1,
+                "statusLabel": "Inactive"
+              },
+              {
+                "key": "roles.assign",
+                "code": "ROLES_ASSIGN",
+                "name": "Assign Roles",
+                "category": "Security",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              }
+            ],
+            "statusLabel": "Active"
+          }
+        ]
+      },
+      {
+        "name": "Content Module",
+        "entities": [
+          {
+            "key": "product_management",
+            "code": "PRODUCT_MANAGEMENT",
+            "name": "Product Management",
+            "category": "Content",
+            "status": "Active",
+            "assignedRolesCount": 5,
+            "createdBy": "admin",
+            "createdAt": "2024-02-01T08:00:00",
+            "updatedBy": "editor",
+            "updatedAt": "2025-02-10T14:00:00",
+            "permissions": [
+              {
+                "key": "products.view",
+                "code": "PRODUCTS_VIEW",
+                "name": "View Products",
+                "category": "Content",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 5,
+                "fieldPermissions": [
+                  {
+                    "key": "products.view.name",
+                    "code": "PRODUCTS_VIEW_NAME",
+                    "name": "Name",
+                    "status": "Active",
+                    "assignedRolesCount": 5,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "products.view.price",
+                    "code": "PRODUCTS_VIEW_PRICE",
+                    "name": "Price",
+                    "status": "Active",
+                    "assignedRolesCount": 3,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "products.view.costPrice",
+                    "code": "PRODUCTS_VIEW_COST_PRICE",
+                    "name": "Cost Price",
+                    "status": "Pending",
+                    "assignedRolesCount": 1,
+                    "statusLabel": "Pending"
+                  },
+                  {
+                    "key": "products.view.stock",
+                    "code": "PRODUCTS_VIEW_STOCK",
+                    "name": "Stock",
+                    "status": "Active",
+                    "assignedRolesCount": 4,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "products.view.category",
+                    "code": "PRODUCTS_VIEW_CATEGORY",
+                    "name": "Category",
+                    "status": "Active",
+                    "assignedRolesCount": 5,
+                    "statusLabel": "Active"
+                  },
+                  {
+                    "key": "products.view.description",
+                    "code": "PRODUCTS_VIEW_DESCRIPTION",
+                    "name": "Description",
+                    "status": "Active",
+                    "assignedRolesCount": 5,
+                    "statusLabel": "Active"
+                  }
+                ],
+                "statusLabel": "Active"
+              },
+              {
+                "key": "products.add",
+                "code": "PRODUCTS_ADD",
+                "name": "Add Product",
+                "category": "Content",
+                "action": "Create",
+                "status": "Active",
+                "assignedRolesCount": 3,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "products.edit",
+                "code": "PRODUCTS_EDIT",
+                "name": "Edit Product",
+                "category": "Content",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 3,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "products.delete",
+                "code": "PRODUCTS_DELETE",
+                "name": "Delete Product",
+                "category": "Content",
+                "action": "Delete",
+                "status": "Pending",
+                "assignedRolesCount": 2,
+                "statusLabel": "Pending"
+              },
+              {
+                "key": "products.export",
+                "code": "PRODUCTS_EXPORT",
+                "name": "Export Products",
+                "category": "Content",
+                "action": "Export",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              }
+            ],
+            "statusLabel": "Active"
+          },
+          {
+            "key": "category_management",
+            "code": "CATEGORY_MANAGEMENT",
+            "name": "Category Management",
+            "category": "Content",
+            "status": "Active",
+            "assignedRolesCount": 4,
+            "createdBy": "admin",
+            "createdAt": "2024-02-15T10:00:00",
+            "updatedBy": "manager",
+            "updatedAt": "2025-01-20T09:00:00",
+            "permissions": [
+              {
+                "key": "categories.view",
+                "code": "CATEGORIES_VIEW",
+                "name": "View Categories",
+                "category": "Content",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 4,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "categories.create",
+                "code": "CATEGORIES_CREATE",
+                "name": "Create Category",
+                "category": "Content",
+                "action": "Create",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "categories.edit",
+                "code": "CATEGORIES_EDIT",
+                "name": "Edit Category",
+                "category": "Content",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "categories.delete",
+                "code": "CATEGORIES_DELETE",
+                "name": "Delete Category",
+                "category": "Content",
+                "action": "Delete",
+                "status": "Inactive",
+                "assignedRolesCount": 1,
+                "statusLabel": "Inactive"
+              }
+            ],
+            "statusLabel": "Active"
+          }
+        ]
+      },
+      {
+        "name": "System Module",
+        "entities": [
+          {
+            "key": "permission_management",
+            "code": "PERMISSION_MANAGEMENT",
+            "name": "Permission Management",
+            "category": "Security",
+            "status": "Active",
+            "assignedRolesCount": 2,
+            "createdBy": "admin",
+            "createdAt": "2024-01-10T08:00:00",
+            "updatedBy": "admin",
+            "updatedAt": "2025-03-01T12:00:00",
+            "permissions": [
+              {
+                "key": "permissions.view",
+                "code": "PERMISSIONS_VIEW",
+                "name": "View Permissions",
+                "category": "Security",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "permissions.edit",
+                "code": "PERMISSIONS_EDIT",
+                "name": "Edit Permissions",
+                "category": "Security",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 1,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "permissions.export",
+                "code": "PERMISSIONS_EXPORT",
+                "name": "Export Permissions",
+                "category": "Security",
+                "action": "Export",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              }
+            ],
+            "statusLabel": "Active"
+          },
+          {
+            "key": "system_settings",
+            "code": "SYSTEM_SETTINGS",
+            "name": "System Settings",
+            "category": "System",
+            "status": "Active",
+            "assignedRolesCount": 3,
+            "createdBy": "admin",
+            "createdAt": "2024-01-20T08:00:00",
+            "updatedBy": "admin",
+            "updatedAt": "2025-04-01T08:00:00",
+            "permissions": [
+              {
+                "key": "settings.view",
+                "code": "SETTINGS_VIEW",
+                "name": "View Settings",
+                "category": "System",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 3,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "settings.update",
+                "code": "SETTINGS_UPDATE",
+                "name": "Update Settings",
+                "category": "System",
+                "action": "Update",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "settings.reset",
+                "code": "SETTINGS_RESET",
+                "name": "Reset Settings",
+                "category": "System",
+                "action": "Delete",
+                "status": "Pending",
+                "assignedRolesCount": 1,
+                "statusLabel": "Pending"
+              }
+            ],
+            "statusLabel": "Active"
+          },
+          {
+            "key": "audit_logs",
+            "code": "AUDIT_LOGS",
+            "name": "Audit Logs",
+            "category": "Reports",
+            "status": "Active",
+            "assignedRolesCount": 4,
+            "createdBy": "admin",
+            "createdAt": "2024-01-15T07:30:00",
+            "updatedBy": "auditor",
+            "updatedAt": "2024-12-01T10:20:00",
+            "permissions": [
+              {
+                "key": "logs.view",
+                "code": "LOGS_VIEW",
+                "name": "View Logs",
+                "category": "Reports",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 4,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "logs.export",
+                "code": "LOGS_EXPORT",
+                "name": "Export Logs",
+                "category": "Reports",
+                "action": "Export",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "logs.purge",
+                "code": "LOGS_PURGE",
+                "name": "Purge Logs",
+                "category": "Reports",
+                "action": "Delete",
+                "status": "Inactive",
+                "assignedRolesCount": 1,
+                "statusLabel": "Inactive"
+              }
+            ],
+            "statusLabel": "Active"
+          }
+        ]
+      },
+      {
+        "name": "Finance Module",
+        "entities": [
+          {
+            "key": "invoice_management",
+            "code": "INVOICE_MANAGEMENT",
+            "name": "Invoice Management",
+            "category": "Finance",
+            "status": "Active",
+            "assignedRolesCount": 4,
+            "createdBy": "finance_admin",
+            "createdAt": "2024-03-01T09:00:00",
+            "updatedBy": "manager",
+            "updatedAt": "2025-01-10T13:00:00",
+            "permissions": [
+              {
+                "key": "invoices.view",
+                "code": "INVOICES_VIEW",
+                "name": "View Invoices",
+                "category": "Finance",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 4,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "invoices.create",
+                "code": "INVOICES_CREATE",
+                "name": "Create Invoice",
+                "category": "Finance",
+                "action": "Create",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "invoices.edit",
+                "code": "INVOICES_EDIT",
+                "name": "Edit Invoice",
+                "category": "Finance",
+                "action": "Update",
+                "status": "Pending",
+                "assignedRolesCount": 2,
+                "statusLabel": "Pending"
+              },
+              {
+                "key": "invoices.delete",
+                "code": "INVOICES_DELETE",
+                "name": "Delete Invoice",
+                "category": "Finance",
+                "action": "Delete",
+                "status": "Inactive",
+                "assignedRolesCount": 1,
+                "statusLabel": "Inactive"
+              }
+            ],
+            "statusLabel": "Active"
+          },
+          {
+            "key": "payment_processing",
+            "code": "PAYMENT_PROCESSING",
+            "name": "Payment Processing",
+            "category": "Finance",
+            "status": "Active",
+            "assignedRolesCount": 2,
+            "createdBy": "finance_admin",
+            "createdAt": "2024-03-01T09:00:00",
+            "updatedBy": "finance_admin",
+            "updatedAt": "2025-02-14T15:30:00",
+            "permissions": [
+              {
+                "key": "payments.process",
+                "code": "PAYMENTS_PROCESS",
+                "name": "Process Payment",
+                "category": "Finance",
+                "action": "Create",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "payments.refund",
+                "code": "PAYMENTS_REFUND",
+                "name": "Refund Payment",
+                "category": "Finance",
+                "action": "Update",
+                "status": "Pending",
+                "assignedRolesCount": 1,
+                "statusLabel": "Pending"
+              }
+            ],
+            "statusLabel": "Active"
+          }
+        ]
+      },
+      {
+        "name": "Reports Module",
+        "entities": [
+          {
+            "key": "sales_reports",
+            "code": "SALES_REPORTS",
+            "name": "Sales Reports",
+            "category": "Analytics",
+            "status": "Active",
+            "assignedRolesCount": 4,
+            "createdBy": "admin",
+            "createdAt": "2024-04-01T08:00:00",
+            "updatedBy": "manager",
+            "updatedAt": "2025-03-20T11:15:00",
+            "permissions": [
+              {
+                "key": "reports.sales.view",
+                "code": "REPORTS_SALES_VIEW",
+                "name": "View Sales Report",
+                "category": "Analytics",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 4,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "reports.sales.export",
+                "code": "REPORTS_SALES_EXPORT",
+                "name": "Export Sales Report",
+                "category": "Analytics",
+                "action": "Export",
+                "status": "Active",
+                "assignedRolesCount": 2,
+                "statusLabel": "Active"
+              }
+            ],
+            "statusLabel": "Active"
+          },
+          {
+            "key": "analytics_dashboard",
+            "code": "ANALYTICS_DASHBOARD",
+            "name": "Analytics Dashboard",
+            "category": "Analytics",
+            "status": "Active",
+            "assignedRolesCount": 3,
+            "createdBy": "admin",
+            "createdAt": "2024-04-01T08:00:00",
+            "updatedBy": "admin",
+            "updatedAt": "2025-04-01T09:00:00",
+            "permissions": [
+              {
+                "key": "reports.analytics.view",
+                "code": "REPORTS_ANALYTICS_VIEW",
+                "name": "View Analytics",
+                "category": "Analytics",
+                "action": "View",
+                "status": "Active",
+                "assignedRolesCount": 3,
+                "statusLabel": "Active"
+              },
+              {
+                "key": "reports.analytics.export",
+                "code": "REPORTS_ANALYTICS_EXPORT",
+                "name": "Export Analytics",
+                "category": "Analytics",
+                "action": "Export",
+                "status": "Pending",
+                "assignedRolesCount": 2,
+                "statusLabel": "Pending"
+              }
+            ],
+            "statusLabel": "Active"
+          }
+        ]
+      }
+    ],
+    "roles": [
+      {
+        "id": "role_admin",
+        "name": "Admin",
+        "type": "admin"
+      },
+      {
+        "id": "role_manager",
+        "name": "Manager",
+        "type": "management"
+      },
+      {
+        "id": "role_editor",
+        "name": "Editor",
+        "type": "content"
+      },
+      {
+        "id": "role_viewer",
+        "name": "Viewer",
+        "type": "readonly"
+      },
+      {
+        "id": "role_auditor",
+        "name": "Auditor",
+        "type": "audit"
+      },
+      {
+        "id": "role_support",
+        "name": "Support",
+        "type": "support"
+      }
+    ],
+    "roleAssignments": [
+      {
+        "permissionKey": "users.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.create",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "users.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "users.export",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "roles.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_auditor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "roles.create",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "roles.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "roles.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "roles.assign",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "products.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "products.add",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "products.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "products.delete",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "products.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "categories.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer"
+        ]
+      },
+      {
+        "permissionKey": "categories.create",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "categories.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "categories.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "permissions.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "permissions.edit",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "permissions.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "settings.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "settings.update",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "settings.reset",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "logs.view",
+        "roleIds": [
+          "role_admin",
+          "role_auditor",
+          "role_manager",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "logs.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "logs.purge",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "invoices.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "invoices.create",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "invoices.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "invoices.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "payments.process",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "payments.refund",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "reports.sales.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor",
+          "role_viewer"
+        ]
+      },
+      {
+        "permissionKey": "reports.sales.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "reports.analytics.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "reports.analytics.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "users.view.name",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.email",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.phone",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.role",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.status",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.createdAt",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "users.view.lastLogin",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.name",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_auditor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.type",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.permissions",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.createdAt",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "products.view.name",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "products.view.price",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "products.view.costPrice",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "products.view.stock",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer"
+        ]
+      },
+      {
+        "permissionKey": "products.view.category",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "products.view.description",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      }
+    ],
+    "translations": {
+      "pageTitle": "Permissions",
+      "search": "Search permissions...",
+      "filterModule": "Module",
+      "filterEntityStatus": "Entity Status",
+      "filterPermStatus": "Permission Status",
+      "filterPermission": "Permission",
+      "tableView": "Table View",
+      "cardsView": "Cards View",
+      "entityName": "Entity Name",
+      "permissionName": "Permission Name",
+      "fieldName": "Field Name",
+      "category": "Category",
+      "status": "Status",
+      "actionType": "Action Type",
+      "assignedRoles": "Assigned Roles",
+      "bulkEdit": "Bulk Edit",
+      "fieldPermissions": "Field Permissions",
+      "noPermissions": "No permissions found.",
+      "editRoles": "Edit Roles",
+      "manage": "Manage Roles",
+      "assignRolesToPermission": "Select the roles to assign to this permission.",
+      "assignRolesToEntity": "Select roles to assign to all permissions under this entity.",
+      "entityNote": "Changes will apply to all permissions in this entity.",
+      "assignedRolesLabel": "Assigned Roles",
+      "partialNote": "Some permissions have different role assignments.",
+      "statusLabels": {
+        "Active": "Active",
+        "Inactive": "Inactive",
+        "Pending": "Pending"
+      },
+      "messages": {
+        "saved": "Saved",
+        "entityRolesUpdated": "Entity role assignments updated.",
+        "rolesUpdatedFor": "Roles updated for {name}.",
+        "rolesUpdatedCount": "{count} permission(s) updated.",
+        "done": "Done",
+        "exported": "Exported",
+        "rowsExported": "{count} row(s) exported.",
+        "noData": "No Data",
+        "nothingToExport": "Nothing to export.",
+        "noSelection": "No Selection",
+        "selectFirst": "Select at least one permission first."
+      },
+      "selectAll": "Select All",
+      "permissionsCount": "permission(s)"
+    }
+  }
+}

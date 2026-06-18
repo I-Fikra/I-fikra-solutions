@@ -1,0 +1,81 @@
+/* Scoped styles for dialog-preview — mirrors lp-dialog-preview-host from personality-picker */
+
+.lp-dialog-preview-host {
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  ::ng-deep .p-dialog-mask {
+    position: absolute !important;
+    border-radius: inherit;
+  }
+
+  ::ng-deep .p-dialog {
+    position: relative !important;
+    transform: none !important;
+    margin: 0 auto;
+    max-height: 90%;
+
+    .p-dialog-header {
+      background:    var(--app-dialog-header-bg,    var(--surface-card));
+      color:         var(--app-dialog-header-color, var(--text-color));
+      min-height:    var(--app-dialog-header-height, 52px);
+      border-radius: var(--app-dialog-radius, 12px) var(--app-dialog-radius, 12px) 0 0;
+      display: flex;
+      align-items: center;
+      padding: 0 1rem;
+    }
+
+    .p-dialog-content {
+      border-radius: 0 0 var(--app-dialog-radius, 12px) var(--app-dialog-radius, 12px);
+    }
+  }
+}
+
+.lp-preview-dialog-header {
+  display: flex;
+  align-items: center;
+  width: 100%;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+
+// ── Dialog body mock fields ────────────────────────────────────────────────────
+.lp-dialog__body { padding: 8px 10px 10px; }
+
+.lp-field {
+  height: 20px;
+  background: var(--surface-ground);
+  margin-bottom: 6px;
+  width: 100%;
+  border: 1px solid var(--surface-border);
+  transition: border-radius 0.2s;
+  &--short { width: 65%; }
+}
+
+.lp-btn-row { display: flex; gap: 6px; margin-top: 8px; }
+
+.lp-btn {
+  flex: 1;
+  padding: 5px 10px;
+  border: none;
+  font-size: 0.72rem;
+  font-weight: 600;
+  cursor: default;
+  transition: border-radius 0.2s, box-shadow 0.2s;
+  white-space: nowrap;
+
+  &--cancel {
+    background: var(--surface-ground);
+    color: var(--text-color-secondary);
+    border: 1px solid var(--surface-border);
+  }
+
+  &--ok {
+    background: var(--primary-color);
+    color: #fff;
+  }
+}

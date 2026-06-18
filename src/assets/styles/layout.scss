@@ -1,0 +1,429 @@
+@use './variables/_common';
+@use './variables/_light';
+@use './variables/_dark';
+
+@use './_mixins';
+@use './base/_core';
+
+@use './ltr/preloading-ltr' as preloadingLtr;
+@use './rtl/preloading-rtl' as preloadingRtl;
+
+@use './ltr/main-ltr' as mainLtr;
+@use './rtl/main-rtl' as mainRtl;
+
+@use './ltr/topbar-ltr' as topbarLtr;
+@use './rtl/topbar-rtl' as topbarRtl;
+
+@use './ltr/menu-ltr' as menuLtr;
+@use './rtl/menu-rtl' as menuRtl;
+
+@use './ltr/footer-ltr' as footerLtr;
+@use './rtl/footer-rtl' as footerRtl;
+
+@use './ltr/responsive-ltr' as responsiveLtr;
+@use './rtl/responsive-rtl' as responsiveRtl;
+
+@use './ltr/typography-ltr' as typographyLtr;
+@use './rtl/typography-rtl' as typographyRtl;
+
+@use './rtl/utils-rtl' as utilsRtl;
+@use './ltr/utils-ltr' as utilsLtr;
+
+/* Unified backdrop/mask style for all modal popups (add/delete/details). */
+:root {
+    --app-modal-mask-bg: rgba(2, 6, 23, 0.64);
+    --app-modal-mask-blur: 7px;
+}
+
+:where(.p-dialog-mask, .p-component-overlay, .p-confirm-dialog-mask) {
+    backdrop-filter: blur(var(--app-modal-mask-blur));
+    -webkit-backdrop-filter: blur(var(--app-modal-mask-blur));
+    background: var(--app-modal-mask-bg) !important;
+}
+
+/* Shared popup shell used by custom popups (profile/lang). */
+.app-popup-shell {
+    
+    border-radius: var(--app-popup-border-radius);
+    // padding: 0.3rem;
+    padding: 0.2rem;
+    background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        0 2px 10px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+}
+
+.app-popup-shell-inner {
+    border-radius: var(--app-popup-inner-radius);
+    background: var(--surface-card);
+    min-height: 100%;
+}
+
+/* Shared custom popup menu pattern (profile, language, future quick menus). */
+.app-popup-menu {
+    display: block;
+    width: 300px;
+    isolation: isolate;
+}
+
+.app-popup-menu--compact {
+    width: 240px;
+}
+
+.app-popup-menu__inner {
+    padding: 1.4rem 1.2rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.85rem;
+}
+
+.app-popup-menu__header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.45rem;
+    padding-bottom: 0.35rem;
+    text-align: center;
+}
+
+.app-popup-menu__title {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--text-color);
+}
+
+.app-popup-menu__subtitle {
+    font-size: 0.82rem;
+    color: var(--text-color-secondary, var(--text-color));
+}
+
+.app-popup-menu__divider {
+    height: 1px;
+    background: var(--surface-border);
+}
+
+.app-popup-menu__list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.app-popup-menu__item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+    width: 100%;
+    padding: 0.75rem 0.85rem;
+    border-radius: 14px;
+    border: none;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    cursor: pointer;
+    text-align: start;
+    transition: background 0.15s ease, color 0.15s ease, transform 0.15s ease;
+}
+
+.app-popup-menu__item:hover {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+    transform: translateX(2px);
+}
+
+.app-popup-menu__item.is-active {
+    background: var(--surface-hover);
+    color: var(--primary-color);
+    font-weight: 600;
+}
+
+.app-popup-menu__item-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 1rem;
+    color: var(--primary-color);
+    font-size: 0.95rem;
+}
+
+.app-popup-menu__item-meta {
+    margin-inline-start: auto;
+    font-size: 0.75rem;
+    opacity: 0.7;
+}
+
+.app-popup-menu__item--danger,
+.app-popup-menu__item--danger .app-popup-menu__item-icon {
+    color: var(--red-500);
+}
+
+.app-popup-menu__item--danger:hover {
+    background: rgba(239, 68, 68, 0.08);
+}
+
+.app-popup-avatar {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 0.25rem;
+}
+
+.app-popup-avatar i {
+    font-size: 1.25rem;
+    color: #fff;
+}
+
+/* Shared button foundation for custom non-Prime buttons. */
+.app-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.45rem;
+    min-height: 2.5rem;
+    padding: 0.625rem 1rem;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    background: transparent;
+    color: var(--text-color);
+    font-size: 0.9rem;
+    font-weight: 600;
+    line-height: 1;
+    cursor: pointer;
+    transition:
+        background-color 0.15s ease,
+        color 0.15s ease,
+        border-color 0.15s ease,
+        transform 0.15s ease,
+        filter 0.15s ease,
+        opacity 0.15s ease;
+}
+
+.app-btn:hover:not(:disabled) {
+    transform: translateY(-1px);
+}
+
+.app-btn:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+}
+
+.app-btn--ghost {
+    border-color: var(--surface-border);
+    color: var(--text-color-secondary, var(--text-color));
+}
+
+.app-btn--ghost:hover:not(:disabled) {
+    background: var(--surface-hover);
+    color: var(--text-color);
+}
+
+.app-btn--secondary {
+    background: var(--surface-100, var(--surface-hover));
+    border-color: var(--surface-border);
+    color: var(--text-color);
+}
+
+.app-btn--secondary:hover:not(:disabled) {
+    background: var(--surface-200, var(--surface-hover));
+}
+
+.app-btn--primary {
+    background: var(--primary-color);
+    color: var(--primary-contrast-color, #fff);
+}
+
+.app-btn--primary:hover:not(:disabled) {
+    filter: brightness(1.06);
+}
+
+.app-btn--success {
+    background: #16a34a;
+    color: #fff;
+}
+
+/* Shared popup sizing classes to replace inline styles. */
+.app-dialog-sm {
+    width: 350px;
+}
+
+.app-dialog-md {
+    width: 450px;
+}
+
+.app-dialog-lg {
+    width: 500px;
+}
+
+.app-dialog-xl {
+    width: 520px;
+    max-width: 94vw;
+}
+
+.app-dialog-fluid-sm {
+    width: min(30vw, 450px);
+}
+
+.app-dialog-user .p-dialog-content {
+    max-height: 75vh;
+    overflow: auto;
+}
+
+.app-popover-md {
+    width: 450px;
+}
+
+.app-popup-icon-lg {
+    font-size: 2rem;
+}
+
+/* Force login-card shell on explicitly classed dialogs/popovers. */
+/* ── الـ popup style (gradient border + big radius) — يتطبق بس لما تضيف app-dialog-popup ── */
+:where(.p-dialog).app-dialog-popup,
+:where(.p-confirmdialog).app-dialog-popup,
+:where(.p-popover).app-popover-md {
+    border-radius: var(--app-popup-border-radius) !important;
+    padding: 0.3rem !important;
+    background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%) !important;
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        0 2px 10px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+/* ── باقي الـ dialog sizes — بدون popup styling ── */
+:where(.p-dialog).app-dialog-sm,
+:where(.p-dialog).app-dialog-md,
+:where(.p-dialog).app-dialog-lg,
+:where(.p-dialog).app-dialog-xl,
+:where(.p-dialog).app-dialog-fluid-sm,
+:where(.p-dialog).app-dialog-user,
+:where(.p-confirmdialog).app-dialog-sm,
+:where(.p-confirmdialog).app-dialog-md,
+:where(.p-confirmdialog).app-dialog-lg,
+:where(.p-confirmdialog).app-dialog-xl,
+:where(.p-confirmdialog).app-dialog-fluid-sm,
+:where(.p-confirmdialog).app-dialog-user {
+    border-radius: var(--app-dialog-radius, 12px);
+    box-shadow: var(--app-dialog-shadow, 0 20px 60px rgba(0,0,0,0.12));
+    border: var(--app-dialog-border, none);
+    overflow: hidden;
+}
+
+:where(.p-dialog).app-dialog-sm :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-dialog).app-dialog-md :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-dialog).app-dialog-lg :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-dialog).app-dialog-xl :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-dialog).app-dialog-fluid-sm :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-dialog).app-dialog-user :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-dialog).app-dialog-popup :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-sm :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-md :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-lg :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-xl :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-fluid-sm :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-user :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-popup :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-popover).app-popover-md > * {
+    background: var(--surface-card) !important;
+}
+
+:where(.p-dialog).app-dialog-sm :where(.p-dialog-header),
+:where(.p-dialog).app-dialog-md :where(.p-dialog-header),
+:where(.p-dialog).app-dialog-lg :where(.p-dialog-header),
+:where(.p-dialog).app-dialog-xl :where(.p-dialog-header),
+:where(.p-dialog).app-dialog-fluid-sm :where(.p-dialog-header),
+:where(.p-dialog).app-dialog-user :where(.p-dialog-header),
+:where(.p-dialog).app-dialog-popup :where(.p-dialog-header),
+:where(.p-confirmdialog).app-dialog-sm :where(.p-dialog-header),
+:where(.p-confirmdialog).app-dialog-md :where(.p-dialog-header),
+:where(.p-confirmdialog).app-dialog-lg :where(.p-dialog-header),
+:where(.p-confirmdialog).app-dialog-xl :where(.p-dialog-header),
+:where(.p-confirmdialog).app-dialog-fluid-sm :where(.p-dialog-header),
+:where(.p-confirmdialog).app-dialog-user :where(.p-dialog-header) {
+    border-top-left-radius: var(--app-popup-inner-radius);
+    border-top-right-radius: var(--app-popup-inner-radius);
+}
+
+:where(.p-dialog).app-dialog-sm :where(.p-dialog-footer),
+:where(.p-dialog).app-dialog-md :where(.p-dialog-footer),
+:where(.p-dialog).app-dialog-lg :where(.p-dialog-footer),
+:where(.p-dialog).app-dialog-xl :where(.p-dialog-footer),
+:where(.p-dialog).app-dialog-fluid-sm :where(.p-dialog-footer),
+:where(.p-dialog).app-dialog-user :where(.p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-sm :where(.p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-md :where(.p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-lg :where(.p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-xl :where(.p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-fluid-sm :where(.p-dialog-footer),
+:where(.p-confirmdialog).app-dialog-user :where(.p-dialog-footer) {
+    border-bottom-left-radius: var(--app-popup-inner-radius);
+    border-bottom-right-radius: var(--app-popup-inner-radius);
+}
+
+/* Users page column filter menu should match same shell. */
+:where(.p-column-filter-overlay, .p-columnfilter-overlay) {
+    border-radius: var(--app-popup-border-radius) !important;
+    padding: 0.3rem !important;
+    background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%) !important;
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        0 2px 10px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+    overflow: hidden !important;
+}
+
+:where(.p-column-filter-overlay, .p-columnfilter-overlay) > * {
+    background: var(--surface-card) !important;
+}
+
+:where(.p-column-filter-overlay, .p-columnfilter-overlay)
+    :where(.p-popover-content, .p-columnfilter-content, .p-columnfilter-constraint-list, .p-columnfilter-buttonbar) {
+    background: var(--surface-card) !important;
+}
+
+/* Global popup unification for add/delete/filter and similar actions. */
+:where(
+    .p-dialog,
+    .p-confirm-popup,
+    .p-popover,
+    .p-overlaypanel,
+    .p-column-filter-overlay,
+    .p-menu,
+    .p-tieredmenu,
+    .p-contextmenu
+) {
+    border-radius: var(--app-popup-border-radius);
+    padding: 0.3rem;
+    background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%);
+    box-shadow:
+        0 14px 34px rgba(0, 0, 0, 0.16),
+        0 2px 10px rgba(0, 0, 0, 0.08);
+    border: none;
+    overflow: hidden;
+}
+
+:where(.p-dialog) :where(.p-dialog-header, .p-dialog-content, .p-dialog-footer),
+:where(.p-confirm-popup) :where(.p-confirm-popup-content, .p-confirm-popup-footer),
+:where(.p-popover, .p-overlaypanel, .p-column-filter-overlay, .p-menu, .p-tieredmenu, .p-contextmenu) > * {
+    background: var(--surface-card);
+}
+
+:where(.p-dialog) :where(.p-dialog-header) {
+    border-top-left-radius: var(--app-popup-inner-radius);
+    border-top-right-radius: var(--app-popup-inner-radius);
+}
+
+:where(.p-dialog) :where(.p-dialog-footer) {
+    border-bottom-left-radius: var(--app-popup-inner-radius);
+    border-bottom-right-radius: var(--app-popup-inner-radius);
+}
+
+:where(.p-dialog, .p-confirm-popup, .p-popover, .p-overlaypanel, .p-column-filter-overlay) {
+    border: none;
+}

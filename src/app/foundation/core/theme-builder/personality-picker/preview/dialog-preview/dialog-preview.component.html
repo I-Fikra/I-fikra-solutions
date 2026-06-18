@@ -1,0 +1,36 @@
+<div class="lp-focused lp-focused--center lp-dialog-preview-host">
+  <p-dialog
+    [visible]="visible"
+    [modal]="false"
+    [closable]="false"
+    [draggable]="false"
+    [resizable]="false"
+    [appendTo]="'self'"
+    [showHeader]="true"
+    [blockScroll]="false"
+    header="Dialog Preview"
+    [style]="dialogStyle()"
+    [contentStyle]="{ padding: '1.25rem' }"
+  >
+    <ng-template pTemplate="header">
+      <span [ngStyle]="headerStyle()" class="lp-preview-dialog-header">
+        <i class="pi pi-info-circle" style="margin-right:6px; font-size:0.85rem;"></i>
+        Dialog Preview
+      </span>
+    </ng-template>
+
+    <div class="lp-dialog__body">
+      <div class="lp-field"       [style.border-radius]="inputRadius()"></div>
+      <div class="lp-field"       [style.border-radius]="inputRadius()"></div>
+      <div class="lp-field lp-field--short" [style.border-radius]="inputRadius()"></div>
+      <div class="lp-btn-row">
+        <button class="lp-btn lp-btn--cancel"
+                [style.border-radius]="btnRadius()"
+                [style.box-shadow]="btnShadow()">Cancel</button>
+        <button class="lp-btn lp-btn--ok"
+                [style.border-radius]="btnRadius()"
+                [style.box-shadow]="btnShadow()">Confirm</button>
+      </div>
+    </div>
+  </p-dialog>
+</div>

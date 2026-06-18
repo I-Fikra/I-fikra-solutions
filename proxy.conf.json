@@ -1,0 +1,9 @@
+{
+  "/tunnel": {
+    "target": "https://dn4pm8b6-3000.uks1.devtunnels.ms",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": { "^/tunnel": "" },
+    "logLevel": "debug"
+  }
+}

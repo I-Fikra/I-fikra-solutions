@@ -1,0 +1,17 @@
+{
+  "success": 1,
+  "message": { "type": "string", "texts": ["OK"] },
+  "result": {
+    "user": {
+      "id": "1",
+      "name": "Mohamed Ali",
+      "username": "@m.ali",
+      "status": "Active",
+      "email": "m.ali@example.com",
+      "phone": "+20 110 229 6374",
+      "role": "ADMIN",
+      "createdAt": "21 Apr 2026",
+      "updatedAt": "21 Apr 2026"
+    }
+  }
+}

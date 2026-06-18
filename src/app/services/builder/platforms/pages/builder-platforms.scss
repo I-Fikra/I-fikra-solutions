@@ -1,0 +1,218 @@
+.builder-platforms {
+  padding: 2rem;
+
+  &__header {
+    margin-bottom: 2rem;
+  }
+
+  &__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--text-color);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin: 0 0 0.4rem;
+
+    i { color: var(--primary-color); }
+  }
+
+  &__subtitle {
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+    margin: 0;
+  }
+}
+
+// ── Tree Table ──────────────────────────────────────────────────────────────
+
+.builder-tree {
+  border-radius: 0.875rem;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  overflow: hidden;
+
+  &__head {
+    display: grid;
+    grid-template-columns: 72px 1fr 140px 160px 110px 140px;
+    gap: 1rem;
+    padding: 0.75rem 1.25rem;
+    background: var(--surface-section, var(--surface-hover));
+    border-bottom: 1px solid var(--surface-border);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-color-secondary);
+  }
+
+  &__row {
+    display: grid;
+    grid-template-columns: 72px 1fr 140px 160px 110px 140px;
+    gap: 1rem;
+    align-items: center;
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--surface-border);
+    transition: background 0.15s;
+
+    &:last-child { border-bottom: none; }
+
+    &:hover {
+      background: var(--surface-hover);
+    }
+
+    &--active {
+      background: color-mix(in srgb, var(--primary-color) 6%, transparent);
+      border-left: 3px solid var(--primary-color);
+      padding-left: calc(1.25rem - 3px);
+    }
+  }
+
+  &__col {
+    display: flex;
+    align-items: center;
+    min-width: 0;
+
+    &--logo { justify-content: center; }
+    &--name { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
+    &--id   { font-family: monospace; }
+    &--color { gap: 0.5rem; }
+    &--actions { gap: 0.5rem; }
+  }
+
+  &__empty {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 2.5rem;
+    color: var(--text-color-secondary);
+    font-size: 0.9rem;
+    justify-content: center;
+
+    i { font-size: 1.4rem; }
+  }
+}
+
+// ── Cell components ─────────────────────────────────────────────────────────
+
+.platform-logo {
+  height: 40px;
+  width: 56px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+
+  svg, img {
+    max-height: 40px;
+    max-width: 56px;
+    object-fit: contain;
+  }
+}
+
+.platform-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: var(--text-color);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.platform-title {
+  font-size: 0.75rem;
+  color: var(--text-color-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 100%;
+}
+
+.platform-id {
+  font-size: 0.78rem;
+  color: var(--primary-color);
+  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+  padding: 0.15rem 0.45rem;
+  border-radius: 4px;
+  white-space: nowrap;
+}
+
+.platform-color-swatch {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  flex-shrink: 0;
+  border: 2px solid var(--surface-border);
+}
+
+.platform-color-hex {
+  font-size: 0.78rem;
+  font-family: monospace;
+  color: var(--text-color-secondary);
+}
+
+.platform-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: 1rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+
+  &--active {
+    background: color-mix(in srgb, var(--green-500, #22c55e) 15%, transparent);
+    color: var(--green-600, #16a34a);
+  }
+
+  &--idle {
+    background: var(--surface-hover);
+    color: var(--text-color-secondary);
+  }
+}
+
+.platform-btn-apply {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.4rem 0.9rem;
+  border-radius: 0.5rem;
+  border: 1.5px solid var(--primary-color);
+  background: transparent;
+  color: var(--primary-color);
+  font-size: 0.8rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+  white-space: nowrap;
+
+  &:hover:not(:disabled) {
+    background: var(--primary-color);
+    color: #fff;
+  }
+
+  &:disabled {
+    opacity: 0.4;
+    cursor: default;
+  }
+}
+
+.platform-btn-configure {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 0.4rem;
+  background: var(--surface-hover);
+  color: var(--text-color-secondary);
+  border: 1px solid var(--surface-border);
+  text-decoration: none;
+  transition: background 0.15s, color 0.15s;
+
+  &:hover {
+    background: var(--surface-border);
+    color: var(--text-color);
+  }
+}

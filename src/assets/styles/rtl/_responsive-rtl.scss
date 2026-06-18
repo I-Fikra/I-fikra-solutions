@@ -1,0 +1,116 @@
+
+html[dir='rtl'] {
+    @media screen and (min-width: 1960px) {
+    .layout-main,
+    .landing-wrapper {
+        width: 1504px;
+        margin-inline-start: auto !important;
+        margin-inline-end: auto !important;
+    }
+}
+
+@media (min-width: 992px) {
+
+    .layout-wrapper {
+
+        /* ================= OVERLAY ================= */
+        &.layout-overlay {
+
+            .layout-main-container {
+                margin-inline-start: 0;
+                padding-inline-start: 2rem;
+            }
+
+            .layout-sidebar {
+                transform: translateX(-100%);
+                left: 0;
+                top: 0;
+                height: 100vh;
+                border-radius: 0;
+                border-right: 1px solid var(--surface-border);
+                transition: transform 0.4s cubic-bezier(0.05, 0.74, 0.2, 0.99);
+            }
+
+            &.layout-overlay-active {
+                .layout-sidebar {
+                    transform: translateX(0);
+                }
+            }
+        }
+
+        /* ================= STATIC ================= */
+        &.layout-static {
+
+            .layout-main-container {
+                margin-inline-start: 22rem;
+                transition: margin-inline-start 0.4s ease;
+            }
+
+            /* ACTIVE SIDEBAR */
+            &.layout-static:not(.layout-static-inactive) {
+                .layout-sidebar {
+                    transform: translateX(0);
+                }
+            }
+
+            /* INACTIVE STATE (BASE RESET) */
+            &.layout-static-inactive {
+
+                .layout-main-container {
+                    margin-inline-start: 0 !important;
+                    padding-inline-start: 2rem;
+                }
+                 .layout-sidebar {
+        transform: translateX(110%);
+        right: 0;
+        left: auto;
+    }
+            }
+        }
+    }
+
+  
+
+
+}
+ @media (max-width: 991px) {
+    .blocked-scroll {
+      overflow: hidden;
+    }
+
+    .layout-wrapper {
+      .layout-main-container {
+        margin-inline-start: 0;
+        padding-inline-start: 2rem;
+      }
+
+      .layout-sidebar {
+        transform: translateX(100%); // 👈 بدل -100%
+        right: 0; // 👈 بدل left
+        left: auto;
+        top: 0;
+        height: 100vh;
+        border-radius: 0;
+        transition: transform 0.4s ease;
+      }
+
+      .layout-mask {
+        display: none;
+        position: fixed;
+        inset: 0;
+        z-index: 998;
+        background-color: var(--maskbg);
+      }
+
+      &.layout-mobile-active {
+        .layout-sidebar {
+          transform: translateX(0);
+        }
+
+        .layout-mask {
+          display: block;
+        }
+      }
+    }
+  }
+}

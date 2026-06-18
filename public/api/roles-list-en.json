@@ -1,0 +1,34 @@
+{
+  "success": 1,
+  "message": { "type": "string", "texts": ["OK"] },
+  "result": {
+    "paging": {
+      "page_title": "Roles",
+      "page_subtitle": null,
+      "total_items": 6,
+      "start_item": 1,
+      "end_item": 6,
+      "items_per_page": 24,
+      "total_pages": 1,
+      "current_page": 1
+    },
+    "meta_data": [
+      { "secondary_code": "id",              "name": "ID",           "icon": null,        "order": 1, "type": "NUMBER", "is_public": -1, "enum": null, "lookup": null },
+      { "secondary_code": "name_code",       "name": "Name",         "icon": "pi pi-tag", "order": 2, "type": "STRING", "is_public": 1,  "enum": null, "lookup": null },
+      { "secondary_code": "description",     "name": "Description",  "icon": null,        "order": 3, "type": "STRING", "is_public": 1,  "enum": null, "lookup": null },
+      { "secondary_code": "category",        "name": "Category",     "icon": null,        "order": 4, "type": "STRING", "is_public": 1,  "enum": null, "lookup": null },
+      { "secondary_code": "community",       "name": "Community",    "icon": null,        "order": 5, "type": "STRING", "is_public": 1,  "enum": null, "lookup": null },
+      { "secondary_code": "status",          "name": "Status",       "icon": null,        "order": 6, "type": "STRING", "is_public": 1,  "enum": null, "lookup": null },
+      { "secondary_code": "noOfUsers",       "name": "Users",        "icon": null,        "order": 7, "type": "NUMBER", "is_public": 1,  "enum": null, "lookup": null },
+      { "secondary_code": "noOfPermissions", "name": "Permissions",  "icon": null,        "order": 8, "type": "NUMBER", "is_public": 1,  "enum": null, "lookup": null }
+    ],
+    "items": [
+      { "id": "1", "name_code": "System Admin",    "description": "Full system access",               "category": "Management", "community": "IT",         "status": "Active",   "noOfUsers": 3,  "noOfPermissions": 120 },
+      { "id": "2", "name_code": "Supervisor",      "description": "Oversee users and data",           "category": "Supervision","community": "Operations", "status": "Active",   "noOfUsers": 8,  "noOfPermissions": 75  },
+      { "id": "3", "name_code": "Employee",        "description": "Read and data entry access",       "category": "Operations", "community": "Operations", "status": "Active",   "noOfUsers": 42, "noOfPermissions": 30  },
+      { "id": "4", "name_code": "Accountant",      "description": "Manage financial records",         "category": "Finance",    "community": "Finance",    "status": "Active",   "noOfUsers": 5,  "noOfPermissions": 45  },
+      { "id": "5", "name_code": "Tech Support",    "description": "Support users and resolve issues", "category": "Support",    "community": "IT",         "status": "Active",   "noOfUsers": 6,  "noOfPermissions": 20  },
+      { "id": "6", "name_code": "External Auditor","description": "Read-only access for auditing",    "category": "Audit",      "community": "External",   "status": "Inactive", "noOfUsers": 1,  "noOfPermissions": 10  }
+    ]
+  }
+}

@@ -1,0 +1,240 @@
+<!-- Hidden file input for import -->
+<input
+  #importInput
+  type="file"
+  accept=".csv,.xlsx,.xls"
+  style="display: none"
+  (change)="onImportFileSelected($event)"
+/>
+
+<!-- ══ Main Table ══════════════════════════════════════════════════════════════ -->
+<app-table
+  [title]="pageTitle()"
+  [data]="items()"
+  [columns]="columns()"
+  [dataKey]="cfg.idField"
+  [loading]="loading()"
+  [useExternalForm]="true"
+  [statusOptions]="statusOptions()"
+  [showActions]="true"
+  [rowActions]="getRowActions"
+  [showLayoutToggle]="true"
+  [toolbarShowAdd]="true"
+  [toolbarHasFilters]="true"
+  [toolbarShowBuiltInSearch]="true"
+  [toolbarShowClearButton]="true"
+  [toolbarFilters]="toolbarFilters()"
+  [toolbarSearchPlaceholder]="'actions.search' | transloco"
+  (onView)="openView($event)"
+  (onNew)="openNew()"
+  (onExport)="onExport()"
+  (onExportPdf)="onExportPdf()"
+  (onImport)="onImport()"
+  (onDownloadTemplate)="onDownloadTemplate()"
+/>
+
+<!-- ══ Create Dialog ══════════════════════════════════════════════════════════ -->
+@if (cfg.actions.create) {
+<app-dialog-shell
+  [header]="'dialog.create' | transloco"
+  [visible]="createDialogVisible()"
+  (visibleChange)="createDialogVisible.set($event)"
+  (save)="saveCreate()"
+  (cancelled)="createDialogVisible.set(false)"
+  [saveDisabled]="!isCreateFormValid()"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-4 py-2">
+      <ng-container *ngFor="let field of formFields()">
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-sm">{{ field.label }}</label>
+          <ng-container
+            [ngTemplateOutlet]="fieldInput"
+            [ngTemplateOutletContext]="{ field: field, value: newItem()[field.field], onChange: updateNewItem.bind(this, field.field) }"
+          />
+        </div>
+      </ng-container>
+    </div>
+  </ng-template>
+</app-dialog-shell>
+}
+
+<!-- ══ View Dialog ════════════════════════════════════════════════════════════ -->
+@if (cfg.actions.view) {
+<app-dialog-shell
+  [header]="'dialog.view' | transloco"
+  [visible]="viewDialogVisible()"
+  (visibleChange)="viewDialogVisible.set($event)"
+  (cancelled)="viewDialogVisible.set(false)"
+  [hideFooter]="true"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-3 pb-1">
+      <!-- ── Fields list ── -->
+      @for (field of formFields(); track field.field; let i = $index) {
+      <div
+        class="flex items-start justify-between gap-4 rounded-xl px-4 py-3 transition-colors"
+        [class]="i % 2 === 0
+              ? 'bg-surface-50 dark:bg-surface-800/50'
+              : 'bg-white dark:bg-surface-900'"
+      >
+        <!-- Label -->
+        <span
+          class="text-xs font-semibold uppercase tracking-wide text-surface-400 dark:text-surface-500 shrink-0 pt-0.5 min-w-20 text-start"
+        >
+          {{ field.label }}
+        </span>
+
+        <!-- Value -->
+        <div class="flex flex-col items-end gap-1 text-end min-w-0">
+          @if (field.isStatus) {
+          <p-tag
+            [value]="selectedItem()[field.field]"
+            [severity]="selectedItem()[field.field] | severity"
+          />
+
+          } @else if (field.type === 'date') {
+          <span
+            class="flex items-center gap-1.5 text-sm font-medium text-surface-800 dark:text-surface-100"
+          >
+            <i class="pi pi-calendar text-surface-400 text-xs"></i>
+            {{ selectedItem()[field.field] | readableDateTime }}
+          </span>
+
+          } @else if (isLongText(selectedItem()[field.field])) {
+          <span
+            class="text-sm font-medium text-surface-800 dark:text-surface-100 leading-relaxed"
+            [class.line-clamp-2]="!expandedFields()[field.field]"
+            >{{ selectedItem()[field.field] }}</span
+          >
+          <button
+            type="button"
+            class="flex items-center gap-1 text-xs font-semibold text-primary-500 hover:text-primary-600 transition-colors cursor-pointer"
+            (click)="toggleFieldExpand(field.field)"
+          >
+            {{ expandedFields()[field.field] ? ('actions.showLess' | transloco)
+            : ('actions.showMore' | transloco) }}
+            <i
+              class="pi text-[10px]"
+              [class.pi-chevron-up]="expandedFields()[field.field]"
+              [class.pi-chevron-down]="!expandedFields()[field.field]"
+            ></i>
+          </button>
+
+          } @else {
+          <span
+            class="text-sm font-medium text-surface-800 dark:text-surface-100 break-words"
+          >
+            {{ selectedItem()[field.field] || '—' }}
+          </span>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- ── See More button (optional) ── -->
+      @if (cfg.seeMoreLink) {
+      <a
+        [routerLink]="resolveSeeMoreLink(selectedItem())"
+        (click)="viewDialogVisible.set(false)"
+        class="mt-1 flex items-center justify-center gap-2 rounded-xl border border-primary-200 dark:border-primary-800 bg-primary-50 dark:bg-primary-950/40 px-4 py-3 text-sm font-semibold text-primary-600 dark:text-primary-400 hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors no-underline"
+      >
+        <i class="pi pi-arrow-up-right text-xs"></i>
+        {{ 'actions.viewFullDetails' | transloco }}
+      </a>
+      }
+    </div>
+  </ng-template>
+</app-dialog-shell>
+}
+
+<!-- ══ Edit Dialog ════════════════════════════════════════════════════════════ -->
+@if (cfg.actions.edit) {
+<app-dialog-shell
+  [header]="'dialog.edit' | transloco"
+  [visible]="editDialogVisible()"
+  (visibleChange)="editDialogVisible.set($event)"
+  (save)="saveEdit()"
+  (cancelled)="editDialogVisible.set(false)"
+  [saveDisabled]="!isEditFormValid()"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-4 py-2">
+      @for (field of formFields(); track field.field) {
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">{{ field.label }}</label>
+        <ng-container
+          [ngTemplateOutlet]="fieldInput"
+          [ngTemplateOutletContext]="{ field: field, value: selectedItem()[field.field], onChange: updateSelectedItem.bind(this, field.field), isEdit: true }"
+        />
+      </div>
+      }
+    </div>
+  </ng-template>
+</app-dialog-shell>
+}
+
+<!-- ══ Confirm Delete ═════════════════════════════════════════════════════════ -->
+<p-confirmDialog
+  [style]="{ width: '450px' }"
+  styleClass="app-dialog-md p-fluid"
+  [breakpoints]="{ '960px': '75vw', '641px': '90vw' }"
+  [dismissableMask]="true"
+/>
+
+<p-toast />
+
+<!-- ══ Reusable field input template ═════════════════════════════════════════ -->
+<ng-template
+  #fieldInput
+  let-field="field"
+  let-value="value"
+  let-onChange="onChange"
+  let-isEdit="isEdit"
+>
+  @switch (field.type) { @case ('select') {
+  <p-select
+    [options]="field.options"
+    [ngModel]="value"
+    (ngModelChange)="onChange($event)"
+    [placeholder]="field.label"
+    appendTo="body"
+    class="w-full"
+  />
+  } @case ('number') {
+  <input
+    pInputText
+    type="number"
+    [ngModel]="value"
+    (ngModelChange)="onChange($event)"
+    dir="ltr"
+    class="text-left"
+  />
+  } @case ('date') {
+  <input
+    pInputText
+    type="date"
+    [ngModel]="isEdit ? toDateInputValue(value) : value"
+    (ngModelChange)="onChange($event)"
+    dir="ltr"
+    class="text-left"
+  />
+  } @case ('textarea') {
+  <textarea
+    pTextarea
+    rows="3"
+    [ngModel]="value"
+    (ngModelChange)="onChange($event)"
+    class="text-(--p-inputtext-color) bg-(--p-inputtext-background) py-(--p-inputtext-padding-y) px-(--p-inputtext-padding-x) border border-(--p-inputtext-border-color) rounded-(--p-inputtext-border-radius) appearance-none outline-transparent transition"
+  ></textarea>
+  } @default {
+  <input
+    pInputText
+    type="text"
+    [ngModel]="value"
+    (ngModelChange)="onChange($event)"
+    dir="ltr"
+    class="text-left"
+  />
+  } }
+</ng-template>

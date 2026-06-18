@@ -1,0 +1,168 @@
+<div class="ta-section">
+
+
+  <div class="ta-theme-grid">
+    @for (theme of themes; track theme.id) {
+      <div
+        class="ta-theme-card"
+        [class.ta-theme-card--active]="selectedId() === theme.id"
+        (click)="select(theme.id)"
+      >
+
+        <!-- ── Preview mockup ── -->
+        <div class="ta-theme-card__preview" [style.background]="theme.previewBg">
+          <!-- topbar -->
+          <div
+            class="ta-tc-topbar"
+            [style.background]="isDark(theme) ? '#1a2035' : '#ffffff'"
+            [style.border-bottom]="'1px solid ' + (isDark(theme) ? '#2a3045' : '#e5e7eb')"
+          >
+            <div class="ta-tc-topbar__logo" [style.background]="theme.previewAccent"></div>
+            <div class="ta-tc-topbar__spacer"></div>
+            <div class="ta-tc-topbar__dot" [style.background]="theme.previewAccent + '44'"></div>
+          </div>
+          <!-- body -->
+          <div class="ta-tc-body">
+            <!-- sidebar -->
+            <div
+              class="ta-tc-sidebar"
+              [style.background]="isDark(theme) ? '#111827' : '#f8fafc'"
+              [style.border-right]="'1px solid ' + (isDark(theme) ? '#1f2937' : '#e5e7eb')"
+            >
+              <div
+                class="ta-tc-sidebar__item ta-tc-sidebar__item--active"
+                [style.background]="theme.previewAccent + '22'"
+              >
+                <div class="ta-tc-sidebar__dot" [style.background]="theme.previewAccent"></div>
+              </div>
+              <div class="ta-tc-sidebar__item">
+                <div class="ta-tc-sidebar__dot" [style.background]="isDark(theme) ? '#374151' : '#d1d5db'"></div>
+              </div>
+              <div class="ta-tc-sidebar__item">
+                <div class="ta-tc-sidebar__dot" [style.background]="isDark(theme) ? '#374151' : '#d1d5db'"></div>
+              </div>
+            </div>
+            <!-- content -->
+            <div class="ta-tc-content">
+              <div
+                class="ta-tc-card"
+                [style.background]="isDark(theme) ? '#1f2937' : '#ffffff'"
+                [style.border]="'1px solid ' + (isDark(theme) ? '#374151' : '#e5e7eb')"
+              >
+                <div class="ta-tc-card__btn" [style.background]="theme.previewAccent"></div>
+                <div class="ta-tc-card__line" [style.background]="isDark(theme) ? '#374151' : '#e5e7eb'"></div>
+                <div class="ta-tc-card__line ta-tc-card__line--short" [style.background]="isDark(theme) ? '#374151' : '#e5e7eb'"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- color palette strip -->
+          <div class="ta-theme-card__palette">
+            @for (color of theme.colors; track $index) {
+              <div class="ta-theme-card__palette-dot" [style.background]="color"></div>
+            }
+          </div>
+
+          <!-- active overlay -->
+          @if (selectedId() === theme.id) {
+            <div class="ta-theme-card__active-overlay">
+              <div class="ta-theme-card__active-badge">
+                <i class="pi pi-check"></i>
+              </div>
+            </div>
+          }
+        </div>
+
+        <!-- ── Info ── -->
+        <div class="ta-theme-card__info">
+          <div class="ta-theme-card__header-row">
+            <i [class]="theme.icon" [style.color]="theme.previewAccent"></i>
+            <span class="ta-theme-card__name">{{ theme.name }}</span>
+            @if (isDark(theme)) {
+              <span class="ta-theme-badge ta-theme-badge--dark">
+                <i class="pi pi-moon"></i> Dark
+              </span>
+            }
+            @if (theme.supportsDarkMode && !isDark(theme)) {
+              <span class="ta-theme-badge ta-theme-badge--dm">
+                <i class="pi pi-moon"></i>
+              </span>
+            }
+          </div>
+          <p class="ta-theme-card__desc">{{ theme.description }}</p>
+          <div class="ta-theme-card__meta">
+            <span class="ta-theme-card__family-tag">{{ theme.family }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- ── Custom card ── -->
+    <div
+      class="ta-theme-card ta-theme-card--custom"
+      (click)="selectCustom()"
+    >
+      <!-- Preview mockup -->
+      <div class="ta-theme-card__preview ta-theme-card__preview--custom">
+        <!-- Animated gradient background -->
+        <div class="ta-custom-preview-bg">
+          <!-- Palette circles -->
+          <div class="ta-custom-preview-circles">
+            <div class="ta-custom-circle" style="background:#0ea5e9"></div>
+            <div class="ta-custom-circle" style="background:#7c3aed"></div>
+            <div class="ta-custom-circle" style="background:#10b981"></div>
+            <div class="ta-custom-circle" style="background:#f43f5e"></div>
+            <div class="ta-custom-circle" style="background:#f59e0b"></div>
+          </div>
+          <!-- Center icon -->
+          <div class="ta-custom-preview-icon">
+            <i class="pi pi-sliders-h"></i>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info -->
+      <div class="ta-theme-card__info">
+        <div class="ta-theme-card__header-row">
+          <i class="pi pi-palette" style="color: var(--primary-color)"></i>
+          <span class="ta-theme-card__name">Custom</span>
+          <span class="ta-theme-badge ta-theme-badge--custom">
+            <i class="pi pi-arrow-right"></i> Fine-tune
+          </span>
+        </div>
+        <p class="ta-theme-card__desc">
+          Build your own theme from scratch — choose preset, colors, radius, fonts, and more.
+        </p>
+        <div class="ta-theme-card__meta">
+          <span class="ta-theme-card__family-tag">All presets</span>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Selection summary ── -->
+  @if (selectedTheme) {
+    <div class="ta-selection-summary">
+      <div class="ta-selection-summary__preview" [style.background]="selectedTheme.previewAccent"></div>
+      <div class="ta-selection-summary__text">
+        <span class="ta-selection-summary__label">Selected:</span>
+        <strong>{{ selectedTheme.name }}</strong>
+        <span class="ta-selection-summary__family">· {{ selectedTheme.family }}</span>
+        @if (selectedTheme.supportsDarkMode) {
+          <span class="ta-selection-summary__dm"><i class="pi pi-moon"></i> Dark mode supported</span>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── Actions ── -->
+  <div class="ta-step-actions">
+    <p-button
+      label="Save & Continue"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (onClick)="save()"
+    />
+  </div>
+</div>

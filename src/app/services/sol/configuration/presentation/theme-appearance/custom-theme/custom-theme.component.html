@@ -1,0 +1,214 @@
+<div class="ta-section">
+
+  <!-- ── Intro ── -->
+  <div class="ta-section__intro">
+    <div class="ta-section__icon">
+      <i class="pi pi-palette"></i>
+    </div>
+    <div>
+      <h3 class="ta-section__title">Custom Theme</h3>
+      <p class="ta-section__sub">
+        Build your own look — pick a UI preset, choose your primary and surface colours, then set the menu behaviour.
+      </p>
+    </div>
+  </div>
+
+  <!-- ── UI Preset ── -->
+  <div class="ta-config-card">
+    <div class="ta-config-card__header">
+      <i class="pi pi-th-large"></i>
+      <h4 class="ta-config-card__title">UI Preset</h4>
+    </div>
+    <p class="ta-config-card__sub">Base component styling framework</p>
+    <div class="ta-preset-btns">
+      @for (p of presetNames; track p) {
+        <button
+          class="ta-preset-btn"
+          [class.ta-preset-btn--active]="selectedPreset() === p"
+          (click)="onPresetChange(p)"
+        >{{ p }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Primary Color ── -->
+  <div class="ta-config-card">
+    <div class="ta-config-card__header">
+      <i class="pi pi-circle-fill"></i>
+      <h4 class="ta-config-card__title">Primary Color</h4>
+    </div>
+    <p class="ta-config-card__sub">Main accent color used across the UI</p>
+    <div class="ta-swatch-row">
+
+      <!-- Default swatches -->
+      @for (color of primaryColors(); track color.name) {
+        <div class="ta-swatch-wrap">
+          <button
+            class="ta-swatch"
+            [class.ta-swatch--active]="selectedPrimary() === color.name"
+            [title]="color.name"
+            [style.background]="swatchBg(color)"
+            (click)="onPrimaryChange(color)"
+          ></button>
+        </div>
+      }
+
+      <!-- Custom primary swatches -->
+      @for (c of customPrimaryColors(); track c.hex) {
+        <div class="ta-swatch-wrap">
+          <button
+            class="ta-swatch ta-swatch--custom"
+            [class.ta-swatch--active]="selectedPrimary() === c.name"
+            [title]="c.hex"
+            [style.background]="c.hex"
+            (click)="onCustomPrimaryChange(c)"
+          ></button>
+          <button class="ta-swatch-remove" (click)="removeCustomPrimary(c.name)" title="Remove">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      }
+
+      <!-- Add primary color button (empty circle) -->
+      <div class="ta-swatch-wrap ta-swatch-wrap--add">
+        <button class="ta-swatch ta-swatch--ghost" (click)="primaryPickerRef.click()" title="Add color">
+          <i class="pi pi-plus"></i>
+        </button>
+        <input
+          #primaryPickerRef
+          type="color"
+          class="ta-hidden-picker"
+          (change)="onAddPrimaryColor($event)"
+        />
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Surface Color ── -->
+  <div class="ta-config-card">
+    <div class="ta-config-card__header">
+      <i class="pi pi-stop"></i>
+      <h4 class="ta-config-card__title">Surface Color</h4>
+    </div>
+    <p class="ta-config-card__sub">Background and neutral tones</p>
+    <div class="ta-swatch-row">
+
+      <!-- Default surfaces -->
+      @for (s of surfaces; track s.name) {
+        <div class="ta-swatch-wrap">
+          <button
+            class="ta-swatch"
+            [class.ta-swatch--active]="selectedSurface() === s.name"
+            [title]="s.name"
+            [style.background]="s.palette['500']"
+            (click)="onSurfaceChange(s)"
+          ></button>
+        </div>
+      }
+
+      <!-- Custom surface swatches -->
+      @for (c of customSurfaces(); track c.hex) {
+        <div class="ta-swatch-wrap">
+          <button
+            class="ta-swatch ta-swatch--custom"
+            [class.ta-swatch--active]="selectedSurface() === c.name"
+            [title]="c.hex"
+            [style.background]="c.hex"
+            (click)="onCustomSurfaceChange(c)"
+          ></button>
+          <button class="ta-swatch-remove" (click)="removeCustomSurface(c.name)" title="Remove">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      }
+
+      <!-- Add surface color button (empty circle) -->
+      <div class="ta-swatch-wrap ta-swatch-wrap--add">
+        <button class="ta-swatch ta-swatch--ghost" (click)="surfacePickerRef.click()" title="Add color">
+          <i class="pi pi-plus"></i>
+        </button>
+        <input
+          #surfacePickerRef
+          type="color"
+          class="ta-hidden-picker"
+          (change)="onAddSurfaceColor($event)"
+        />
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── Body Color ── -->
+  <div class="ta-config-card">
+    <div class="ta-config-card__header">
+      <i class="pi pi-desktop"></i>
+      <h4 class="ta-config-card__title">Body Color</h4>
+    </div>
+    <p class="ta-config-card__sub">Background color applied to the topbar, sidebar, and content area</p>
+
+    <div class="ta-swatch-row">
+      @for (c of bodyColorOptions; track c.hex) {
+        <div class="ta-swatch-wrap">
+          <button
+            class="ta-swatch"
+            [class.ta-swatch--active]="selectedBodyColor() === c.hex"
+            [title]="c.label"
+            [style.background]="c.hex"
+            (click)="onBodyColorChange(c.hex)"
+          ></button>
+        </div>
+      }
+      @for (c of customBodyColors(); track c.hex) {
+        <div class="ta-swatch-wrap">
+          <button
+            class="ta-swatch ta-swatch--custom"
+            [class.ta-swatch--active]="selectedBodyColor() === c.hex"
+            [title]="c.hex"
+            [style.background]="c.hex"
+            (click)="onBodyColorChange(c.hex)"
+          ></button>
+          <button class="ta-swatch-remove" (click)="removeCustomBodyColor(c.hex)" title="Remove">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+      }
+      <div class="ta-swatch-wrap ta-swatch-wrap--add">
+        <button class="ta-swatch ta-swatch--ghost" (click)="bodyPickerRef.click()" title="Add color">
+          <i class="pi pi-plus"></i>
+        </button>
+        <input #bodyPickerRef type="color" class="ta-hidden-picker" (change)="onAddBodyColor($event)" />
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Menu Mode ── -->
+  <div class="ta-config-card">
+    <div class="ta-config-card__header">
+      <i class="pi pi-bars"></i>
+      <h4 class="ta-config-card__title">Menu Mode</h4>
+    </div>
+    <p class="ta-config-card__sub">How the sidebar behaves</p>
+    <div class="ta-preset-btns">
+      @for (opt of menuModeOptions; track opt.value) {
+        <button
+          class="ta-preset-btn"
+          [class.ta-preset-btn--active]="selectedMenuMode() === opt.value"
+          (click)="onMenuModeChange(opt.value)"
+        >{{ opt.label }}</button>
+      }
+    </div>
+  </div>
+
+  <!-- ── Actions ── -->
+  <div class="ta-step-actions">
+    <p-button
+      label="Save & Continue"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      (onClick)="save()"
+    />
+  </div>
+
+</div>

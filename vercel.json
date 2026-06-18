@@ -1,0 +1,11 @@
+{
+    "buildCommand": "ng build --configuration production",
+    "outputDirectory": "dist/sakai-ng/browser",
+    "rewrites": [
+        {
+            "source": "/:path*",
+            "destination": "/index.html"
+        }
+    ],
+    "trailingSlash": false
+}

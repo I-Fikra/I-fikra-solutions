@@ -1,0 +1,417 @@
+<p-toast />
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     TOOLBAR
+════════════════════════════════════════════════════════════════════════ -->
+<app-shared-toolbar
+  [title]="ui.pageTitle"
+  [searchPlaceholder]="ui.search"
+  [searchValue]="globalSearchText()"
+  [hasFilters]="true"
+  [showBuiltInSearch]="true"
+  [showClearButton]="true"
+  (onExport)="exportToCSV()"
+  (clearSearch)="clearFilters()"
+  (searchChanged)="onSearchChanged($event)"
+>
+  <ng-container toolbar-filters>
+    <!-- Module filter -->
+    <app-filter
+      [label]="ui.filterModule"
+      [options]="moduleFilterOptions()"
+      [selected]="selectedModuleFilters()"
+      (selectedChange)="updateModuleFilters($event)"
+      [showClear]="false"
+    />
+
+    <!-- Entity status filter -->
+    <app-filter
+      [label]="ui.filterEntityStatus"
+      [options]="statusFilterOptions()"
+      [selected]="selectedStatusFilters()"
+      (selectedChange)="updateStatusFilters($event)"
+      [showClear]="true"
+    />
+
+    <!-- Permission status filter -->
+    <app-filter
+      [label]="ui.filterPermStatus"
+      [options]="permissionStatusFilterOptions()"
+      [selected]="selectedPermissionStatusFilters()"
+      (selectedChange)="updatePermissionStatusFilters($event)"
+      [showClear]="true"
+    />
+
+    <!-- Permission (leaf name) filter -->
+    <app-filter
+      [label]="ui.filterPermission"
+      [options]="permissionFilterOptions()"
+      [selected]="selectedPermissionFilters()"
+      (selectedChange)="updatePermissionFilters($event)"
+      [showClear]="true"
+    />
+  </ng-container>
+
+  <!-- Layout toggles -->
+  <ng-container toolbar-extra>
+    <div class="flex gap-1">
+      <p-button
+        size="small"
+        [severity]="layoutMode() === 'grid' ? 'primary' : 'secondary'"
+        [text]="layoutMode() !== 'grid'"
+        icon="pi pi-th-large"
+        [pTooltip]="ui.cardsView"
+        tooltipPosition="bottom"
+        (onClick)="layoutMode.set('grid')"
+      />
+      <p-button
+        size="small"
+        [severity]="layoutMode() === 'list' ? 'primary' : 'secondary'"
+        [text]="layoutMode() !== 'list'"
+        icon="pi pi-list"
+        [pTooltip]="ui.tableView"
+        tooltipPosition="bottom"
+        (onClick)="layoutMode.set('list')"
+      />
+    </div>
+  </ng-container>
+</app-shared-toolbar>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     TREE TABLE
+════════════════════════════════════════════════════════════════════════ -->
+<app-tree-table
+  [modules]="filteredModules()"
+  [sortedEntitiesMap]="sortedEntitiesMap()"
+  [roleAssignments]="roleAssignments()"
+  [expandedRows]="expandedRows"
+  [selectedEntities]="selectedEntities()"
+  [selectedItems]="selectedPermissions()"
+  [availableRoles]="availableRoles()"
+  [groupByModule]="true"
+  [entityColumns]="entityColumns()"
+  [childColumns]="permColumns()"
+  [grandchildColumns]="fieldColumns()"
+  [grandchildLabel]="ui.fieldPermissions"
+  [showToolbar]="false"
+  [showLayoutToggle]="true"
+  [layoutInput]="layoutMode()"
+  (entityEdit)="openEntityDialog($event)"
+  (itemEdit)="openPermissionDialog($event)"
+  (grandchildEdit)="openPermissionDialog($event)"
+  (entitySelectionChange)="onEntitySelectionChange($event)"
+  (itemSelectionChange)="onPermissionSelectionChange($event)"
+  (colFilterChanged)="onColFilterChanged($event)"
+  (sortChanged)="onSortChanged($event)"
+>
+  <!-- ══════════════════════════════════════════════════════════════════
+       CARD TEMPLATE — خاص بالـ permissions
+       يُحقن في الـ tree-table عبر content projection
+       context: { $implicit: entity (TreeNode) }
+  ══════════════════════════════════════════════════════════════════ -->
+  <ng-template #cardTemplate let-entity>
+    <div class="w-full">
+      <app-card>
+        <ng-template #cardHeader>
+          <div class="flex items-center justify-between">
+            <div class="flex items-center gap-2 min-w-0">
+              <i class="pi pi-shield text-primary text-sm"></i>
+              <span class="font-semibold text-sm truncate"
+                >{{ entity.data.name }}</span
+              >
+            </div>
+            <div class="flex items-center gap-1 shrink-0">
+              <p-tag
+                [value]="entity.data['statusLabel']"
+                [severity]="cardStatusSeverity(entity.data['status'])"
+                styleClass="text-xs"
+              />
+              <p-button
+                icon="pi pi-pencil"
+                severity="secondary"
+                [text]="true"
+                size="small"
+                [pTooltip]="ui.editRoles"
+                tooltipPosition="bottom"
+                (click)="openEntityDialog(entity)"
+                ariaLabel="Edit entity"
+              />
+            </div>
+          </div>
+        </ng-template>
+
+        <ng-template #cardBody>
+          <div class="flex flex-col flex-1 min-h-0 overflow-y-auto">
+            @for (perm of entity.children; track perm.key) {
+
+            <!-- Permission row -->
+            <div class="flex items-center justify-between px-4 py-5">
+              <div class="flex items-center gap-2 min-w-0">
+                <!-- Checkbox — لو عنده field permissions يحدد/يلغي كلهم -->
+                <p-checkbox
+                  [binary]="true"
+                  [ngModel]="isCardPermSelected(perm)"
+                  [indeterminate]="isCardPermIndeterminate(perm)"
+                  (onChange)="onCardPermToggle($event.checked, perm)"
+                />
+
+                <!-- Expand button — بيظهر بس لو في field permissions -->
+                @if (perm.children?.length) {
+                <p-button
+                  [icon]="cardExpandedPerms[perm.key] ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+                  severity="secondary"
+                  [text]="true"
+                  size="small"
+                  styleClass="!p-0 !w-5 !h-5"
+                  (click)="cardExpandedPerms[perm.key] = !cardExpandedPerms[perm.key]"
+                />
+                }
+
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-base truncate">{{ perm.data.name }}</span>
+                  <p-tag
+                    [value]="perm.data['statusLabel']"
+                    [severity]="cardStatusSeverity(perm.data['status'])"
+                    styleClass="text-xs"
+                  />
+                  @if (perm.data['action']) {
+                  <span class="text-xs text-surface-400">
+                    {{ perm.data['action'] }}
+                  </span>
+                  }
+                </div>
+              </div>
+
+              <div class="flex items-center gap-1 shrink-0 ms-2">
+                <span class="text-xs text-surface-400 flex items-center gap-1">
+                  <i class="pi pi-users text-xs"></i>
+                  {{ perm.data.assignedRolesCount }}
+                </span>
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [text]="true"
+                  size="small"
+                  styleClass="!p-1"
+                  [pTooltip]="ui.editRoles"
+                  tooltipPosition="bottom"
+                  (click)="openPermissionDialog(perm)"
+                />
+              </div>
+            </div>
+
+            <!-- Field permissions (grandchildren) — مخفيين لحد ما تضغط expand -->
+            @if (cardExpandedPerms[perm.key] && perm.children?.length) { @for
+            (field of perm.children; track field.key) {
+            <div
+              class="flex items-center justify-between ms-13 pe-4 py-3 border-s-2 border-primary ps-6"
+            >
+              <div class="flex items-center gap-2 min-w-0">
+                <p-checkbox
+                  [binary]="true"
+                  [ngModel]="isCardItemSelected(field)"
+                  (onChange)="onCardItemToggle($event.checked, field)"
+                />
+                <div class="flex items-center gap-2 min-w-0">
+                  <span class="text-sm truncate">{{ field.data.name }}</span>
+                  <p-tag
+                    [value]="field.data['statusLabel']"
+                    [severity]="cardStatusSeverity(field.data['status'])"
+                    styleClass="text-xs w-fit"
+                  />
+                </div>
+              </div>
+              <div class="flex items-center gap-1 shrink-0 ms-2">
+                <span class="text-xs text-surface-400 flex items-center gap-1">
+                  <i class="pi pi-users text-xs"></i>
+                  {{ field.data.assignedRolesCount }}
+                </span>
+                <p-button
+                  icon="pi pi-pencil"
+                  severity="secondary"
+                  [text]="true"
+                  size="small"
+                  styleClass="!p-1"
+                  (click)="openPermissionDialog(field)"
+                />
+              </div>
+            </div>
+            } } } @empty {
+            <div class="px-4 py-6 text-center text-xs text-surface-400">
+              <i class="pi pi-inbox block text-2xl mb-1"></i>
+              {{ ui.noPermissions }}
+            </div>
+            }
+          </div>
+        </ng-template>
+
+        <ng-template #cardFooter>
+          <div class="flex items-center justify-between">
+            <span class="text-xs text-surface-400">
+              {{ entity.children?.length || 0 }} {{
+              ui.permissionsCount }}
+            </span>
+            <p-button
+              icon="pi pi-check-square"
+              [label]="ui.selectAll"
+              severity="secondary"
+              [text]="true"
+              size="small"
+              (click)="cardSelectAllPerms(entity)"
+            />
+          </div>
+        </ng-template>
+      </app-card>
+    </div>
+  </ng-template>
+</app-tree-table>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     DIALOG: Single Permission / Field Permission — Edit role assignments
+════════════════════════════════════════════════════════════════════════ -->
+<app-dialog-shell
+  [header]="(ui.editRoles) + (currentPermissionNode()?.data?.name || '')"
+  [visible]="permissionDialogVisible()"
+  (visibleChange)="permissionDialogVisible.set($event)"
+  (save)="savePermissionDialog()"
+  (cancelled)="permissionDialogVisible.set(false)"
+>
+  <ng-template #dialogContent>
+    <label class="font-medium text-md">
+      {{ ui.assignRolesToPermission }}
+    </label>
+    <div
+      class="p-3 max-h-60 overflow-y-auto flex flex-col gap-3 mt-4 border rounded-md"
+    >
+      @for (role of availableRoles(); track role.id) {
+      <div
+        class="flex items-center gap-3 p-2 rounded-sm transition-all duration-200 hover:bg-surface-100 dark:hover:bg-surface-700"
+      >
+        <p-checkbox
+          [inputId]="'perm-role-' + role.id"
+          [binary]="true"
+          [ngModel]="dialogRoleStateCache().get(role.id)?.checked ?? false"
+          (onChange)="toggleDialogRole(role.id, $event.checked)"
+        />
+        <label
+          [for]="'perm-role-' + role.id"
+          class="cursor-pointer text-sm w-full"
+        >
+          {{ role.name }}
+        </label>
+      </div>
+      }
+    </div>
+  </ng-template>
+</app-dialog-shell>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     DIALOG: Entity — manage all child permissions at once
+════════════════════════════════════════════════════════════════════════ -->
+<app-dialog-shell
+  [header]="(ui.manage) + (currentEntityNode()?.data?.name || '')"
+  [visible]="entityDialogVisible()"
+  (visibleChange)="entityDialogVisible.set($event)"
+  (save)="saveEntityDialog()"
+  (cancelled)="entityDialogVisible.set(false)"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-3">
+      <label class="font-medium text-md">
+        {{ ui.assignRolesToEntity }}
+      </label>
+      <div
+        class="p-1 overflow-y-auto flex flex-col gap-2 max-h-60 mt-4 border rounded-md"
+      >
+        @for (role of availableRoles(); track role.id) {
+        <div
+          class="flex items-center gap-3 p-2 rounded-sm transition-all duration-200 hover:bg-surface-100 dark:hover:bg-surface-700"
+        >
+          <p-checkbox
+            [inputId]="'ent-role-' + role.id"
+            [binary]="true"
+            [ngModel]="dialogRoleStateCache().get(role.id)?.checked ?? false"
+            [indeterminate]="dialogRoleStateCache().get(role.id)?.indeterminate ?? false"
+            (onChange)="toggleDialogRole(role.id, $event.checked)"
+          />
+          <label
+            [for]="'ent-role-' + role.id"
+            class="cursor-pointer text-sm w-full"
+          >
+            {{ role.name }}
+          </label>
+        </div>
+        }
+      </div>
+      <small class="text-color-secondary">
+        {{ ui.entityNote }}
+      </small>
+    </div>
+  </ng-template>
+</app-dialog-shell>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     DIALOG: Bulk Edit
+════════════════════════════════════════════════════════════════════════ -->
+<app-dialog-shell
+  [header]="ui.bulkEdit"
+  [visible]="bulkDialogVisible()"
+  (visibleChange)="bulkDialogVisible.set($event)"
+  (save)="saveBulkDialog()"
+  (cancelled)="bulkDialogVisible.set(false)"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-3">
+      <label class="font-medium text-md"
+        >{{ ui.assignedRolesLabel }}</label
+      >
+      <div
+        class="p-1 overflow-y-auto flex flex-col gap-2 max-h-60 mt-4 border rounded-md"
+      >
+        @for (role of availableRoles(); track role.id) {
+        <div
+          class="flex items-center gap-3 p-2 rounded-sm transition-all duration-200 hover:bg-surface-100 dark:hover:bg-surface-700"
+        >
+          <p-checkbox
+            [inputId]="'bulk-role-' + role.id"
+            [binary]="true"
+            [ngModel]="dialogRoleStateCache().get(role.id)?.checked ?? false"
+            [indeterminate]="dialogRoleStateCache().get(role.id)?.indeterminate ?? false"
+            (onChange)="toggleDialogRole(role.id, $event.checked)"
+          />
+          <label
+            [for]="'bulk-role-' + role.id"
+            class="cursor-pointer w-full text-md"
+          >
+            {{ role.name }}
+          </label>
+        </div>
+        }
+      </div>
+      <small class="text-color-secondary">
+        {{ ui.partialNote }}
+      </small>
+    </div>
+  </ng-template>
+</app-dialog-shell>
+
+<!-- ════════════════════════════════════════════════════════════════════════
+     BOTTOM BAR — bulk selection
+════════════════════════════════════════════════════════════════════════ -->
+<app-shared-bottom-bar
+  [visible]="selectedPermissions().length > 0"
+  [count]="selectedPermissions().length"
+  itemLabel="permission"
+  [showDelete]="false"
+  [actions]="[
+    {
+      key:      'bulk-edit',
+      label:    ui.bulkEdit,
+      icon:     'pi pi-pencil',
+      severity: 'secondary',
+      tooltip:  'Edit role assignments for selected permissions'
+    }
+  ]"
+  (bulkAction)="onBottomBarAction($event)"
+  (clearSelection)="clearSelection()"
+/>

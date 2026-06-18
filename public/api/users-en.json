@@ -1,0 +1,34 @@
+{
+  "success": 1,
+  "message": { "type": "string", "texts": ["OK"] },
+  "result": {
+    "paging": {
+      "page_title": "Users",
+      "page_subtitle": null,
+      "total_items": 8,
+      "start_item": 1,
+      "end_item": 8,
+      "items_per_page": 24,
+      "total_pages": 1,
+      "current_page": 1
+    },
+    "meta_data": [
+      { "secondary_code": "id",     "name": "ID",     "icon": null,              "order": 1, "type": "NUMBER", "is_public": -1, "enum": null,                              "lookup": null },
+      { "secondary_code": "name",   "name": "Name",   "icon": "pi pi-user",      "order": 2, "type": "STRING", "is_public": 1,  "enum": null,                              "lookup": null },
+      { "secondary_code": "email",  "name": "Email",  "icon": "pi pi-envelope",  "order": 3, "type": "STRING", "is_public": 1,  "enum": null,                              "lookup": null },
+      { "secondary_code": "phone",  "name": "Phone",  "icon": "pi pi-phone",     "order": 4, "type": "STRING", "is_public": 1,  "enum": null,                              "lookup": null },
+      { "secondary_code": "role",   "name": "Role",   "icon": "pi pi-id-card",   "order": 5, "type": "STRING", "is_public": 1,  "enum": ["ADMIN","USER","MODERATOR"],      "lookup": null },
+      { "secondary_code": "status", "name": "Status", "icon": "pi pi-circle",    "order": 6, "type": "STRING", "is_public": 1,  "enum": ["Active","Inactive"],             "lookup": null }
+    ],
+    "items": [
+      { "id": "1", "name": "Admin User",    "email": "admin@system.com",        "phone": "01557068541", "role": "ADMIN",     "status": "Inactive" },
+      { "id": "2", "name": "Nora Ahmed",    "email": "nora.ahmed@example.com",  "phone": "01557068541", "role": "USER",      "status": "Active"   },
+      { "id": "3", "name": "Mohamed Ali",   "email": "m.ali@example.com",       "phone": "01557068541", "role": "USER",      "status": "Inactive" },
+      { "id": "4", "name": "Sara Hassan",   "email": "sara.hassan@example.com", "phone": "01557068541", "role": "MODERATOR", "status": "Active"   },
+      { "id": "5", "name": "Omar Khaled",   "email": "omar.k@example.com",      "phone": "01557068541", "role": "USER",      "status": "Active"   },
+      { "id": "6", "name": "Fatma Youssef", "email": "fatma.y@example.com",     "phone": "01557068541", "role": "ADMIN",     "status": "Active"   },
+      { "id": "7", "name": "Youssef Adel",  "email": "y.adel@example.com",      "phone": "01557068541", "role": "USER",      "status": "Active"   },
+      { "id": "8", "name": "Mona Samir",    "email": "mona.samir@example.com",  "phone": "01557068541", "role": "MODERATOR", "status": "Active"   }
+    ]
+  }
+}

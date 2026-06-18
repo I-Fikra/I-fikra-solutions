@@ -1,0 +1,32 @@
+@if (project(); as p) {
+  <div class="platform-page">
+    <div class="platform-card">
+      <div class="platform-card__logo" [innerHTML]="safeLogo(p)"></div>
+
+      <div class="platform-card__info">
+        <span class="platform-card__name">{{ p.projectName }}</span>
+        <span class="platform-card__color" [style.background]="p.primaryColor"></span>
+      </div>
+
+      @if (isActive()) {
+        <div class="platform-card__active-badge">
+          <i class="pi pi-check-circle"></i>
+          Active
+        </div>
+      }
+
+      <button
+        class="platform-card__apply"
+        [disabled]="isActive()"
+        (click)="apply()"
+      >
+        Apply
+      </button>
+    </div>
+  </div>
+} @else {
+  <div class="platform-not-found">
+    <i class="pi pi-exclamation-triangle"></i>
+    <span>Platform not found.</span>
+  </div>
+}

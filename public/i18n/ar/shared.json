@@ -1,0 +1,142 @@
+{
+  "shared": {
+    "common": {
+      "add": "جديد",
+      "edit": "تعديل",
+      "view": "عرض",
+      "delete": "حذف",
+      "save": "حفظ",
+      "cancel": "إلغاء",
+      "clear": "مسح",
+      "apply": "تطبيق",
+      "search": "بحث...",
+      "noResults": "لا توجد نتائج",
+      "loading": "جاري التحميل...",
+      "error": "حدث خطأ",
+      "success": "تم بنجاح",
+      "confirm": "تأكيد",
+      "close": "إغلاق",
+      "back": "رجوع",
+      "next": "التالي",
+      "previous": "السابق",
+      "selectAll": "تحديد الكل",
+      "deselectAll": "إلغاء تحديد الكل",
+      "selected": "محدد",
+      "of": "من",
+      "total": "إجمالي",
+      "records": "سجل",
+      "noData": "لا توجد بيانات",
+      "export": "تصدير",
+      "import": "استيراد",
+      "refresh": "تحديث",
+      "more": "المزيد",
+      "filters": "الفلاتر",
+      "sort": "ترتيب",
+      "actions": "إجراءات",
+      "status": "الحالة",
+      "name": "الاسم",
+      "code": "الكود",
+      "description": "الوصف",
+      "type": "النوع",
+      "date": "التاريخ",
+      "time": "الوقت",
+      "active": "نشط",
+      "inactive": "غير نشط",
+      "yes": "نعم",
+      "no": "لا",
+      "SeeMore": "عرض المزيد"
+    },
+    "toolbar": {
+      "moreOptions": "خيارات إضافية",
+      "clearFilters": "مسح كل عوامل التصفية",
+      "export": "تصدير",
+      "import": "استيراد",
+      "add": "إضافة جديد",
+      "search": "بحث...",
+      "filters": "الفلاتر",
+      "columns": "الأعمدة",
+      "density": "الكثافة",
+      "fullScreen": "ملء الشاشة"
+    },
+    "table": {
+      "actions":"الإجراءات المتاحة",
+      "sortAscending": "ترتيب تصاعدي",
+      "sortDescending": "ترتيب تنازلي",
+      "clearSort": "مسح الترتيب",
+      "operator": "المعامل",
+      "matchAll": "مطابقة الكل",
+      "matchAny": "مطابقة أي",
+      "addRule": "إضافة قاعدة",
+      "rule": "قاعدة",
+      "searchBy": "ابحث حسب {{field}}",
+      "selectStatus": "اختر الحالة",
+      "selectValue": "اختر القيمة",
+      "enterValue": "أدخل قيمة",
+      "noItemsFound": "لا توجد {{title}}.",
+      "showingRecords": "عرض {first} إلى {last} من إجمالي {totalRecords} {{title}}",
+      "noData": "لا توجد بيانات",
+      "loading": "جاري تحميل البيانات...",
+      "error": "حدث خطأ في تحميل البيانات"
+    },
+    "filterModes": {
+      "contains": "يحتوي",
+      "startsWith": "يبدأ بـ",
+      "endsWith": "ينتهي بـ",
+      "equals": "يساوي",
+      "notEquals": "لا يساوي",
+      "lt": "أقل من",
+      "lte": "أقل من أو يساوي",
+      "gt": "أكبر من",
+      "gte": "أكبر من أو يساوي",
+      "dateIs": "التاريخ يساوي",
+      "dateIsNot": "التاريخ لا يساوي",
+      "dateBefore": "التاريخ قبل",
+      "dateAfter": "التاريخ بعد",
+      "in": "في",
+      "notIn": "ليس في",
+      "between": "بين"
+    },
+    "dialog": {
+      "confirm": "تأكيد",
+      "confirmDelete": "تأكيد الحذف",
+      "deleteThisItem": "هل أنت متأكد أنك تريد حذف هذا العنصر؟",
+      "deleteSelectedItems": "هل أنت متأكد أنك تريد حذف العناصر المحددة؟"
+    },
+    "bottomBar": {
+      "selectedSuffix": "محدد",
+      "clearSelection": "مسح التحديد",
+      "itemsSelected": "{{count}} عنصر محدد"
+    },
+    "filter": {
+      "clearFilter": "مسح الفلتر",
+      "optionsFor": "خيارات فلتر {{label}}",
+      "searchFor": "ابحث في {{label}}",
+      "noResultsFor": "لا توجد نتائج لـ \"{{query}}\"",
+      "selectAll": "تحديد الكل",
+      "showMore": "عرض المزيد..."
+    },
+    "users": {
+      "title": "المستخدمون",
+      "deleted": "تم حذف المستخدم",
+      "deleteConfirm": "هل أنت متأكد أنك تريد حذف {{name}}؟"
+    },
+    "ships": {
+      "title": "السفن"
+    },
+    "contacts": {
+      "title": "جهات الاتصال"
+    },
+    "visits": {
+      "title": "الزيارات"
+    },
+    "toast": {
+      "success": "تم بنجاح",
+      "error": "حدث خطأ",
+      "warning": "تحذير",
+      "info": "معلومة"
+    },
+    "actions":{
+      "edit":"تعديل"
+    }
+  }
+}

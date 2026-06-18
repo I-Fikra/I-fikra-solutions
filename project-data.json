@@ -1,0 +1,39 @@
+{
+  "branding": {
+    "components": {
+      "platformComponents": { "mobile-app": 1, "dashboard": 1 }
+    },
+    "identity": {
+      "languages": ["en"],
+      "appName": { "en": "SIMW Platform", "ar": null, "fr": null, "es": null, "de": null },
+      "logo": null,
+      "favicon": null,
+      "showAppName": true,
+      "metaVersion": "1.0.0"
+    },                        
+    "metadata": {
+      "metaTitle": { "en": "SIMW — Modern Enterprise Platform", "ar": null, "fr": null, "es": null, "de": null },
+      "metaDescription": { "en": "A modern enterprise platform for managing operations, teams, and growth.", "ar": null, "fr": null, "es": null, "de": null },
+      "metaKeywords": { "en": "enterprise, platform, management, dashboard", "ar": null, "fr": null, "es": null, "de": null },
+      "metaAuthor": { "en": "I-Fikra Solutions", "ar": null, "fr": null, "es": null, "de": null },
+      "authorUrl": "https://ifikra.com",
+      "copyrightText": { "en": "© 2026 I-Fikra Solutions. All rights reserved.", "ar": null, "fr": null, "es": null, "de": null },
+      "supportEmail": "support@ifikra.com",
+      "supportUrl": "https://help.ifikra.com",
+      "privacyPolicyDocument": { "en": null, "ar": null, "fr": null, "es": null, "de": null },
+      "termsDocument": { "en": null, "ar": null, "fr": null, "es": null, "de": null }
+    },
+    "social": {
+      "siteUrl": "https://www.ifikra.com",
+      "ogTitle": { "en": "SIMW Platform", "ar": null, "fr": null, "es": null, "de": null },
+      "ogDescription": { "en": "A modern enterprise platform for managing operations, teams, and growth.", "ar": null, "fr": null, "es": null, "de": null },
+      "ogImage": null,
+      "socialLinks": { "x": "https://x.com/ifikra", "linkedin": "https://linkedin.com/company/ifikra" }
+    },
+    "pwa": {
+      "shortName": { "en": "", "ar": null, "fr": null, "es": null, "de": null },
+      "themeColor": "#0ea5e9",
+      "backgroundColor": "#ffffff"
+    }
+  }
+}

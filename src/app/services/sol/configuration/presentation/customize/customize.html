@@ -1,0 +1,75 @@
+<div class="card config-section config-section--wide">
+  <div class="config-section__header">
+    <div class="config-section__header-icon">
+      <i class="pi pi-sliders-h"></i>
+    </div>
+    <div>
+      <h2 class="config-section__title font-bold text-xl! truncate min-w-0">
+        Customize
+      </h2>
+      <p class="config-section__desc">
+        Fine-tune appearance, define personality tokens, and configure color
+        groups for users to pick from.
+      </p>
+    </div>
+  </div>
+
+  <!-- ══ LIVE PREVIEW TABS — outside the preview box ══════════════════════ -->
+  <div class="preview-selector preview-selector--standalone">
+    @for (sec of builderSections; track sec.key) {
+      <button
+        class="preview-selector__chip"
+        [class.preview-selector__chip--active]="activeBuilderSection() === sec.key"
+        (click)="activeBuilderSection.set(sec.key)"
+      >
+        <i [class]="sec.icon"></i>
+        <span>{{ sec.label }}</span>
+      </button>
+    }
+
+    <!-- Expand / collapse live preview -->
+    <button
+      class="preview-selector__chip preview-selector__chip--expand"
+      [class.preview-selector__chip--active]="previewExpanded()"
+      (click)="togglePreviewExpanded()"
+      [pTooltip]="previewExpanded() ? 'Show settings only' : 'Show expanded live preview'"
+      tooltipPosition="top"
+    >
+      <i class="pi" [class.pi-angle-double-left]="!previewExpanded()" [class.pi-angle-double-right]="previewExpanded()"></i>
+      <span>{{ previewExpanded() ? 'Settings Only' : 'Expand Preview' }}</span>
+    </button>
+  </div>
+
+  <div class="customize-layout" [class.customize-layout--expanded]="previewExpanded()">
+    <div class="customize-layout__settings config-card config-card--personality">
+      <app-personality-picker
+        [activeSection]="activeBuilderSection()"
+        [previewExpanded]="previewExpanded()"
+        (activeSectionChange)="activeBuilderSection.set($event)"
+      />
+    </div>
+
+    @if (previewExpanded()) {
+      <div class="customize-layout__preview">
+        <app-personality-picker
+          [activeSection]="activeBuilderSection()"
+          [previewExpanded]="previewExpanded()"
+          [fullPageOnly]="true"
+        />
+      </div>
+    }
+  </div>
+
+  <!-- ══ DEMO LAUNCHER ══════════════════════════════════════════════════════ -->
+  <div class="demo-launcher">
+    <div class="demo-launcher__info">
+      <i class="pi pi-desktop"></i>
+      <span>Preview your theme on the full platform demo</span>
+    </div>
+    <button class="demo-launcher__btn" (click)="openDemo()">
+      <i class="pi pi-external-link"></i>
+      Open Demo
+    </button>
+  </div>
+
+</div>

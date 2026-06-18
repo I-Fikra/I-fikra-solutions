@@ -1,0 +1,34 @@
+{
+  "success": 1,
+  "message": { "type": "string", "texts": ["OK"] },
+  "result": {
+    "paging": {
+      "page_title": "المستخدمون",
+      "page_subtitle": null,
+      "total_items": 8,
+      "start_item": 1,
+      "end_item": 8,
+      "items_per_page": 24,
+      "total_pages": 1,
+      "current_page": 1
+    },
+    "meta_data": [
+      { "secondary_code": "id",     "name": "الرقم",  "icon": null,              "order": 1, "type": "NUMBER", "is_public": -1, "enum": null,                              "lookup": null },
+      { "secondary_code": "name",   "name": "الاسم",  "icon": "pi pi-user",      "order": 2, "type": "STRING", "is_public": 1,  "enum": null,                              "lookup": null },
+      { "secondary_code": "email",  "name": "البريد", "icon": "pi pi-envelope",  "order": 3, "type": "STRING", "is_public": 1,  "enum": null,                              "lookup": null },
+      { "secondary_code": "phone",  "name": "الهاتف", "icon": "pi pi-phone",     "order": 4, "type": "STRING", "is_public": 1,  "enum": null,                              "lookup": null },
+      { "secondary_code": "role",   "name": "الدور",  "icon": "pi pi-id-card",   "order": 5, "type": "STRING", "is_public": 1,  "enum": ["مدير","مستخدم","مشرف"],         "lookup": null },
+      { "secondary_code": "status", "name": "الحالة", "icon": "pi pi-circle",    "order": 6, "type": "STRING", "is_public": 1,  "enum": ["مفعل","غير مفعل"],              "lookup": null }
+    ],
+    "items": [
+      { "id": "1", "name": "مستخدم النظام", "email": "admin@system.com",        "phone": "01557068541", "role": "مدير",   "status": "غير مفعل" },
+      { "id": "2", "name": "نورا أحمد",     "email": "nora.ahmed@example.com",  "phone": "01557068541", "role": "مستخدم", "status": "مفعل"     },
+      { "id": "3", "name": "محمد علي",      "email": "m.ali@example.com",       "phone": "01557068541", "role": "مستخدم", "status": "غير مفعل" },
+      { "id": "4", "name": "سارة حسن",      "email": "sara.hassan@example.com", "phone": "01557068541", "role": "مشرف",   "status": "مفعل"     },
+      { "id": "5", "name": "عمر خالد",      "email": "omar.k@example.com",      "phone": "01557068541", "role": "مستخدم", "status": "مفعل"     },
+      { "id": "6", "name": "فاطمة يوسف",    "email": "fatma.y@example.com",     "phone": "01557068541", "role": "مدير",   "status": "مفعل"     },
+      { "id": "7", "name": "يوسف عادل",     "email": "y.adel@example.com",      "phone": "01557068541", "role": "مستخدم", "status": "مفعل"     },
+      { "id": "8", "name": "منى سمير",      "email": "mona.samir@example.com",  "phone": "01557068541", "role": "مشرف",   "status": "مفعل"     }
+    ]
+  }
+}

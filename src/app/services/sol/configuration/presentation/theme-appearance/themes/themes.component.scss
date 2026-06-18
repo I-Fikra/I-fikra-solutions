@@ -1,0 +1,310 @@
+@use '../theme-appearance.shared' as *;
+
+.ta-theme-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.ta-theme-card {
+  border: 1.5px solid var(--surface-border);
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  background: var(--surface-card);
+  transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
+
+  &:hover {
+    border-color: var(--primary-color);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+  }
+
+  &--active {
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--primary-color) 20%, transparent);
+  }
+
+  &__preview {
+    height: 100px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+
+  &__palette {
+    display: flex;
+    height: 6px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
+
+  &__palette-dot {
+    flex: 1;
+  }
+
+  &__active-overlay {
+    position: absolute;
+    inset: 0;
+    background: color-mix(in srgb, var(--primary-color) 15%, transparent);
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    padding: 6px;
+  }
+
+  &__active-badge {
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--primary-color);
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.65rem;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  }
+
+  &__info {
+    padding: 0.875rem;
+  }
+
+  &__header-row {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    flex-wrap: wrap;
+    margin-bottom: 0.375rem;
+  }
+
+  &__name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-color);
+    flex: 1;
+  }
+
+  &__desc {
+    font-size: 0.77rem;
+    color: var(--text-color-secondary);
+    margin: 0 0 0.5rem;
+    line-height: 1.4;
+  }
+
+  &__meta {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  &__family-tag {
+    font-size: 0.68rem;
+    background: var(--surface-ground);
+    border: 1px solid var(--surface-border);
+    border-radius: 4px;
+    padding: 1px 5px;
+    color: var(--text-color-secondary);
+  }
+}
+
+.ta-theme-badge {
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 99px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+
+  &--dark {
+    background: #27272a;
+    color: #a1a1aa;
+  }
+
+  &--dm {
+    background: color-mix(in srgb, var(--primary-color) 12%, transparent);
+    color: var(--primary-color);
+  }
+}
+
+// ── Topbar mockup ─────────────────────────────────────────────────────────────
+.ta-tc-topbar {
+  height: 18px;
+  display: flex;
+  align-items: center;
+  padding: 0 5px;
+  gap: 3px;
+  flex-shrink: 0;
+
+  &__logo { width: 12px; height: 6px; border-radius: 2px; }
+  &__spacer { flex: 1; }
+  &__dot { width: 10px; height: 10px; border-radius: 50%; }
+}
+
+// ── Body mockup ───────────────────────────────────────────────────────────────
+.ta-tc-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+// ── Sidebar mockup ────────────────────────────────────────────────────────────
+.ta-tc-sidebar {
+  width: 28px;
+  flex-shrink: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 4px 3px;
+
+  &__item {
+    height: 9px;
+    border-radius: 2px;
+    display: flex;
+    align-items: center;
+    padding: 0 2px;
+  }
+  &__dot { width: 5px; height: 3px; border-radius: 1px; }
+}
+
+// ── Content mockup ────────────────────────────────────────────────────────────
+.ta-tc-content {
+  flex: 1;
+  padding: 3px;
+}
+
+.ta-tc-card {
+  border-radius: 3px;
+  padding: 4px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+
+  &__btn { height: 6px; width: 28%; border-radius: 2px; }
+  &__line { height: 3px; border-radius: 1px; }
+  &__line--short { width: 55%; }
+}
+
+// ── Selection summary ─────────────────────────────────────────────────────────
+.ta-selection-summary {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  background: color-mix(in srgb, var(--primary-color) 5%, var(--surface-card));
+  border: 1px solid color-mix(in srgb, var(--primary-color) 20%, var(--surface-border));
+  border-radius: 8px;
+
+  &__preview {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    flex-shrink: 0;
+  }
+
+  &__text {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.85rem;
+    flex-wrap: wrap;
+  }
+
+  &__label {
+    color: var(--text-color-secondary);
+  }
+
+  &__family {
+    color: var(--text-color-secondary);
+  }
+
+  &__dm {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    font-size: 0.75rem;
+    color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 10%, transparent);
+    padding: 2px 6px;
+    border-radius: 99px;
+
+    i { font-size: 0.65rem; }
+  }
+}
+
+// ── Custom card ───────────────────────────────────────────────────────────────
+.ta-theme-card--custom {
+  border-style: dashed;
+
+  &:hover {
+    border-style: solid;
+  }
+}
+
+.ta-theme-card__preview--custom {
+  background: var(--surface-ground);
+}
+
+.ta-custom-preview-bg {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(
+    135deg,
+    color-mix(in srgb, #0ea5e9 8%, var(--surface-ground)),
+    color-mix(in srgb, #7c3aed 8%, var(--surface-ground))
+  );
+}
+
+.ta-custom-preview-circles {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 5px;
+  padding: 0 12px 8px;
+}
+
+.ta-custom-circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  opacity: 0.7;
+  flex-shrink: 0;
+}
+
+.ta-custom-preview-icon {
+  position: relative;
+  z-index: 1;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: var(--primary-color);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  font-size: 1rem;
+  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary-color) 40%, transparent);
+  margin-bottom: 18px; // leave room for the circles below
+}
+
+.ta-theme-badge--custom {
+  background: color-mix(in srgb, var(--primary-color) 12%, transparent);
+  color: var(--primary-color);
+  font-size: 0.65rem;
+  padding: 2px 6px;
+  border-radius: 99px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}

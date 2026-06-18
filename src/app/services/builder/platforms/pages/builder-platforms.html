@@ -1,0 +1,97 @@
+<div class="builder-platforms">
+  <!-- ── Page Header ─────────────────────────────────────────────────── -->
+  <div class="builder-platforms__header">
+    <h2 class="builder-platforms__title">
+      <i class="pi pi-th-large"></i>
+      Platforms
+    </h2>
+    <p class="builder-platforms__subtitle">
+      Manage and switch between your generated platform projects.
+    </p>
+  </div>
+
+  <!-- ── Tree Table ─────────────────────────────────────────────────── -->
+  <div class="builder-tree">
+    <!-- Table Head -->
+    <div class="builder-tree__head">
+      <div class="builder-tree__col builder-tree__col--logo">Logo</div>
+      <div class="builder-tree__col builder-tree__col--name">Platform Name</div>
+      <div class="builder-tree__col builder-tree__col--id">ID</div>
+      <div class="builder-tree__col builder-tree__col--color">Color</div>
+      <div class="builder-tree__col builder-tree__col--status">Status</div>
+      <div class="builder-tree__col builder-tree__col--actions">Actions</div>
+    </div>
+
+    <!-- Rows -->
+    @for (row of rows(); track trackById($index, row)) {
+      <div
+        class="builder-tree__row"
+        [class.builder-tree__row--active]="row.isActive"
+      >
+        <!-- Logo -->
+        <div class="builder-tree__col builder-tree__col--logo">
+          <div class="platform-logo" [innerHTML]="row.safeLogo"></div>
+        </div>
+
+        <!-- Name -->
+        <div class="builder-tree__col builder-tree__col--name">
+          <span class="platform-name">{{ row.project.projectName }}</span>
+          <span class="platform-title">{{ row.project.websiteTitle }}</span>
+        </div>
+
+        <!-- ID -->
+        <div class="builder-tree__col builder-tree__col--id">
+          <code class="platform-id">{{ row.project.id }}</code>
+        </div>
+
+        <!-- Color swatch -->
+        <div class="builder-tree__col builder-tree__col--color">
+          <span
+            class="platform-color-swatch"
+            [style.background]="row.project.primaryColor"
+            [title]="row.project.primaryColor"
+          ></span>
+          <span class="platform-color-hex">{{ row.project.primaryColor }}</span>
+        </div>
+
+        <!-- Status -->
+        <div class="builder-tree__col builder-tree__col--status">
+          @if (row.isActive) {
+            <span class="platform-badge platform-badge--active">
+              <i class="pi pi-check-circle"></i> Active
+            </span>
+          } @else {
+            <span class="platform-badge platform-badge--idle">Idle</span>
+          }
+        </div>
+
+        <!-- Actions -->
+        <div class="builder-tree__col builder-tree__col--actions">
+          <button
+            class="platform-btn-apply"
+            [disabled]="row.isActive"
+            (click)="apply(row.project)"
+          >
+            <i class="pi pi-play"></i>
+            {{ row.isActive ? 'Active' : 'Apply' }}
+          </button>
+
+          <a
+            class="platform-btn-configure"
+            [routerLink]="['/sol/app-config']"
+            title="Configure"
+          >
+            <i class="pi pi-cog"></i>
+          </a>
+        </div>
+      </div>
+    }
+
+    @if (rows().length === 0) {
+      <div class="builder-tree__empty">
+        <i class="pi pi-inbox"></i>
+        <span>No platforms found.</span>
+      </div>
+    }
+  </div>
+</div>

@@ -1,0 +1,20 @@
+<div class="lp-focused">
+  <div class="lp-table"
+       [class.lp-table--striped]="config().striped"
+       [class.lp-table--bordered]="config().bordered"
+       [class.lp-table--minimal]="config().minimal"
+       [style.border-radius]="config().radius">
+    <div class="lp-table__head"
+         [style.background]="config().headerBg"
+         [style.color]="config().headerColor">
+      <span></span><span></span><span></span>
+    </div>
+    @for (row of rows; track row) {
+      <div class="lp-table__row"
+           [style.border-top]="config().rowSeparator"
+           [class.lp-table__row--col-sep]="config().colSeparator">
+        <span></span><span></span><span></span>
+      </div>
+    }
+  </div>
+</div>

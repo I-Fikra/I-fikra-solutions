@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8" />
+        <title>SIMW</title>
+        <base href="/" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+
+        <!--
+            ✅ FIX 1: preload the primeicons woff2 — this is the font Lighthouse
+            flagged as blocking 180ms of FCP. Without preload the browser discovers
+            it only after parsing the CSS, which is too late in the critical path.
+        -->
+        <link rel="preload" href="/assets/fonts/primeicons.woff2" as="font" type="font/woff2" crossorigin />
+
+        <!--
+            Cairo preload was already here — kept as-is.
+            It covers the Arabic body font used on most pages.
+        -->
+        <link rel="preload" href="/assets/fonts/Cairo-Regular2.woff2" as="font" type="font/woff2" crossorigin />
+    </head>
+
+    <body>
+        <app-root></app-root>
+    </body>
+</html>

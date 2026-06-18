@@ -1,0 +1,691 @@
+<!-- Custom Builder — no tabs, no Personalities panel -->
+
+<div class="custom-builder">
+
+@if (fullPageOnly) {
+
+  <!-- ══ FULL LIVE PREVIEW — real app page in iframe ══════════════════════ -->
+  <div class="full-demo-iframe-wrapper">
+    <iframe
+      #previewFrame
+      class="full-demo-iframe"
+      [src]="previewPageUrl"
+      title="Live Preview"
+      sandbox="allow-same-origin allow-scripts allow-forms allow-popups"
+    ></iframe>
+  </div>
+
+} @else {
+
+  <!-- ══ LIVE PREVIEW ═════════════════════════════════════════════════════ -->
+  @if (!previewExpanded) {
+  <div class="live-preview">
+    <p class="live-preview__label"><i class="pi pi-eye"></i> Live Preview</p>
+
+    <!-- Component selector chips — rendered by parent (customize.html) -->
+
+    <!-- Preview area — shows only the active component -->
+    <div class="lp-single">
+
+      <!-- ── SHAPE global: global strip is the preview ── -->
+      @if (activeBuilderSection() === 'shape') {
+        <div class="lp-shape-global-hint">
+          <i class="pi pi-info-circle"></i>
+          <span>Global shape affects all components — select a preset below to preview</span>
+        </div>
+      }
+
+      <!-- ── FONT / TYPOGRAPHY ── -->
+      @if (activeBuilderSection() === 'font') {
+        <div class="lp-typography-overview" [style.fontFamily]="previewFontFamily()">
+          <span class="lp-type-sample lp-type-sample--h1">Aa</span>
+          <div class="lp-type-scale">
+            <div class="lp-type-row"><span class="lp-type-row__tag">H1</span><span class="lp-type-row__sample lp-type-row__sample--h1">How vexingly quick</span></div>
+            <div class="lp-type-row"><span class="lp-type-row__tag">H2</span><span class="lp-type-row__sample lp-type-row__sample--h2">How vexingly quick daft</span></div>
+            <div class="lp-type-row"><span class="lp-type-row__tag">H3</span><span class="lp-type-row__sample lp-type-row__sample--h3">How vexingly quick daft zebras</span></div>
+            <div class="lp-type-row"><span class="lp-type-row__tag">P</span><span class="lp-type-row__sample lp-type-row__sample--p">How vexingly quick daft zebras jump over lazy dogs.</span></div>
+          </div>
+        </div>
+      }
+
+      <!-- ── TABLE ── -->
+      @if (activeBuilderSection() === 'table') {
+        <app-table-preview />
+      }
+
+      <!-- ── BUTTON ── -->
+      @if (activeBuilderSection() === 'button') {
+        <app-button-preview />
+      }
+
+      <!-- ── DIALOG ── -->
+      @if (activeBuilderSection() === 'dialog') {
+        <app-dialog-preview />
+      }
+
+      <!-- ── TOPBAR ── -->
+      @if (activeBuilderSection() === 'topbar') {
+        <app-topbar-preview />
+      }
+
+      <!-- ── SIDEBAR ── -->
+      @if (activeBuilderSection() === 'sidebar') {
+        <app-sidebar-preview />
+      }
+
+      <!-- ── LOGIN ── -->
+      @if (activeBuilderSection() === 'login') {
+        <app-login-preview />
+      }
+
+    </div><!-- /lp-single -->
+  </div><!-- /live-preview -->
+  }
+
+  <p-divider />
+
+  <!-- ══ BUILDER NAV + CONTROLS ════════════════════════════════════════════ -->
+
+  <!-- ── SHAPE SECTION ─────────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'shape') {
+    <div class="builder-section">
+      <div class="builder-section__title">
+        <i class="pi pi-star"></i> Global Shape Preset
+        <span class="builder-section__badge">Applied to all components</span>
+      </div>
+      <p class="builder-section__hint">Sets border-radius for buttons, cards, inputs, tables, and dialogs</p>
+
+      <div class="global-shape-strip">
+        @for (item of globalShapePreviewItems; track item.value) {
+          <div class="gss-item"
+               [class.gss-item--active]="themeStore.shape().globalShape === item.value"
+               (click)="patchCustom({ shape: item.value, buttonShape: item.value })">
+            <div class="gss-item__demos">
+              <div class="gss-item__btn"   [style.border-radius]="item.radius">Btn</div>
+              <div class="gss-item__card"  [style.border-radius]="item.radius"></div>
+              <div class="gss-item__input" [style.border-radius]="item.radius"></div>
+              <div class="gss-item__table" [style.border-radius]="item.radius">
+                <div class="gss-item__table-h"></div>
+                <div class="gss-item__table-r"></div>
+              </div>
+            </div>
+            <span class="gss-item__label">{{ item.label }}</span>
+          </div>
+        }
+      </div>
+    </div>
+  }
+
+  <!-- ── FONT / TYPOGRAPHY SECTION ────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'font') {
+    <div class="builder-section">
+      <div class="builder-section__title">
+        <i class="pi pi-font"></i> Typography
+        <span class="builder-section__badge">Applied across the app</span>
+      </div>
+      <p class="builder-section__hint">Choose a font per language/script — the primary font drives the overall look</p>
+    </div>
+
+    @for (entry of fontEntries; track $index; let i = $index) {
+      <div class="font-entry">
+        <div class="font-entry__top">
+          <span class="font-entry__role" [class.font-entry__role--primary]="i === 0">
+            <i class="pi" [class.pi-star-fill]="i === 0" [class.pi-star]="i > 0"></i>
+            {{ fontRoleLabel(i) }}
+          </span>
+          <div class="font-entry__lang">
+            <i class="pi pi-globe font-entry__lang-icon"></i>
+            <p-select
+              [options]="fontLangOptions"
+              [ngModel]="entry.lang"
+              (ngModelChange)="patchFontEntry(i, { lang: $event, font: fontOptionsFor($event)[0].value })"
+              styleClass="font-entry__lang-select"
+              placeholder="Language" />
+          </div>
+          @if (i > 0) {
+            <button class="font-entry__remove" (click)="removeFontEntry(i)" pTooltip="Remove font" tooltipPosition="top">
+              <i class="pi pi-trash"></i>
+            </button>
+          }
+        </div>
+        <div class="font-entry__body">
+          <p-select
+            [options]="fontOptionsFor(entry.lang)"
+            [ngModel]="entry.font"
+            (ngModelChange)="patchFontEntry(i, { font: $event })"
+            optionLabel="label" optionValue="value" styleClass="font-entry__picker" />
+          <div class="font-entry__preview" [style.font-family]="entry.font">
+            <span class="font-entry__preview-text">Aa Bb Cc — {{ entry.lang }}</span>
+          </div>
+        </div>
+      </div>
+    }
+
+    <button class="font-add-btn" (click)="addFontEntry()">
+      <i class="pi pi-plus"></i> Add font
+    </button>
+
+    <!-- ── Type Scale ─────────────────────────────────────────────── -->
+    <div class="typo-group">
+      <div class="typo-group__header">
+        <i class="pi pi-arrows-v"></i>
+        <span>Type Scale</span>
+      </div>
+      <div class="typo-grid">
+        <div class="typo-field">
+          <label class="typo-field__label">Font-size</label>
+          <div class="typo-input-wrap">
+            <input
+              type="number"
+              class="typo-input"
+              [value]="custom().typography.fontSizeBase | slice:0:-2"
+              min="10" max="24" step="1"
+              (change)="patchTypography({ fontSizeBase: $any($event.target).value + 'px' })"
+            />
+            <span class="typo-unit">px</span>
+          </div>
+        </div>
+
+        <div class="typo-field">
+          <label class="typo-field__label">Scale</label>
+          <select
+            class="typo-select"
+            [value]="custom().typography.scaleRatio"
+            (change)="patchTypography({ scaleRatio: $any($event.target).value })"
+          >
+            <option value="1.067">1.067 – Minor Second</option>
+            <option value="1.125">1.125 – Major Second</option>
+            <option value="1.200">1.200 – Minor Third</option>
+            <option value="1.250">1.250 – Major Third</option>
+            <option value="1.333">1.333 – Perfect Fourth</option>
+            <option value="1.414">1.414 – Augmented Fourth</option>
+            <option value="1.500">1.500 – Perfect Fifth</option>
+            <option value="1.618">1.618 – Golden Ratio</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Responsive ────────────────────────────────────────────── -->
+    <div class="typo-group">
+      <div class="typo-group__header">
+        <i class="pi pi-mobile"></i>
+        <span>Responsive</span>
+      </div>
+      <p class="typo-group__hint">Optional overrides applied below the given breakpoint</p>
+      <div class="typo-grid">
+        <div class="typo-field">
+          <label class="typo-field__label">Min-width</label>
+          <div class="typo-input-wrap">
+            <input
+              type="number"
+              class="typo-input"
+              [value]="custom().typography.responsiveMinWidth"
+              placeholder="—"
+              min="0" step="1"
+              (change)="patchTypography({ responsiveMinWidth: $any($event.target).value })"
+            />
+            <span class="typo-unit">px</span>
+          </div>
+        </div>
+
+        <div class="typo-field">
+          <label class="typo-field__label">Font-size</label>
+          <div class="typo-input-wrap">
+            <input
+              type="number"
+              class="typo-input"
+              [value]="custom().typography.responsiveFontSize"
+              placeholder="—"
+              min="10" max="24" step="1"
+              (change)="patchTypography({ responsiveFontSize: $any($event.target).value })"
+            />
+            <span class="typo-unit">px</span>
+          </div>
+        </div>
+
+        <div class="typo-field typo-field--wide">
+          <label class="typo-field__label">Scale</label>
+          <select
+            class="typo-select typo-select--full"
+            [value]="custom().typography.responsiveScale"
+            (change)="patchTypography({ responsiveScale: $any($event.target).value })"
+          >
+            <option value="inherit">inherit</option>
+            <option value="1.067">1.067 – Minor Second</option>
+            <option value="1.125">1.125 – Major Second</option>
+            <option value="1.200">1.200 – Minor Third</option>
+            <option value="1.250">1.250 – Major Third</option>
+            <option value="1.333">1.333 – Perfect Fourth</option>
+            <option value="1.414">1.414 – Augmented Fourth</option>
+            <option value="1.500">1.500 – Perfect Fifth</option>
+            <option value="1.618">1.618 – Golden Ratio</option>
+          </select>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── Body ──────────────────────────────────────────────────── -->
+    <div class="typo-group">
+      <div class="typo-group__header">
+        <i class="pi pi-align-left"></i>
+        <span>Body</span>
+      </div>
+      <div class="typo-grid">
+        <div class="typo-field">
+          <label class="typo-field__label">Weight</label>
+          <select
+            class="typo-select"
+            [value]="custom().typography.bodyWeight"
+            (change)="patchTypography({ bodyWeight: $any($event.target).value })"
+          >
+            <option value="100">100</option>
+            <option value="200">200</option>
+            <option value="300">300</option>
+            <option value="400">400</option>
+            <option value="500">500</option>
+            <option value="600">600</option>
+            <option value="700">700</option>
+            <option value="800">800</option>
+            <option value="900">900</option>
+          </select>
+        </div>
+
+        <div class="typo-field">
+          <label class="typo-field__label">Line-height</label>
+          <input
+            type="number"
+            class="typo-input typo-input--full"
+            [value]="custom().typography.bodyLineHeight"
+            min="1" max="3" step="0.05"
+            (change)="patchTypography({ bodyLineHeight: $any($event.target).value })"
+          />
+        </div>
+
+        <div class="typo-field">
+          <label class="typo-field__label">Letter-spacing</label>
+          <div class="typo-input-wrap">
+            <input
+              type="number"
+              class="typo-input"
+              [value]="custom().typography.bodyLetterSpacing | slice:0:-2"
+              min="-0.1" max="0.5" step="0.01"
+              (change)="patchTypography({ bodyLetterSpacing: $any($event.target).value + 'em' })"
+            />
+            <span class="typo-unit">em</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="typo-color-grid">
+        <div class="typo-field">
+          <label class="typo-field__label">Color</label>
+          <div class="typo-color-row">
+            <input
+              type="color"
+              class="typo-swatch"
+              [value]="custom().typography.bodyColor"
+              (input)="patchTypography({ bodyColor: $any($event.target).value })"
+            />
+            <input
+              type="text"
+              class="typo-input typo-input--hex"
+              [value]="custom().typography.bodyColor"
+              maxlength="7"
+              (change)="patchTypography({ bodyColor: $any($event.target).value })"
+            />
+          </div>
+        </div>
+
+        <div class="typo-field">
+          <label class="typo-field__label">Background</label>
+          <div class="typo-color-row">
+            <input
+              type="color"
+              class="typo-swatch"
+              [value]="custom().typography.bodyBackground"
+              (input)="patchTypography({ bodyBackground: $any($event.target).value })"
+            />
+            <input
+              type="text"
+              class="typo-input typo-input--hex"
+              [value]="custom().typography.bodyBackground"
+              maxlength="7"
+              (change)="patchTypography({ bodyBackground: $any($event.target).value })"
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  }
+
+  <!-- ── TABLE SECTION ─────────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'table') {
+    <div class="builder-section">
+      <div class="builder-section__title"><i class="pi pi-table"></i> Table</div>
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Table style</label>
+      <p-selectbutton [options]="tableOptions" [ngModel]="custom().tableStyle"
+        (ngModelChange)="patchCustom({ tableStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Row separator</label>
+      <p-selectbutton [options]="tableRowSepOptions"
+        [ngModel]="custom().componentDetails.tableRowSeparator"
+        (ngModelChange)="patchComponentDetails({ tableRowSeparator: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Header style</label>
+      <p-selectbutton [options]="tableHeaderStyleOptions"
+        [ngModel]="custom().componentDetails.tableHeaderStyle"
+        (ngModelChange)="patchComponentDetails({ tableHeaderStyle: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Column separators</span>
+      <p-toggleswitch
+        [ngModel]="custom().componentDetails.tableColumnSeparator"
+        (ngModelChange)="patchComponentDetails({ tableColumnSeparator: $event })" />
+    </div>
+  }
+
+  <!-- ── BUTTON SECTION ────────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'button') {
+    <div class="builder-section">
+      <div class="builder-section__title"><i class="pi pi-send"></i> Button</div>
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Button shape</label>
+      <p-selectbutton [options]="shapeOptions" [ngModel]="custom().buttonShape"
+        (ngModelChange)="patchCustom({ buttonShape: $event })" optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Default size</label>
+      <p-selectbutton [options]="btnSizeOptions"
+        [ngModel]="custom().componentDetails.buttonSize"
+        (ngModelChange)="patchComponentDetails({ buttonSize: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Shadow</label>
+      <p-selectbutton [options]="btnShadowOptions"
+        [ngModel]="custom().componentDetails.buttonShadow"
+        (ngModelChange)="patchComponentDetails({ buttonShadow: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Icon position</label>
+      <p-selectbutton [options]="btnIconPosOptions"
+        [ngModel]="custom().componentDetails.buttonIconPos"
+        (ngModelChange)="patchComponentDetails({ buttonIconPos: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+  }
+
+  <!-- ── DIALOG SECTION ────────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'dialog') {
+    <div class="builder-section">
+      <div class="builder-section__title"><i class="pi pi-window-maximize"></i> Dialog / Popup</div>
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Dialog style</label>
+      <p-selectbutton [options]="dialogOptions" [ngModel]="custom().dialogStyle"
+        (ngModelChange)="patchCustom({ dialogStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Header height</label>
+      <p-selectbutton [options]="dialogHeaderHOptions"
+        [ngModel]="custom().componentDetails.dialogHeaderHeight"
+        (ngModelChange)="patchComponentDetails({ dialogHeaderHeight: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Overlay opacity</label>
+      <p-selectbutton [options]="dialogOverlayOptions"
+        [ngModel]="custom().componentDetails.dialogOverlayOpacity"
+        (ngModelChange)="patchComponentDetails({ dialogOverlayOpacity: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    <div class="builder-row">
+      <label class="builder-label">Animation</label>
+      <p-selectbutton [options]="dialogAnimOptions"
+        [ngModel]="custom().componentDetails.dialogAnimation"
+        (ngModelChange)="patchComponentDetails({ dialogAnimation: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+  }
+
+  <!-- ── TOPBAR SECTION ────────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'topbar') {
+
+    <!-- Height -->
+    <div class="builder-section">
+      <div class="builder-section__title"><i class="pi pi-bars"></i> Topbar</div>
+    </div>
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Height</label>
+      <p-selectbutton [options]="topbarHeightOptions"
+        [ngModel]="custom().componentDetails.topbarHeight"
+        (ngModelChange)="patchComponentDetails({ topbarHeight: $event })"
+        optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+    </div>
+
+    <!-- Border / shadow -->
+    <div class="builder-row">
+      <label class="builder-label">Border / shadow</label>
+      <p-selectbutton [options]="topbarBorderOptions"
+        [ngModel]="custom().componentDetails.topbarBorderStyle"
+        (ngModelChange)="patchComponentDetails({ topbarBorderStyle: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+
+    <!-- Accented background -->
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Accented background</span>
+      <p-toggleswitch [ngModel]="custom().topbarAccented"
+        (ngModelChange)="patchCustom({ topbarAccented: $event })" />
+    </div>
+
+    <!-- Logo style -->
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Logo style</label>
+      <p-selectbutton [options]="topbarLogoOptions"
+        [ngModel]="custom().componentDetails.topbarLogoStyle"
+        (ngModelChange)="patchComponentDetails({ topbarLogoStyle: $event })"
+        optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+    </div>
+
+    <!-- ── Action icons visibility ───────────────────────────────── -->
+    <div class="builder-section" style="margin-top:0.75rem">
+      <div class="builder-section__title"><i class="pi pi-eye"></i> Action Icons</div>
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Language switcher</span>
+      <p-toggleswitch [ngModel]="custom().componentDetails.topbarShowLang"
+        (ngModelChange)="patchComponentDetails({ topbarShowLang: $event })" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Theme switcher</span>
+      <p-toggleswitch [ngModel]="custom().componentDetails.topbarShowTheme"
+        (ngModelChange)="patchComponentDetails({ topbarShowTheme: $event })" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Config button</span>
+      <p-toggleswitch [ngModel]="custom().componentDetails.topbarShowConfig"
+        (ngModelChange)="patchComponentDetails({ topbarShowConfig: $event })" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Search button</span>
+      <p-toggleswitch [ngModel]="custom().componentDetails.topbarShowSearch"
+        (ngModelChange)="patchComponentDetails({ topbarShowSearch: $event })" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Notifications button</span>
+      <p-toggleswitch [ngModel]="custom().componentDetails.topbarShowNotif"
+        (ngModelChange)="patchComponentDetails({ topbarShowNotif: $event })" />
+    </div>
+
+    <!-- ── Nav Links ─────────────────────────────────────────────── -->
+    <div class="builder-section" style="margin-top:0.75rem">
+      <div class="builder-section__title"><i class="pi pi-link"></i> Nav Links</div>
+    </div>
+
+    <!-- Nav align -->
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Alignment</label>
+      <p-selectbutton [options]="topbarNavAlignOptions"
+        [ngModel]="custom().componentDetails.topbarNavAlign"
+        (ngModelChange)="patchComponentDetails({ topbarNavAlign: $event })"
+        optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+    </div>
+
+    <!-- Nav style -->
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Link style</label>
+      <p-selectbutton [options]="topbarNavStyleOptions"
+        [ngModel]="custom().componentDetails.topbarNavStyle"
+        (ngModelChange)="patchComponentDetails({ topbarNavStyle: $event })"
+        optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+    </div>
+
+    <!-- Existing nav items list -->
+    @if (custom().componentDetails.topbarNavItems.length > 0) {
+      <div style="display:flex; flex-direction:column; gap:0.35rem; margin-bottom:0.5rem">
+        @for (item of custom().componentDetails.topbarNavItems; track item.id; let idx = $index) {
+          <div class="nav-item-row">
+            <p-toggleswitch [ngModel]="item.enabled"
+              (ngModelChange)="toggleNavItem(item.id, $event)" />
+            <i [class]="item.icon" style="font-size:0.9rem; width:1rem; text-align:center;"></i>
+            <span style="flex:1; font-size:0.82rem; overflow:hidden; text-overflow:ellipsis; white-space:nowrap">
+              {{ item.label }}
+            </span>
+            <span style="font-size:0.75rem; color:var(--text-secondary-color); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; max-width:80px">
+              {{ item.route }}
+            </span>
+            <button class="nav-item-row__btn" (click)="moveNavItem(item.id, -1)" [disabled]="idx === 0" title="Move up">
+              <i class="pi pi-angle-up"></i>
+            </button>
+            <button class="nav-item-row__btn" (click)="moveNavItem(item.id, 1)" [disabled]="idx === custom().componentDetails.topbarNavItems.length - 1" title="Move down">
+              <i class="pi pi-angle-down"></i>
+            </button>
+            <button class="nav-item-row__btn nav-item-row__btn--danger" (click)="removeNavItem(item.id)" title="Remove">
+              <i class="pi pi-trash"></i>
+            </button>
+          </div>
+        }
+      </div>
+    }
+
+    <!-- Add nav item form -->
+    <div class="nav-add-form">
+      <div class="nav-add-form__row">
+        <input pInputText type="text" placeholder="Label"
+          class="nav-add-form__input"
+          [ngModel]="navDraft().label"
+          (ngModelChange)="patchNavDraft({ label: $event })" />
+        <input pInputText type="text" placeholder="Route  e.g. /dashboard"
+          class="nav-add-form__input"
+          [ngModel]="navDraft().route"
+          (ngModelChange)="patchNavDraft({ route: $event })" />
+      </div>
+      <div class="nav-add-form__row">
+        <input pInputText type="text" placeholder="Icon  e.g. pi pi-home"
+          class="nav-add-form__input"
+          [ngModel]="navDraft().icon"
+          (ngModelChange)="patchNavDraft({ icon: $event })" />
+        <button class="nav-add-form__btn" (click)="addNavItem()">
+          <i class="pi pi-plus"></i> Add
+        </button>
+      </div>
+    </div>
+  }
+
+  <!-- ── SIDEBAR SECTION ───────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'sidebar') {
+    <div class="builder-section">
+      <div class="builder-section__title"><i class="pi pi-list"></i> Sidebar</div>
+    </div>
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Width</label>
+      <p-selectbutton [options]="sidebarWidthOptions"
+        [ngModel]="custom().componentDetails.sidebarWidth"
+        (ngModelChange)="patchComponentDetails({ sidebarWidth: $event })"
+        optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Icons only mode</span>
+      <p-toggleswitch
+        [ngModel]="custom().componentDetails.sidebarIconsOnly"
+        (ngModelChange)="patchComponentDetails({ sidebarIconsOnly: $event })" />
+    </div>
+    <div class="builder-row builder-row--toggle">
+      <span class="builder-label">Dark sidebar</span>
+      <p-toggleswitch [ngModel]="custom().sidebarDark"
+        (ngModelChange)="patchCustom({ sidebarDark: $event })" />
+    </div>
+  }
+
+  <!-- ── LOGIN SECTION ─────────────────────────────────────────────────── -->
+  @if (activeBuilderSection() === 'login') {
+    <div class="builder-section">
+      <div class="builder-section__title"><i class="pi pi-sign-in"></i> Login Page</div>
+    </div>
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Layout</label>
+      <p-selectbutton [options]="loginLayoutOptions"
+        [ngModel]="custom().componentDetails.loginLayout"
+        (ngModelChange)="patchComponentDetails({ loginLayout: $event })"
+        optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+    </div>
+    <div class="builder-row builder-row--vertical">
+      <label class="builder-label">Background</label>
+      <p-selectbutton [options]="loginBgOptions"
+        [ngModel]="custom().componentDetails.loginBg"
+        (ngModelChange)="patchComponentDetails({ loginBg: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+    @if (custom().componentDetails.loginBg === 'solid') {
+      <div class="builder-row builder-row--color">
+        <label class="builder-label">Background color</label>
+        <div class="inline-color-row">
+          <input type="color" class="color-zone__picker" [value]="custom().componentDetails.loginBgColor" (input)="patchComponentDetails({ loginBgColor: $any($event.target).value })" />
+          <input type="text" class="color-zone__hex" [ngModel]="custom().componentDetails.loginBgColor" (ngModelChange)="patchComponentDetails({ loginBgColor: $event })" />
+        </div>
+      </div>
+    }
+    @if (custom().componentDetails.loginBg === 'gradient') {
+      <div class="builder-row builder-row--color">
+        <label class="builder-label">Gradient from</label>
+        <div class="inline-color-row">
+          <input type="color" class="color-zone__picker" [value]="custom().componentDetails.loginBgGradientFrom" (input)="patchComponentDetails({ loginBgGradientFrom: $any($event.target).value })" />
+          <input type="text" class="color-zone__hex" [ngModel]="custom().componentDetails.loginBgGradientFrom" (ngModelChange)="patchComponentDetails({ loginBgGradientFrom: $event })" />
+        </div>
+      </div>
+      <div class="builder-row builder-row--color">
+        <label class="builder-label">Gradient to</label>
+        <div class="inline-color-row">
+          <input type="color" class="color-zone__picker" [value]="custom().componentDetails.loginBgGradientTo" (input)="patchComponentDetails({ loginBgGradientTo: $any($event.target).value })" />
+          <input type="text" class="color-zone__hex" [ngModel]="custom().componentDetails.loginBgGradientTo" (ngModelChange)="patchComponentDetails({ loginBgGradientTo: $event })" />
+        </div>
+      </div>
+    }
+    <div class="builder-row">
+      <label class="builder-label">Logo position</label>
+      <p-selectbutton [options]="loginLogoPosOptions"
+        [ngModel]="custom().componentDetails.loginLogoPos"
+        (ngModelChange)="patchComponentDetails({ loginLogoPos: $event })"
+        optionLabel="label" optionValue="value" size="small" />
+    </div>
+  }
+
+  <p-divider />
+
+  <div class="picker-footer">
+    <p-button label="Apply custom theme" icon="pi pi-palette" (onClick)="applyCustom()" />
+  </div>
+
+}
+
+</div>

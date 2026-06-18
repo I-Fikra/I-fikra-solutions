@@ -1,0 +1,408 @@
+<p-toast />
+
+<div class="card flex flex-col gap-7">
+
+  <!-- ── Page header ─────────────────────────────────────────────────────── -->
+  <div class="flex items-start gap-4 mb-1">
+    <div class="w-11 h-11 rounded-[10px] bg-[color-mix(in_srgb,var(--primary-color)_12%,transparent)] flex items-center justify-center shrink-0">
+      <i class="pi pi-image text-[1.2rem] text-(--primary-color)"></i>
+    </div>
+    <div>
+      <h2 class="text-(--text-color) m-0 mb-1 font-bold text-xl! truncate min-w-0">
+        {{ 'configuration.branding.title' | transloco }}
+      </h2>
+      <p class="text-(--text-color-secondary) m-0 leading-[1.5]">
+        {{ 'configuration.branding.description' | transloco }}
+      </p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECTION: Branding & Identity                                          -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col">
+      <h3 class="text-(--text-color) m-0 font-semibold text-base">
+        {{ 'configuration.branding.identity.section.title' | transloco }}
+      </h3>
+      <span class="text-sm text-(--text-color-secondary)">
+        {{ 'configuration.branding.identity.section.hint' | transloco }}
+      </span>
+    </div>
+
+    <!-- Application Name -->
+    <div class="bg-(--surface-card) border border-(--surface-border) rounded-(--border-radius,8px) px-6 py-5 flex flex-col gap-3.5">
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+          <i class="pi pi-pen-to-square me-[0.3rem]"></i>
+          {{ 'configuration.branding.identity.appName.label' | transloco }}
+          <span class="text-(--red-500) ms-0.5">*</span>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          @for (lang of activeLanguages(); track lang.code) {
+          <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+            <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+            <input
+              pInputText
+              type="text"
+              [dir]="lang.rtl ? 'rtl' : 'ltr'"
+              [placeholder]="'configuration.branding.identity.appName.placeholder' | transloco"
+              [ngModel]="brandingForm().appName[lang.code] ?? ''"
+              (ngModelChange)="patchLocalized('appName', lang.code, $event)"
+              [class.ng-invalid]="submitted() && !(brandingForm().appName[lang.code] ?? '').trim()"
+            />
+          </div>
+          }
+        </div>
+        @if (submitted() && activeLanguages().some(lang => !(brandingForm().appName[lang.code] ?? '').trim())) {
+          <small class="text-(--red-500) text-xs">{{ 'configuration.branding.identity.appName.error' | transloco }}</small>
+        }
+      </div>
+    </div>
+
+    <!-- Visual: Logo + Favicon -->
+    <div class="bg-(--surface-card) border border-(--surface-border) rounded-(--border-radius,8px) px-6 py-5 flex flex-col gap-3.5">
+      <div class="flex flex-col">
+        <h3 class="text-(--text-color) m-0!">{{ 'configuration.branding.identity.logo.title' | transloco }} <span class="text-(--red-500) ms-0.5">*</span></h3>
+        <span class="text-(--text-color-secondary) text-sm">{{ 'configuration.branding.identity.logo.hint' | transloco }}</span>
+      </div>
+
+      <div class="flex gap-4 items-start">
+        <!-- Logo drop zone -->
+        <div class="flex-1">
+          @if (logoPreview()) {
+          <div class="group relative inline-flex rounded-(--border-radius) overflow-hidden border border-(--surface-border) min-h-[120px] items-center justify-center bg-(--surface-ground) w-full">
+            <img [src]="logoPreview()!" [alt]="'configuration.branding.identity.logo.alt' | transloco" class="max-h-[120px] max-w-full object-contain p-3" />
+            <div class="absolute top-2 end-2 flex gap-1 opacity-0 group-hover:opacity-100 transition">
+              <button class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) text-(--text-color) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover)" (click)="triggerLogoUpload()" [pTooltip]="'configuration.branding.identity.logo.replaceTip' | transloco" tooltipPosition="top">
+                <i class="pi pi-refresh"></i>
+              </button>
+              <button class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover) text-(--red-500)" (click)="removeLogo()" [pTooltip]="'configuration.branding.identity.logo.removeTip' | transloco" tooltipPosition="top">
+                <i class="pi pi-times"></i>
+              </button>
+            </div>
+          </div>
+          } @else {
+          <label class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-(--surface-border) rounded-(--border-radius) py-8 px-4 cursor-pointer transition min-h-[120px] text-center hover:border-(--primary-color) hover:bg-[color-mix(in_srgb,var(--primary-color)_4%,transparent)]" for="logo-upload">
+            <div class="w-12 h-12 rounded-full bg-[color-mix(in_srgb,var(--primary-color)_10%,transparent)] flex items-center justify-center">
+              <i class="pi pi-cloud-upload text-[1.25rem] text-(--primary-color)"></i>
+            </div>
+            <span class="text-[0.875rem] font-semibold text-(--text-color)">{{ 'configuration.branding.identity.logo.uploadTitle' | transloco }}</span>
+            <span class="text-xs text-(--text-color-secondary)">{{ 'configuration.branding.identity.logo.uploadHint' | transloco }}</span>
+            <input id="logo-upload" type="file" accept="image/*" (change)="onLogoFileChange($event)" hidden />
+          </label>
+          }
+          <input id="logo-upload-trigger" type="file" accept="image/*" (change)="onLogoFileChange($event)" hidden />
+          @if (submitted() && !logoPreview()) {
+            <small class="text-(--red-500) text-xs">{{ 'configuration.branding.identity.logo.error' | transloco }}</small>
+          }
+        </div>
+
+        <!-- Favicon -->
+        <div class="flex-[0_0_160px]">
+          <div class="font-semibold text-(--text-color-secondary) mb-2 text-[0.8125rem]">
+            {{ 'configuration.branding.identity.favicon.label' | transloco }}
+            <span class="text-(--red-500) ms-0.5">*</span>
+          </div>
+          @if (faviconPreview()) {
+          <div class="flex items-center gap-2 p-2 border border-(--surface-border) rounded-(--border-radius)">
+            <img [src]="faviconPreview()!" [alt]="'configuration.branding.identity.favicon.alt' | transloco" class="w-8 h-8 object-contain" />
+            <button class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover) text-(--red-500)" (click)="removeFavicon()">
+              <i class="pi pi-times"></i>
+            </button>
+          </div>
+          } @else {
+          <label class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-(--surface-border) rounded-(--border-radius) p-4 cursor-pointer transition min-h-[90px] text-center hover:border-(--primary-color) hover:bg-[color-mix(in_srgb,var(--primary-color)_4%,transparent)]" for="favicon-upload">
+            <i class="pi pi-image text-[1.5rem] text-(--text-color-secondary)"></i>
+            <span class="text-[0.8125rem] text-(--text-color) font-medium">{{ 'configuration.branding.identity.favicon.label' | transloco }}</span>
+            <small class="text-[0.72rem] text-(--text-color-secondary)">{{ 'configuration.branding.identity.favicon.hint' | transloco }}</small>
+            <input id="favicon-upload" type="file" accept="image/*,.ico" (change)="onFaviconFileChange($event)" hidden />
+          </label>
+          }
+          <input id="favicon-upload-trigger" type="file" accept="image/*,.ico" (change)="onFaviconFileChange($event)" hidden />
+          @if (submitted() && !faviconPreview()) {
+            <small class="text-(--red-500) text-xs">{{ 'configuration.branding.identity.favicon.error' | transloco }}</small>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECTION: SEO Metadata                                                 -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col">
+      <h3 class="text-(--text-color) m-0 font-semibold text-base">
+        <i class="pi pi-search me-2"></i>{{ 'configuration.branding.metadata.seo.title' | transloco }}
+      </h3>
+      <span class="text-sm text-(--text-color-secondary)">{{ 'configuration.branding.metadata.seo.hint' | transloco }}</span>
+    </div>
+
+    <div class="bg-(--surface-card) border border-(--surface-border) rounded-(--border-radius,8px) px-6 py-5 flex flex-col gap-4">
+
+      <!-- Meta Description per language -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+          {{ 'configuration.branding.metadata.metaDescription.label' | transloco }}
+          <span class="text-(--red-500) ms-0.5">*</span>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          @for (lang of activeLanguages(); track lang.code) {
+          <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+            <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+            <div class="relative flex flex-col">
+              <textarea
+                class="w-full border border-(--surface-border) rounded-(--border-radius) py-2 px-3 text-[0.875rem] font-[inherit] text-(--text-color) bg-(--surface-0) resize-y transition focus:outline-none focus:border-(--primary-color) focus:shadow-[0_0_0_2px_color-mix(in_srgb,var(--primary-color)_20%,transparent)]"
+                [dir]="lang.rtl ? 'rtl' : 'ltr'"
+                [placeholder]="'configuration.branding.metadata.metaDescription.placeholder' | transloco"
+                rows="3"
+                [ngModel]="brandingForm().metaDescription[lang.code] ?? ''"
+                (ngModelChange)="patchLocalized('metaDescription', lang.code, $event)"
+                [class.ng-invalid]="submitted() && !(brandingForm().metaDescription[lang.code] ?? '').trim()"
+              ></textarea>
+              <span class="text-[0.7rem] text-(--text-color-secondary) text-end mt-1"
+                [class]="(brandingForm().metaDescription[lang.code] ?? '').length > 160 ? 'text-(--orange-500) font-semibold' : ''">
+                {{ (brandingForm().metaDescription[lang.code] ?? '').length }}/160
+              </span>
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Keywords per language -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+          {{ 'configuration.branding.metadata.keywords.label' | transloco }}
+        </label>
+        <div class="flex flex-wrap gap-3">
+          @for (lang of activeLanguages(); track lang.code) {
+          <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+            <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+            <input
+              pInputText
+              type="text"
+              [dir]="lang.rtl ? 'rtl' : 'ltr'"
+              [placeholder]="'configuration.branding.metadata.keywords.placeholder' | transloco"
+              [ngModel]="brandingForm().metaKeywords[lang.code] ?? ''"
+              (ngModelChange)="patchLocalized('metaKeywords', lang.code, $event)"
+            />
+          </div>
+          }
+        </div>
+        <small class="text-xs text-(--text-color-secondary) opacity-70">
+          {{ (activeLanguages().length > 1 ? 'configuration.branding.metadata.keywords.hintMulti' : 'configuration.branding.metadata.keywords.hint') | transloco }}
+        </small>
+      </div>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECTION: Legal & Support                                              -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col">
+      <h3 class="text-(--text-color) m-0 font-semibold text-base">
+        <i class="pi pi-shield me-2"></i>{{ 'configuration.branding.metadata.legal.title' | transloco }}
+      </h3>
+    </div>
+
+    <div class="bg-(--surface-card) border border-(--surface-border) rounded-(--border-radius,8px) px-6 py-5 flex flex-col gap-4">
+
+      <!-- Copyright text per language -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+          {{ 'configuration.branding.metadata.copyright.label' | transloco }}
+        </label>
+        <div class="flex flex-wrap gap-3">
+          @for (lang of activeLanguages(); track lang.code) {
+          <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+            <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+            <input
+              pInputText
+              type="text"
+              [dir]="lang.rtl ? 'rtl' : 'ltr'"
+              [placeholder]="'configuration.branding.metadata.copyright.placeholder' | transloco"
+              [ngModel]="brandingForm().copyrightText[lang.code] ?? ''"
+              (ngModelChange)="patchLocalized('copyrightText', lang.code, $event)"
+            />
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Support email + URL -->
+      <div class="grid grid-cols-2 gap-4">
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">{{ 'configuration.branding.metadata.supportEmail.label' | transloco }}</label>
+          <input
+            pInputText
+            type="email"
+            [placeholder]="'configuration.branding.metadata.supportEmail.placeholder' | transloco"
+            [ngModel]="brandingForm().supportEmail"
+            (ngModelChange)="onPatch({ supportEmail: $event })"
+          />
+        </div>
+        <div class="flex flex-col gap-1.5">
+          <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">{{ 'configuration.branding.metadata.supportUrl.label' | transloco }}</label>
+          <input
+            pInputText
+            type="url"
+            [placeholder]="'configuration.branding.metadata.supportUrl.placeholder' | transloco"
+            [ngModel]="brandingForm().supportUrl"
+            (ngModelChange)="onPatch({ supportUrl: $event })"
+          />
+        </div>
+      </div>
+
+      <!-- Privacy Policy documents per language -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+          {{ 'configuration.branding.metadata.privacyPolicy.label' | transloco }}
+          <span class="text-[0.68rem] bg-(--surface-ground) text-(--text-color-secondary) border border-(--surface-border) rounded-full py-px px-1.5 ms-1.5 font-normal">Optional</span>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          @for (lang of activeLanguages(); track lang.code) {
+          <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+            <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+            @if (brandingForm().privacyPolicyDocument[lang.code]; as doc) {
+            <div class="flex items-center gap-2 py-2.5 px-3 border border-(--surface-border) rounded-(--border-radius) bg-(--surface-ground)">
+              <i class="pi pi-file text-[1.25rem] text-(--primary-color)"></i>
+              <a [href]="doc" target="_blank" rel="noopener" class="flex-1 text-[0.8125rem] font-medium text-(--primary-color) no-underline overflow-hidden text-ellipsis whitespace-nowrap hover:underline">{{ 'configuration.branding.metadata.privacyPolicy.viewDoc' | transloco }}</a>
+              <div class="flex gap-1">
+                <label class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) text-(--text-color) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover)" [attr.for]="'privacy-doc-' + lang.code" [pTooltip]="'configuration.branding.metadata.privacyPolicy.replaceTip' | transloco" tooltipPosition="top">
+                  <i class="pi pi-refresh"></i>
+                </label>
+                <button type="button" class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover) text-(--red-500)" (click)="removeDocument('privacyPolicyDocument', lang.code)">
+                  <i class="pi pi-times"></i>
+                </button>
+              </div>
+            </div>
+            } @else {
+            <label class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-(--surface-border) rounded-(--border-radius) p-4 cursor-pointer transition min-h-[90px] text-center hover:border-(--primary-color) hover:bg-[color-mix(in_srgb,var(--primary-color)_4%,transparent)]" [attr.for]="'privacy-doc-' + lang.code">
+              <i class="pi pi-cloud-upload text-[1.5rem] text-(--text-color-secondary)"></i>
+              <span class="text-[0.8125rem] text-(--text-color) font-medium">{{ 'configuration.branding.metadata.privacyPolicy.uploadTitle' | transloco }}</span>
+              <small class="text-[0.72rem] text-(--text-color-secondary)">{{ 'configuration.branding.metadata.privacyPolicy.uploadHint' | transloco }}</small>
+            </label>
+            }
+            <input [id]="'privacy-doc-' + lang.code" type="file" accept=".html,.htm,.txt,.docx" (change)="onDocumentFileChange('privacyPolicyDocument', lang.code, $event)" hidden />
+          </div>
+          }
+        </div>
+        <small class="text-xs text-(--text-color-secondary) opacity-70">{{ 'configuration.branding.metadata.privacyPolicy.acceptedHint' | transloco }}</small>
+      </div>
+
+      <!-- Terms documents per language -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+          {{ 'configuration.branding.metadata.terms.label' | transloco }}
+          <span class="text-[0.68rem] bg-(--surface-ground) text-(--text-color-secondary) border border-(--surface-border) rounded-full py-px px-1.5 ms-1.5 font-normal">Optional</span>
+        </label>
+        <div class="flex flex-wrap gap-3">
+          @for (lang of activeLanguages(); track lang.code) {
+          <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+            <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+            @if (brandingForm().termsDocument[lang.code]; as doc) {
+            <div class="flex items-center gap-2 py-2.5 px-3 border border-(--surface-border) rounded-(--border-radius) bg-(--surface-ground)">
+              <i class="pi pi-file text-[1.25rem] text-(--primary-color)"></i>
+              <a [href]="doc" target="_blank" rel="noopener" class="flex-1 text-[0.8125rem] font-medium text-(--primary-color) no-underline overflow-hidden text-ellipsis whitespace-nowrap hover:underline">{{ 'configuration.branding.metadata.terms.viewDoc' | transloco }}</a>
+              <div class="flex gap-1">
+                <label class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) text-(--text-color) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover)" [attr.for]="'terms-doc-' + lang.code" [pTooltip]="'configuration.branding.metadata.terms.replaceTip' | transloco" tooltipPosition="top">
+                  <i class="pi pi-refresh"></i>
+                </label>
+                <button type="button" class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover) text-(--red-500)" (click)="removeDocument('termsDocument', lang.code)">
+                  <i class="pi pi-times"></i>
+                </button>
+              </div>
+            </div>
+            } @else {
+            <label class="flex flex-col items-center justify-center gap-2 border-2 border-dashed border-(--surface-border) rounded-(--border-radius) p-4 cursor-pointer transition min-h-[90px] text-center hover:border-(--primary-color) hover:bg-[color-mix(in_srgb,var(--primary-color)_4%,transparent)]" [attr.for]="'terms-doc-' + lang.code">
+              <i class="pi pi-cloud-upload text-[1.5rem] text-(--text-color-secondary)"></i>
+              <span class="text-[0.8125rem] text-(--text-color) font-medium">{{ 'configuration.branding.metadata.terms.uploadTitle' | transloco }}</span>
+              <small class="text-[0.72rem] text-(--text-color-secondary)">{{ 'configuration.branding.metadata.terms.uploadHint' | transloco }}</small>
+            </label>
+            }
+            <input [id]="'terms-doc-' + lang.code" type="file" accept=".html,.htm,.txt,.docx" (change)="onDocumentFileChange('termsDocument', lang.code, $event)" hidden />
+          </div>
+          }
+        </div>
+        <small class="text-xs text-(--text-color-secondary) opacity-70">{{ 'configuration.branding.metadata.terms.acceptedHint' | transloco }}</small>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <!-- SECTION: Social Media Links                                           -->
+  <!-- ══════════════════════════════════════════════════════════════════════ -->
+  <div class="flex flex-col gap-4">
+    <div class="flex flex-col">
+      <h3 class="text-(--text-color) m-0 font-semibold text-base">
+        <i class="pi pi-share-alt me-2"></i>{{ 'configuration.branding.social.title' | transloco }}
+      </h3>
+      <span class="text-sm text-(--text-color-secondary)">{{ 'configuration.branding.social.hint' | transloco }}</span>
+    </div>
+
+    <div class="bg-(--surface-card) border border-(--surface-border) rounded-(--border-radius,8px) px-6 py-5 flex flex-col gap-4">
+
+      <!-- OG Image -->
+      <div class="flex flex-col gap-1.5">
+        <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">{{ 'configuration.branding.social.ogImage.label' | transloco }}</label>
+        @if (ogImagePreview()) {
+        <div class="flex items-start gap-4">
+          <img [src]="ogImagePreview()!" [alt]="'configuration.branding.social.ogImage.alt' | transloco" class="w-full max-h-[180px] object-cover rounded-(--border-radius) border border-(--surface-border)" />
+          <button class="w-7 h-7 rounded-[6px] border border-(--surface-border) bg-(--surface-card) flex items-center justify-center cursor-pointer text-xs transition hover:bg-(--surface-hover) text-(--red-500)" (click)="removeOgImage()">
+            <i class="pi pi-times"></i>
+          </button>
+        </div>
+        } @else {
+        <label class="flex flex-row items-center gap-3 border-2 border-dashed border-(--surface-border) rounded-(--border-radius) py-4 px-6 cursor-pointer transition min-h-[72px] justify-start hover:border-(--primary-color) hover:bg-[color-mix(in_srgb,var(--primary-color)_4%,transparent)]" for="og-image-upload">
+          <i class="pi pi-image text-[1.5rem] text-(--text-color-secondary)"></i>
+          <span class="text-[0.8125rem] text-(--text-color) font-medium">{{ 'configuration.branding.social.ogImage.uploadTitle' | transloco }}</span>
+          <small class="text-[0.72rem] text-(--text-color-secondary)">{{ 'configuration.branding.social.ogImage.uploadHint' | transloco }}</small>
+          <input id="og-image-upload" type="file" accept="image/*" (change)="onOgImageChange($event)" hidden />
+        </label>
+        }
+      </div>
+
+      <!-- Social links -->
+      <div class="flex flex-col gap-2">
+        @for (platform of socialPlatforms; track platform.key) {
+        <div class="flex items-center gap-2.5">
+          <span class="shrink-0 w-7 h-7 rounded-[6px] bg-[color-mix(in_srgb,var(--primary-color)_10%,transparent)] flex items-center justify-center">
+            <i class="pi text-[0.875rem] text-(--primary-color)" [class]="platform.icon"></i>
+          </span>
+          <span class="shrink-0 w-[100px] text-[0.8125rem] font-medium text-(--text-color)">{{ platform.label }}</span>
+          <input
+            pInputText
+            type="url"
+            class="flex-1"
+            [placeholder]="platform.placeholder"
+            [ngModel]="linkFor(platform.key)"
+            (ngModelChange)="patchSocialLink(platform.key, $event)"
+          />
+        </div>
+        }
+      </div>
+      <small class="text-xs text-(--text-color-secondary) opacity-70">{{ 'configuration.branding.social.socialLinks.hint' | transloco }}</small>
+    </div>
+  </div>
+
+  <!-- ── Actions bar ──────────────────────────────────────────────────────── -->
+  <div class="flex gap-3 justify-end pt-1 border-t border-(--surface-border)">
+    <p-button
+      label="Live Review"
+      icon="pi pi-eye"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="openLiveReview()"
+    />
+    <p-button
+      label="Save Settings"
+      icon="pi pi-check"
+      (onClick)="saveBranding()"
+    />
+  </div>
+
+</div>

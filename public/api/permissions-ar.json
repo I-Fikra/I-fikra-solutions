@@ -1,0 +1,1649 @@
+{
+  "success": 1,
+  "messages": null,
+  "result": {
+    "modules": [
+      {
+        "name": "وحدة المستخدمين",
+        "entities": [
+          {
+            "key": "entity_10",
+            "code": "ENT_10",
+            "name": "إدارة المستخدمين",
+            "category": "إدارة المستخدمين",
+            "status": "Active",
+            "statusLabel": "مفعل",
+            "assignedRolesCount": 5,
+            "permissions": [
+              {
+                "key": "perm_100",
+                "code": "PERM_100",
+                "name": "عرض المستخدمين",
+                "category": "إدارة المستخدمين",
+                "action": "VIEW",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 5,
+                "fieldPermissions": [
+                  {
+                    "key": "users.name.view",
+                    "code": "FP_1001",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 5
+                  },
+                  {
+                    "key": "users.email.view",
+                    "code": "FP_1002",
+                    "name": "البريد الإلكتروني",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "users.phone.view",
+                    "code": "FP_1003",
+                    "name": "الهاتف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "users.role.view",
+                    "code": "FP_1004",
+                    "name": "الدور",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 5
+                  },
+                  {
+                    "key": "users.status.view",
+                    "code": "FP_1005",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 5
+                  },
+                  {
+                    "key": "users.created_at.view",
+                    "code": "FP_1006",
+                    "name": "تاريخ الإنشاء",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "users.updated_at.view",
+                    "code": "FP_1007",
+                    "name": "تاريخ التعديل",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              },
+              {
+                "key": "perm_101",
+                "code": "PERM_101",
+                "name": "إضافة مستخدم",
+                "category": "إدارة المستخدمين",
+                "action": "ADD",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 2,
+                "fieldPermissions": [
+                  {
+                    "key": "users.name.add",
+                    "code": "FP_1101",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "users.email.add",
+                    "code": "FP_1102",
+                    "name": "البريد الإلكتروني",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "users.phone.add",
+                    "code": "FP_1103",
+                    "name": "الهاتف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "users.role.add",
+                    "code": "FP_1104",
+                    "name": "الدور",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "users.status.add",
+                    "code": "FP_1105",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              },
+              {
+                "key": "perm_102",
+                "code": "PERM_102",
+                "name": "تعديل مستخدم",
+                "category": "إدارة المستخدمين",
+                "action": "EDIT",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 4,
+                "fieldPermissions": [
+                  {
+                    "key": "users.name.edit",
+                    "code": "FP_1201",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "users.email.edit",
+                    "code": "FP_1202",
+                    "name": "البريد الإلكتروني",
+                    "status": "Pending",
+                    "statusLabel": "معلق",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "users.phone.edit",
+                    "code": "FP_1203",
+                    "name": "الهاتف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "users.role.edit",
+                    "code": "FP_1204",
+                    "name": "الدور",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  },
+                  {
+                    "key": "users.status.edit",
+                    "code": "FP_1205",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  }
+                ]
+              },
+              {
+                "key": "perm_103",
+                "code": "PERM_103",
+                "name": "حذف مستخدم",
+                "category": "إدارة المستخدمين",
+                "action": "DELETE",
+                "status": "Inactive",
+                "statusLabel": "غير مفعل",
+                "assignedRolesCount": 1,
+                "fieldPermissions": [
+                  {
+                    "key": "users.name.delete",
+                    "code": "FP_1301",
+                    "name": "الاسم",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "وحدة الأدوار",
+        "entities": [
+          {
+            "key": "entity_20",
+            "code": "ENT_20",
+            "name": "إدارة الأدوار",
+            "category": "إدارة الهوية",
+            "status": "Active",
+            "statusLabel": "مفعل",
+            "assignedRolesCount": 5,
+            "permissions": [
+              {
+                "key": "perm_200",
+                "code": "PERM_200",
+                "name": "عرض الأدوار",
+                "category": "إدارة الهوية",
+                "action": "VIEW",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 5,
+                "fieldPermissions": [
+                  {
+                    "key": "roles.role_name.view",
+                    "code": "FP_2001",
+                    "name": "اسم الدور",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 5
+                  },
+                  {
+                    "key": "roles.role_category.view",
+                    "code": "FP_2002",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 5
+                  },
+                  {
+                    "key": "roles.role_community.view",
+                    "code": "FP_2003",
+                    "name": "المجتمع",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "roles.role_user_count.view",
+                    "code": "FP_2004",
+                    "name": "عدد المستخدمين",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "roles.role_perm_count.view",
+                    "code": "FP_2005",
+                    "name": "عدد الصلاحيات",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "roles.role_status.view",
+                    "code": "FP_2006",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 5
+                  },
+                  {
+                    "key": "roles.role_updated_at.view",
+                    "code": "FP_2007",
+                    "name": "تاريخ التعديل",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              },
+              {
+                "key": "perm_201",
+                "code": "PERM_201",
+                "name": "إضافة دور",
+                "category": "إدارة الهوية",
+                "action": "ADD",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 2,
+                "fieldPermissions": [
+                  {
+                    "key": "roles.role_name.add",
+                    "code": "FP_2101",
+                    "name": "اسم الدور",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "roles.role_category.add",
+                    "code": "FP_2102",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "roles.role_community.add",
+                    "code": "FP_2103",
+                    "name": "المجتمع",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  }
+                ]
+              },
+              {
+                "key": "perm_202",
+                "code": "PERM_202",
+                "name": "تعديل دور",
+                "category": "إدارة الهوية",
+                "action": "EDIT",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 3,
+                "fieldPermissions": [
+                  {
+                    "key": "roles.role_name.edit",
+                    "code": "FP_2201",
+                    "name": "اسم الدور",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "roles.role_category.edit",
+                    "code": "FP_2202",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "roles.role_community.edit",
+                    "code": "FP_2203",
+                    "name": "المجتمع",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              },
+              {
+                "key": "perm_203",
+                "code": "PERM_203",
+                "name": "تعيين صلاحيات للدور",
+                "category": "إدارة الهوية",
+                "action": "ASSIGN",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 2,
+                "fieldPermissions": [
+                  {
+                    "key": "roles.permissions.assign",
+                    "code": "FP_2301",
+                    "name": "الصلاحيات",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "وحدة السفن",
+        "entities": [
+          {
+            "key": "entity_30",
+            "code": "ENT_30",
+            "name": "إدارة السفن",
+            "category": "النقل البحري",
+            "status": "Active",
+            "statusLabel": "مفعل",
+            "assignedRolesCount": 4,
+            "permissions": [
+              {
+                "key": "perm_300",
+                "code": "PERM_300",
+                "name": "عرض السفن",
+                "category": "النقل البحري",
+                "action": "VIEW",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 4,
+                "fieldPermissions": [
+                  {
+                    "key": "vessels.vessel_name.view",
+                    "code": "FP_3001",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "vessels.vessel_imo.view",
+                    "code": "FP_3002",
+                    "name": "IMO",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "vessels.vessel_call_sign.view",
+                    "code": "FP_3003",
+                    "name": "نداء السفينة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "vessels.vessel_category.view",
+                    "code": "FP_3004",
+                    "name": "التصنيف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "vessels.vessel_type.view",
+                    "code": "FP_3005",
+                    "name": "النوع",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "vessels.vessel_country.view",
+                    "code": "FP_3006",
+                    "name": "كود الدولة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "vessels.vessel_agency_code.view",
+                    "code": "FP_3007",
+                    "name": "كود التوكيل الملاحي",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_agency_name.view",
+                    "code": "FP_3008",
+                    "name": "اسم التوكيل الملاحي",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_status.view",
+                    "code": "FP_3009",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "vessels.vessel_updated_at.view",
+                    "code": "FP_3010",
+                    "name": "تاريخ التعديل",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              },
+              {
+                "key": "perm_301",
+                "code": "PERM_301",
+                "name": "إضافة سفينة",
+                "category": "النقل البحري",
+                "action": "ADD",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 2,
+                "fieldPermissions": [
+                  {
+                    "key": "vessels.vessel_name.add",
+                    "code": "FP_3101",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_imo.add",
+                    "code": "FP_3102",
+                    "name": "IMO",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_call_sign.add",
+                    "code": "FP_3103",
+                    "name": "نداء السفينة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_type.add",
+                    "code": "FP_3104",
+                    "name": "النوع",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_country.add",
+                    "code": "FP_3105",
+                    "name": "كود الدولة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  }
+                ]
+              },
+              {
+                "key": "perm_302",
+                "code": "PERM_302",
+                "name": "تعديل سفينة",
+                "category": "النقل البحري",
+                "action": "EDIT",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 2,
+                "fieldPermissions": [
+                  {
+                    "key": "vessels.vessel_name.edit",
+                    "code": "FP_3201",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_call_sign.edit",
+                    "code": "FP_3202",
+                    "name": "نداء السفينة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "vessels.vessel_agency_code.edit",
+                    "code": "FP_3203",
+                    "name": "كود التوكيل الملاحي",
+                    "status": "Pending",
+                    "statusLabel": "معلق",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "vessels.vessel_agency_name.edit",
+                    "code": "FP_3204",
+                    "name": "اسم التوكيل الملاحي",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              },
+              {
+                "key": "perm_303",
+                "code": "PERM_303",
+                "name": "حذف سفينة",
+                "category": "النقل البحري",
+                "action": "DELETE",
+                "status": "Inactive",
+                "statusLabel": "غير مفعل",
+                "assignedRolesCount": 1,
+                "fieldPermissions": [
+                  {
+                    "key": "vessels.vessel_name.delete",
+                    "code": "FP_3301",
+                    "name": "الاسم",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "وحدة المحادثات",
+        "entities": [
+          {
+            "key": "entity_40",
+            "code": "ENT_40",
+            "name": "إدارة المحادثات",
+            "category": "العمليات",
+            "status": "Active",
+            "statusLabel": "مفعل",
+            "assignedRolesCount": 4,
+            "permissions": [
+              {
+                "key": "perm_400",
+                "code": "PERM_400",
+                "name": "عرض المحادثات",
+                "category": "العمليات",
+                "action": "VIEW",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 4,
+                "fieldPermissions": [
+                  {
+                    "key": "conversations.code.view",
+                    "code": "FP_4001",
+                    "name": "الكود",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "conversations.process_name.view",
+                    "code": "FP_4002",
+                    "name": "العملية",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "conversations.category_name.view",
+                    "code": "FP_4003",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "conversations.stage_name.view",
+                    "code": "FP_4004",
+                    "name": "المرحلة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "conversations.port_name.view",
+                    "code": "FP_4005",
+                    "name": "الميناء",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "conversations.status_name.view",
+                    "code": "FP_4006",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 4
+                  },
+                  {
+                    "key": "conversations.started_at.view",
+                    "code": "FP_4007",
+                    "name": "تاريخ البدء",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "conversations.closed_at.view",
+                    "code": "FP_4008",
+                    "name": "تاريخ الإغلاق",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  },
+                  {
+                    "key": "conversations.created_by.view",
+                    "code": "FP_4009",
+                    "name": "أنشئ بواسطة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  }
+                ]
+              },
+              {
+                "key": "perm_401",
+                "code": "PERM_401",
+                "name": "إنشاء محادثة",
+                "category": "العمليات",
+                "action": "ADD",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 3,
+                "fieldPermissions": [
+                  {
+                    "key": "conversations.process_name.add",
+                    "code": "FP_4101",
+                    "name": "العملية",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "conversations.category_name.add",
+                    "code": "FP_4102",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "conversations.port_name.add",
+                    "code": "FP_4103",
+                    "name": "الميناء",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  }
+                ]
+              },
+              {
+                "key": "perm_402",
+                "code": "PERM_402",
+                "name": "إغلاق محادثة",
+                "category": "العمليات",
+                "action": "CLOSE",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 2,
+                "fieldPermissions": [
+                  {
+                    "key": "conversations.closed_at.close",
+                    "code": "FP_4201",
+                    "name": "تاريخ الإغلاق",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "وحدة المجتمعات",
+        "entities": [
+          {
+            "key": "entity_50",
+            "code": "ENT_50",
+            "name": "إدارة المجتمعات",
+            "category": "الهوية التنظيمية",
+            "status": "Active",
+            "statusLabel": "مفعل",
+            "assignedRolesCount": 3,
+            "permissions": [
+              {
+                "key": "perm_500",
+                "code": "PERM_500",
+                "name": "عرض المجتمعات",
+                "category": "الهوية التنظيمية",
+                "action": "VIEW",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 3,
+                "fieldPermissions": [
+                  {
+                    "key": "communities.code.view",
+                    "code": "FP_5001",
+                    "name": "الكود",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "communities.name.view",
+                    "code": "FP_5002",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "communities.description.view",
+                    "code": "FP_5003",
+                    "name": "الوصف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "communities.category_name.view",
+                    "code": "FP_5004",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "communities.domain_name.view",
+                    "code": "FP_5005",
+                    "name": "المجال",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "communities.status_name.view",
+                    "code": "FP_5006",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "communities.media_icon.view",
+                    "code": "FP_5007",
+                    "name": "الأيقونة",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  },
+                  {
+                    "key": "communities.created_at.view",
+                    "code": "FP_5008",
+                    "name": "تاريخ الإنشاء",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              },
+              {
+                "key": "perm_501",
+                "code": "PERM_501",
+                "name": "إضافة مجتمع",
+                "category": "الهوية التنظيمية",
+                "action": "ADD",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 1,
+                "fieldPermissions": [
+                  {
+                    "key": "communities.code.add",
+                    "code": "FP_5101",
+                    "name": "الكود",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "communities.name.add",
+                    "code": "FP_5102",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "communities.category_name.add",
+                    "code": "FP_5103",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "communities.description.add",
+                    "code": "FP_5104",
+                    "name": "الوصف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              },
+              {
+                "key": "perm_502",
+                "code": "PERM_502",
+                "name": "تعديل مجتمع",
+                "category": "الهوية التنظيمية",
+                "action": "EDIT",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 1,
+                "fieldPermissions": [
+                  {
+                    "key": "communities.name.edit",
+                    "code": "FP_5201",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "communities.description.edit",
+                    "code": "FP_5202",
+                    "name": "الوصف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "communities.category_name.edit",
+                    "code": "FP_5203",
+                    "name": "الفئة",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "وحدة المنظمات",
+        "entities": [
+          {
+            "key": "entity_60",
+            "code": "ENT_60",
+            "name": "إدارة المنظمات",
+            "category": "الهوية التنظيمية",
+            "status": "Active",
+            "statusLabel": "مفعل",
+            "assignedRolesCount": 3,
+            "permissions": [
+              {
+                "key": "perm_600",
+                "code": "PERM_600",
+                "name": "عرض المنظمات",
+                "category": "الهوية التنظيمية",
+                "action": "VIEW",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 3,
+                "fieldPermissions": [
+                  {
+                    "key": "organizations.code.view",
+                    "code": "FP_6001",
+                    "name": "الكود",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "organizations.name.view",
+                    "code": "FP_6002",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "organizations.description.view",
+                    "code": "FP_6003",
+                    "name": "الوصف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 2
+                  },
+                  {
+                    "key": "organizations.category_name.view",
+                    "code": "FP_6004",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "organizations.community_name.view",
+                    "code": "FP_6005",
+                    "name": "المجتمع",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "organizations.status_name.view",
+                    "code": "FP_6006",
+                    "name": "الحالة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 3
+                  },
+                  {
+                    "key": "organizations.secondary_code.view",
+                    "code": "FP_6007",
+                    "name": "الكود الثانوي",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  },
+                  {
+                    "key": "organizations.created_at.view",
+                    "code": "FP_6008",
+                    "name": "تاريخ الإنشاء",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              },
+              {
+                "key": "perm_601",
+                "code": "PERM_601",
+                "name": "إضافة منظمة",
+                "category": "الهوية التنظيمية",
+                "action": "ADD",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 1,
+                "fieldPermissions": [
+                  {
+                    "key": "organizations.code.add",
+                    "code": "FP_6101",
+                    "name": "الكود",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "organizations.name.add",
+                    "code": "FP_6102",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "organizations.category_name.add",
+                    "code": "FP_6103",
+                    "name": "الفئة",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "organizations.community_name.add",
+                    "code": "FP_6104",
+                    "name": "المجتمع",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  }
+                ]
+              },
+              {
+                "key": "perm_602",
+                "code": "PERM_602",
+                "name": "تعديل منظمة",
+                "category": "الهوية التنظيمية",
+                "action": "EDIT",
+                "status": "Active",
+                "statusLabel": "مفعل",
+                "assignedRolesCount": 1,
+                "fieldPermissions": [
+                  {
+                    "key": "organizations.name.edit",
+                    "code": "FP_6201",
+                    "name": "الاسم",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "organizations.description.edit",
+                    "code": "FP_6202",
+                    "name": "الوصف",
+                    "status": "Active",
+                    "statusLabel": "مفعل",
+                    "assignedRolesCount": 1
+                  },
+                  {
+                    "key": "organizations.community_name.edit",
+                    "code": "FP_6203",
+                    "name": "المجتمع",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              },
+              {
+                "key": "perm_603",
+                "code": "PERM_603",
+                "name": "حذف منظمة",
+                "category": "الهوية التنظيمية",
+                "action": "DELETE",
+                "status": "Inactive",
+                "statusLabel": "غير مفعل",
+                "assignedRolesCount": 0,
+                "fieldPermissions": [
+                  {
+                    "key": "organizations.name.delete",
+                    "code": "FP_6301",
+                    "name": "الاسم",
+                    "status": "Inactive",
+                    "statusLabel": "غير مفعل",
+                    "assignedRolesCount": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "roles": [
+      {
+        "id": "role_admin",
+        "name": "Admin",
+        "type": "admin"
+      },
+      {
+        "id": "role_manager",
+        "name": "Manager",
+        "type": "management"
+      },
+      {
+        "id": "role_editor",
+        "name": "Editor",
+        "type": "content"
+      },
+      {
+        "id": "role_viewer",
+        "name": "Viewer",
+        "type": "readonly"
+      },
+      {
+        "id": "role_auditor",
+        "name": "Auditor",
+        "type": "audit"
+      },
+      {
+        "id": "role_support",
+        "name": "Support",
+        "type": "support"
+      }
+    ],
+    "roleAssignments": [
+      {
+        "permissionKey": "users.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.create",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "users.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "users.export",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "roles.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_auditor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "roles.create",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "roles.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "roles.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "roles.assign",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "products.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "products.add",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "products.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "products.delete",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "products.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "categories.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer"
+        ]
+      },
+      {
+        "permissionKey": "categories.create",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "categories.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "categories.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "permissions.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "permissions.edit",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "permissions.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "settings.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "settings.update",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "settings.reset",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "logs.view",
+        "roleIds": [
+          "role_admin",
+          "role_auditor",
+          "role_manager",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "logs.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "logs.purge",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "invoices.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "invoices.create",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "invoices.edit",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "invoices.delete",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "payments.process",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "payments.refund",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "reports.sales.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor",
+          "role_viewer"
+        ]
+      },
+      {
+        "permissionKey": "reports.sales.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "reports.analytics.view",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "reports.analytics.export",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "users.view.name",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.email",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.phone",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.role",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.status",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "users.view.createdAt",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "users.view.lastLogin",
+        "roleIds": [
+          "role_admin",
+          "role_manager"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.name",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_auditor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.type",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.permissions",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "roles.view.createdAt",
+        "roleIds": [
+          "role_admin",
+          "role_auditor"
+        ]
+      },
+      {
+        "permissionKey": "products.view.name",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "products.view.price",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor"
+        ]
+      },
+      {
+        "permissionKey": "products.view.costPrice",
+        "roleIds": [
+          "role_admin"
+        ]
+      },
+      {
+        "permissionKey": "products.view.stock",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer"
+        ]
+      },
+      {
+        "permissionKey": "products.view.category",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      },
+      {
+        "permissionKey": "products.view.description",
+        "roleIds": [
+          "role_admin",
+          "role_manager",
+          "role_editor",
+          "role_viewer",
+          "role_support"
+        ]
+      }
+    ],
+    "translations": {
+      "pageTitle": "الصلاحيات",
+      "search": "بحث عن صلاحية...",
+      "filterModule": "الوحدة",
+      "filterEntityStatus": "حالة الكيان",
+      "filterPermStatus": "حالة الصلاحية",
+      "filterPermission": "الصلاحية",
+      "tableView": "عرض جدولي",
+      "cardsView": "عرض بطاقات",
+      "entityName": "اسم الكيان",
+      "permissionName": "اسم الصلاحية",
+      "fieldName": "اسم الحقل",
+      "category": "الفئة",
+      "status": "الحالة",
+      "actionType": "نوع الإجراء",
+      "assignedRoles": "الأدوار المعيّنة",
+      "bulkEdit": "تعديل مجمّع",
+      "fieldPermissions": "صلاحيات الحقول",
+      "noPermissions": "لا توجد صلاحيات.",
+      "editRoles": "تعديل الأدوار",
+      "manage": "إدارة الأدوار",
+      "assignRolesToPermission": "اختر الأدوار لتعيينها لهذه الصلاحية.",
+      "assignRolesToEntity": "اختر الأدوار لتعيينها لجميع صلاحيات هذا الكيان.",
+      "entityNote": "ستُطبَّق التغييرات على جميع صلاحيات هذا الكيان.",
+      "assignedRolesLabel": "الأدوار المعيّنة",
+      "partialNote": "بعض الصلاحيات لها تعيينات أدوار مختلفة.",
+      "selectAll": "تحديد الكل",
+      "permissionsCount": "صلاحية",
+      "statusLabels": {
+        "Active": "مفعّل",
+        "Inactive": "غير مفعّل",
+        "Pending": "معلّق"
+      },
+      "messages": {
+        "saved": "تم الحفظ",
+        "entityRolesUpdated": "تم تحديث تعيينات أدوار الكيان.",
+        "rolesUpdatedFor": "تم تحديث الأدوار لـ {name}.",
+        "rolesUpdatedCount": "تم تحديث {count} صلاحية.",
+        "done": "تم",
+        "exported": "تم التصدير",
+        "rowsExported": "تم تصدير {count} صف.",
+        "noData": "لا توجد بيانات",
+        "nothingToExport": "لا يوجد شيء للتصدير.",
+        "noSelection": "لا يوجد تحديد",
+        "selectFirst": "حدد صلاحية واحدة على الأقل أولاً."
+      }
+    }
+  }
+}
