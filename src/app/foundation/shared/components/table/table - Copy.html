@@ -1,0 +1,641 @@
+<!-- eslint-disable @angular-eslint/template/prefer-control-flow -->
+<p-toast />
+<p-confirmdialog styleClass="app-dialog-md" />
+
+@if (showToolbar) {
+<app-shared-toolbar
+  [title]="title"
+  [hasFilters]="toolbarHasFilters"
+  [showAdd]="toolbarShowAdd"
+  [showBuiltInSearch]="toolbarShowBuiltInSearch"
+  [showClearButton]="toolbarShowClearButton"
+  [searchValue]="searchValue"
+  [searchPlaceholder]="'actions.search' | transloco"
+  [showLayoutToggle]="showLayoutToggle"
+  [activeLayout]="layout()"
+  (searchChanged)="onSearchChanged($event)"
+  (clearSearch)="onClearSearch()"
+  (addClicked)="openNew()"
+  (onExport)="onExport.emit()"
+  (onExportPdf)="onExportPdf.emit()"
+  (onImport)="onImport.emit()"
+  (onDownloadTemplate)="onDownloadTemplate.emit()"
+  (layoutChange)="setLayout($event)"
+>
+  <ng-container toolbar-filters>
+    @for (f of toolbarFilters; track f.field) {
+    <app-filter
+      [label]="f.label"
+      [options]="f.options"
+      [(ngModel)]="toolbarFilterValues[f.field]"
+      (ngModelChange)="onToolbarFilterChange()"
+    />
+    }
+  </ng-container>
+</app-shared-toolbar>
+}
+
+<!--
+    sortMode="single"  ← REQUIRED for sortSingle() to work correctly.
+    Do NOT switch to "multiple" — the sort system is single-sort by design.
+-->
+@if (layout() === 'list') {
+<p-table
+  #dt
+  [value]="items()"
+  [columns]="exportColumns()"
+  [rows]="rows"
+  [paginator]="true"
+  [globalFilterFields]="globalFilterFields()"
+  [tableStyle]="{ 'min-width': '75rem' }"
+  [selection]="selectedItems"
+  (selectionChange)="onSelectionChange($event)"
+  [rowHover]="true"
+  [dataKey]="dataKey"
+  [currentPageReportTemplate]="pageReportTemplate()"
+  [showCurrentPageReport]="true"
+  [rowsPerPageOptions]="[10, 20, 30]"
+  [loading]="loading"
+  sortMode="single"
+  [sortField]="activeSortField"
+  [sortOrder]="activeSortOrder"
+  [filterDelay]="0"
+>
+  <ng-template #header>
+    <tr>
+      <th style="width: 3rem">
+        <p-tableHeaderCheckbox />
+      </th>
+      <!--
+                    ✅ PERF — @for + track col.field
+                    بيعمل re-render بس على الـ columns اللي اتغيرت
+                -->
+      @for (col of exportColumns(); track col.field) {
+      <th
+        [style.minWidth]="col.minWidth || '10rem'"
+        [style.width]="col.width"
+        [class.col-sorted]="isColumnSorted(col)"
+        (click)="canShowHeaderActions(col) && openHeaderPopover($any($event), col)"
+        [style.cursor]="canShowHeaderActions(col) ? 'pointer' : 'default'"
+      >
+        <div class="table-header-cell">
+          <span class="table-header-title">{{ col.header }}</span>
+          <div class="table-header-actions">
+            @if (getSortIcon(col)) {
+            <i
+              [class]="'pi ' + getSortIcon(col) + ' table-sort-indicator'"
+              [pTooltip]="activeSortOrder === 1
+                                            ? ('shared.table.sortAscending' | transloco)
+                                            : ('shared.table.sortDescending' | transloco)"
+              tooltipPosition="top"
+            ></i>
+            } @if (canShowHeaderActions(col)) {
+            <p-button
+              icon="pi pi-ellipsis-v"
+              severity="contrast"
+              [text]="true"
+              size="small"
+              styleClass="table-header-menu-btn"
+              (click)="$event.stopPropagation(); openHeaderPopover($any($event), col)"
+              [ariaLabel]="'Open ' + col.header + ' actions'"
+            />
+            }
+          </div>
+        </div>
+      </th>
+      } @if (showActions) {
+      <th style="width: 4rem"></th>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template #body let-item let-columns="columns">
+    <tr>
+      <td>
+        <p-tableCheckbox [value]="item" />
+      </td>
+      <!--
+                    ✅ PERF — @for + track col.field في الـ body
+                    + @switch بدل ngSwitch — أوضح وأسرع مع الـ new control flow
+                -->
+      @for (col of exportColumns(); track col.field) {
+      <td>
+        @switch (col.type) { @case ('status') {
+        <p-tag
+          [value]="item[col.field] | capitalize"
+          [severity]="item[col.field] | severity"
+        />
+        } @case ('rating') {
+        <p-rating [(ngModel)]="item[col.field]" [readonly]="true" />
+        } @case ('currency') {
+        <span>{{ item[col.field] | currency: 'USD' }}</span>
+        } @case ('date') {
+        <span class="table-cell-stack">
+          <span class="row-primary"
+            >{{ (item[col.field] && item[col.field] !== '—') ? (item[col.field]
+            | date: 'MM/dd/yyyy') : '—' }}</span
+          >
+          <span class="row-secondary"
+            >{{ (item[col.field] && item[col.field] !== '—') ? (item[col.field]
+            | date: 'hh:mm:ss a') : '' }}</span
+          >
+        </span>
+        } @case ('boolean') {
+        <span>
+          <i
+            class="pi"
+            [class.pi-check-circle]="item[col.field]"
+            [class.pi-times-circle]="!item[col.field]"
+          ></i>
+          {{ item[col.field] ? 'Yes' : 'No' }}
+        </span>
+        } @default {
+        <span class="table-cell-stack">
+          <span class="row-primary">
+            @if (col.icon) {
+            <i [class]="col.icon"></i>
+            } {{ item[col.field] }}
+          </span>
+          @if (col.subField) {
+          <span class="row-secondary">{{ item[col.subField] }}</span>
+          }
+        </span>
+        } }
+      </td>
+      }
+
+      <!-- ─── Actions column ──────────────────────────────────────── -->
+      @if (showActions) {
+      <td class="text-center">
+        @if (rowActions) {
+        <p-button
+          icon="pi pi-ellipsis-v"
+          severity="secondary"
+          [outlined]="true"
+          size="small"
+          (click)="openRowMenu($event, item)"
+          ariaLabel="Row actions"
+        />
+        } @else {
+        <div class="row-actions">
+          <!--
+                                    ✅ PERF — @for + track action.key
+                                -->
+          @for (action of customActions; track action.key) {
+          <p-button
+            [icon]="action.icon"
+            [severity]="action.severity || 'secondary'"
+            [rounded]="true"
+            [outlined]="true"
+            size="small"
+            [pTooltip]="action.tooltip || ''"
+            tooltipPosition="top"
+            (click)="onCustomAction(action.key, item)"
+          />
+          } @if (showView) {
+          <p-button
+            icon="pi pi-eye"
+            severity="secondary"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="viewItem(item)"
+          />
+          }
+
+          <p-button
+            icon="pi pi-pencil"
+            severity="secondary"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="editItem(item)"
+          />
+
+          <p-button
+            icon="pi pi-trash"
+            severity="danger"
+            [rounded]="true"
+            [outlined]="true"
+            (click)="confirmDelete(item)"
+          />
+        </div>
+        }
+      </td>
+      }
+    </tr>
+  </ng-template>
+
+  <ng-template #emptymessage>
+    <tr>
+      <td [attr.colspan]="exportColumns().length + 2" class="text-center">
+        {{ 'shared.table.noItemsFound' | transloco:{ title: title } }}
+      </td>
+    </tr>
+  </ng-template>
+</p-table>
+}
+
+<!-- ─── Grid / Cards view ──────────────────────────────────────────────────
+     Shown only when showLayoutToggle=true, a cardTemplate is projected,
+     and the user has switched to grid layout.                              -->
+@if (layout() === 'grid' && showLayoutToggle) {
+<p-dataview
+  [value]="filteredItems()"
+  [layout]="'grid'"
+  [paginator]="true"
+  [rows]="rows"
+  [rowsPerPageOptions]="[rows, rows * 2, rows * 3]"
+  class="bg-transparent! shadow-none!"
+>
+  <ng-template #grid let-gridItems>
+    <div
+      class="gap-5"
+      [style.display]="'grid'"
+      [style.grid-template-columns]="'repeat(auto-fill, minmax(' + cardMinWidth + ', 1fr))'"
+    >
+      @for (item of gridItems; track item.id) {
+      <div>
+        @if (cardTemplate) {
+        <ng-container
+          *ngTemplateOutlet="cardTemplate; context: { $implicit: item }"
+        />
+        } @else {
+        <!-- ── Default dynamic card ──────────────────────────── -->
+        <app-card (cardClick)="viewItem(item)">
+          <ng-template #cardHeader>
+            <div
+              class="dynamic-card__title-wrap flex items-center justify-between"
+            >
+              <span class="dynamic-card__title">
+                {{ item[exportColumns()[0]?.field ?? ''] ?? '—' }}
+              </span>
+              <div class="dynamic-card__header-end">
+                @for (col of exportColumns(); track col.field) { @if (col.type
+                === 'status' || col.isStatus) {
+                <p-tag
+                  [value]="item[col.field] | capitalize"
+                  [severity]="item[col.field] | severity"
+                />
+                } } @if (rowActions) {
+                <p-button
+                  icon="pi pi-ellipsis-v"
+                  severity="secondary"
+                  [text]="true"
+                  size="small"
+                  (click)="$event.stopPropagation(); openRowMenu($event, item)"
+                />
+                }
+              </div>
+            </div>
+          </ng-template>
+
+          <ng-template #cardBody>
+            @for (col of exportColumns(); track col.field; let i = $index) { @if
+            (i !== 0 && col.type !== 'status' && !col.isStatus && col.type !==
+            'date' && getCardFieldIndex(col, i) < cardMaxFields) {
+            <div class="dynamic-card__row">
+              <span class="dynamic-card__label">{{ col.header }}</span>
+              @if (col.type === 'numeric' || col.type === 'currency') {
+              <span class="dynamic-card__value dynamic-card__value--num">
+                {{ item[col.field] }}
+              </span>
+              } @else {
+              <span class="dynamic-card__value">
+                @if (col.icon) { <i [class]="col.icon + ' me-1'"></i> } {{
+                item[col.field] ?? '—' }}
+              </span>
+              }
+            </div>
+            } }
+          </ng-template>
+
+          @if (hasCardFooterContent(item)){
+          <ng-template #cardFooter>
+            <!-- Tags grid (لو في tags field في الداتا) -->
+            @if (item['tags']) {
+            <div class="dynamic-card__tags-grid">
+              @for (tag of item['tags'].toString().split(','); track tag) { @if
+              (tag.trim()) {
+              <div class="dynamic-card__tag">{{ tag.trim() }}</div>
+              } }
+            </div>
+            }
+
+            <!-- Date fields -->
+            @for (col of exportColumns(); track col.field) { @if (col.type ===
+            'date' && item[col.field] && isValidDate(item[col.field])) {
+            <div class="dynamic-card__footer-row">
+              <span class="dynamic-card__footer-label">{{ col.header }}</span>
+              <span class="dynamic-card__footer-item">
+                <i class="pi pi-calendar" aria-hidden="true"></i>
+                {{ item[col.field] | date: 'MMM d, y' }}
+                <i class="pi pi-clock" aria-hidden="true"></i>
+                {{ item[col.field] | date: 'HH:mm' }}
+              </span>
+            </div>
+            } }
+          </ng-template>
+          }
+        </app-card>
+        }
+      </div>
+      }
+    </div>
+  </ng-template>
+</p-dataview>
+}
+
+<!-- ─── Shared column header popover ─────────────────────────────────────── -->
+<p-popover
+  #sharedHeaderPopover
+  styleClass="table-header-popover"
+  appendTo="body"
+>
+  @if (activeHeaderCol) {
+  <div class="header-actions-panel">
+    <!-- ── Sort section ──────────────────────────────────────────── -->
+    @if (isSortable(activeHeaderCol)) {
+    <div class="header-actions-sort">
+      <p-button
+        [label]="'shared.table.sortAscending' | transloco"
+        [icon]="getSortAscIcon(activeHeaderCol)"
+        severity="secondary"
+        [text]="true"
+        [styleClass]="isColumnSorted(activeHeaderCol) && activeSortOrder === 1 ? 'sort-btn sort-btn--active' : 'sort-btn'"
+        (click)="sortColumn(activeHeaderCol, 1); sharedHeaderPopover.hide()"
+      />
+      <p-button
+        [label]="'shared.table.sortDescending' | transloco"
+        [icon]="getSortDescIcon(activeHeaderCol)"
+        severity="secondary"
+        [text]="true"
+        [styleClass]="isColumnSorted(activeHeaderCol) && activeSortOrder === -1 ? 'sort-btn sort-btn--active' : 'sort-btn'"
+        (click)="sortColumn(activeHeaderCol, -1); sharedHeaderPopover.hide()"
+      />
+      @if (isColumnSorted(activeHeaderCol)) {
+      <p-button
+        [label]="'shared.table.clearSort' | transloco"
+        icon="pi pi-times"
+        severity="danger"
+        [text]="true"
+        styleClass="sort-btn"
+        (click)="clearSort(); sharedHeaderPopover.hide()"
+      />
+      }
+    </div>
+    } @if (isSortable(activeHeaderCol) && isFilterable(activeHeaderCol)) {
+    <div class="header-actions-divider"></div>
+    }
+
+    <!-- ── Filter section ────────────────────────────────────────── -->
+    @if (isFilterable(activeHeaderCol)) {
+    <div class="header-actions-filter">
+      @if (activeHeaderCol.filterOptions?.length) {
+      <!-- 1. filterOptions: finite multi-select -->
+      <div class="filter-options-list">
+        @for (opt of activeHeaderCol.filterOptions; track opt.value) {
+        <label class="filter-option-row">
+          <p-checkbox
+            [binary]="false"
+            [value]="opt.value"
+            [(ngModel)]="colFilterSelections[activeHeaderCol.field]"
+          />
+          <span class="filter-option-label">{{ opt.label }}</span>
+        </label>
+        }
+      </div>
+      <div class="filter-actions-row">
+        <p-button
+          [label]="'shared.common.clear' | transloco"
+          severity="secondary"
+          [text]="true"
+          (click)="clearColFilterOptions(activeHeaderCol, sharedHeaderPopover)"
+        />
+        <p-button
+          [label]="'shared.common.apply' | transloco"
+          (click)="applyColFilterOptions(activeHeaderCol, sharedHeaderPopover)"
+        />
+      </div>
+      } @else if (activeHeaderCol.type === 'status') {
+      <!-- 2. Status column: multi-select checkboxes (same path as toolbar filters) -->
+      <div class="filter-options-list">
+        @for (opt of statusOptions; track opt.value) {
+        <label class="filter-option-row">
+          <p-checkbox
+            [binary]="false"
+            [value]="opt.value"
+            [(ngModel)]="colFilterSelections[activeHeaderCol.field]"
+          />
+          <span class="filter-option-label">
+            <p-tag [value]="opt.label" [severity]="opt.value | severity" />
+          </span>
+        </label>
+        }
+      </div>
+      <div class="filter-actions-row">
+        <p-button
+          [label]="'shared.common.clear' | transloco"
+          severity="secondary"
+          [text]="true"
+          (click)="clearColFilterOptions(activeHeaderCol, sharedHeaderPopover)"
+        />
+        <p-button
+          [label]="'shared.common.apply' | transloco"
+          (click)="applyColFilterOptions(activeHeaderCol, sharedHeaderPopover)"
+        />
+      </div>
+      } @else if (activeHeaderCol.type === 'date') {
+      <!-- 3. Date column: date picker -->
+      <input
+        pInputText
+        type="date"
+        [(ngModel)]="getFilterState(activeHeaderCol).rules[0].value"
+        style="width: 100%"
+      />
+      <div class="filter-actions-row">
+        <p-button
+          [label]="'shared.common.clear' | transloco"
+          severity="secondary"
+          [text]="true"
+          (click)="clearColumnFilter(activeHeaderCol, sharedHeaderPopover)"
+        />
+        <p-button
+          [label]="'shared.common.apply' | transloco"
+          (click)="applyColumnFilter(activeHeaderCol, sharedHeaderPopover)"
+        />
+      </div>
+      } @else if (isAutoEnum(activeHeaderCol)) {
+      <!-- 4. Auto-enum: distinct values ≤ 5 → checkboxes تلقائية -->
+      <div class="filter-options-list">
+        @for (val of getAutoEnumValues(activeHeaderCol); track val) {
+        <label class="filter-option-row">
+          <p-checkbox
+            [binary]="false"
+            [value]="val"
+            [(ngModel)]="colFilterSelections[activeHeaderCol.field]"
+          />
+          <span class="filter-option-label">{{ val }}</span>
+        </label>
+        }
+      </div>
+      <div class="filter-actions-row">
+        <p-button
+          [label]="'shared.common.clear' | transloco"
+          severity="secondary"
+          [text]="true"
+          (click)="clearColFilterOptions(activeHeaderCol, sharedHeaderPopover)"
+        />
+        <p-button
+          [label]="'shared.common.apply' | transloco"
+          (click)="applyColFilterOptions(activeHeaderCol, sharedHeaderPopover)"
+        />
+      </div>
+      } @else {
+      <!-- 5. Default: advanced text filter — operator + multi-rule -->
+      <div class="filter-operator-row">
+        <!-- Match All / Match Any -->
+        <p-select
+          [options]="operatorOptions()"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="getFilterState(activeHeaderCol).operator"
+          appendTo="body"
+          styleClass="w-full"
+        />
+      </div>
+      @for (rule of getFilterState(activeHeaderCol).rules; track $index) {
+      <div class="filter-rule-card">
+        <div class="filter-rule-head">
+          <!-- Match-mode selector per rule -->
+          <p-select
+            [options]="simpleTextModeOptions()"
+            optionLabel="label"
+            optionValue="value"
+            [(ngModel)]="rule.matchMode"
+            appendTo="body"
+            styleClass="w-full"
+          />
+          @if (getFilterState(activeHeaderCol).rules.length > 1) {
+          <p-button
+            icon="pi pi-times"
+            severity="danger"
+            [text]="true"
+            size="small"
+            (click)="removeFilterRule(activeHeaderCol, $index)"
+          />
+          }
+        </div>
+        <!-- Value input -->
+        <input
+          pInputText
+          type="text"
+          [(ngModel)]="rule.value"
+          [placeholder]="activeHeaderCol.filterPlaceholder || ('shared.table.searchBy' | transloco:{ field: activeHeaderCol.header.toLowerCase() })"
+          style="width: 100%"
+          (keydown.enter)="applyColumnFilter(activeHeaderCol, sharedHeaderPopover)"
+        />
+      </div>
+      }
+      <!-- Add Rule -->
+      <p-button
+        [label]="'shared.table.addRule' | transloco"
+        icon="pi pi-plus"
+        severity="secondary"
+        [text]="true"
+        size="small"
+        (click)="addFilterRule(activeHeaderCol)"
+      />
+      <div class="filter-actions-row">
+        <p-button
+          [label]="'shared.common.clear' | transloco"
+          severity="secondary"
+          [text]="true"
+          (click)="clearColumnFilter(activeHeaderCol, sharedHeaderPopover)"
+        />
+        <p-button
+          [label]="'shared.common.apply' | transloco"
+          (click)="applyColumnFilter(activeHeaderCol, sharedHeaderPopover)"
+        />
+      </div>
+      }
+    </div>
+    }
+  </div>
+  }
+</p-popover>
+
+<!-- ─── Shared row actions menu ─────────────────────────────────────────────
+     ONE menu in the DOM; model is swapped lazily inside openRowMenu().     -->
+<p-menu #rowMenu [popup]="true" appendTo="body" [model]="activeRowMenuItems" />
+
+<!-- ─── Floating bottom bar ──────────────────────────────────────────────── -->
+<app-shared-bottom-bar
+  [visible]="hasSelection"
+  [count]="selectionCount"
+  [itemLabel]="title.slice(0, -1).toLowerCase()"
+  [actions]="bulkActions"
+  [showDelete]="showBulkDelete"
+  (bulkAction)="bulkAction.emit($event)"
+  (bulkDelete)="deleteSelectedItems()"
+  (clearSelection)="clearSelection()"
+/>
+
+<app-dialog-shell
+  [header]="dialogHeader"
+  [(visible)]="dialogVisible"
+  (save)="saveItem()"
+  (cancelled)="hideDialog()"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-4">
+      <!--
+                ✅ PERF — @for + track col.field في الـ dialog form
+            -->
+      @for (col of columns; track col.field) {
+      <div class="field">
+        <label [for]="col.field" class="font-medium">{{ col.header }}</label>
+
+        @if (!col.type || col.type === 'text') {
+        <input pInputText class="w-full" [(ngModel)]="currentItem[col.field]" />
+        } @if (col.type === 'numeric') {
+        <p-inputNumber class="w-full" [(ngModel)]="currentItem[col.field]" />
+        } @if (col.type === 'currency') {
+        <p-inputNumber
+          class="w-full"
+          [(ngModel)]="currentItem[col.field]"
+          mode="currency"
+          currency="USD"
+          locale="en-US"
+        />
+        } @if (col.type === 'date') {
+        <input
+          type="date"
+          pInputText
+          class="w-full"
+          [(ngModel)]="currentItem[col.field]"
+        />
+        } @if (col.type === 'boolean') {
+        <p-select
+          class="w-full"
+          [(ngModel)]="currentItem[col.field]"
+          [options]="booleanOptions"
+          optionLabel="label"
+          optionValue="value"
+        />
+        } @if (col.type === 'status') {
+        <p-select
+          class="w-full"
+          [(ngModel)]="currentItem[col.field]"
+          [options]="statusOptions"
+          optionLabel="label"
+          optionValue="value"
+        />
+        } @if (col.type === 'rating') {
+        <p-rating [(ngModel)]="currentItem[col.field]" />
+        } @if (submitted && !currentItem[col.field]) {
+        <small class="text-red-500 block">{{ col.header }} is required.</small>
+        }
+      </div>
+      }
+    </div>
+  </ng-template>
+</app-dialog-shell>

@@ -8,9 +8,11 @@ import {
     TemplateRef,
     OnChanges,
     SimpleChanges,
+    OnDestroy,
     inject,
     PLATFORM_ID,
-    AfterViewInit,
+    computed,
+    effect,
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { CommonModule } from '@angular/common';
@@ -20,6 +22,8 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { ThemePersonalityService } from '@/app/foundation/core/theme-builder/theme-personality.service';
 import type { PersonalityTokens } from '@/app/foundation/core/theme-builder/theme-personality.service';
 import { LANG_CSS_VAR } from '@/app/foundation/core/theme-builder/theme-personality.service';
+import { UIStyleDesignerService } from '@/app/foundation/core/ui-style-designer/ui-style-designer.service';
+import { mapComponentStyleToPersonalityTokens } from '@/app/foundation/core/theme-builder/component-style-mapper';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Types
@@ -96,6 +100,9 @@ const ALL_THEME_CSS_VARS = [
     '--app-accent-override',
     '--app-text-override',
     '--app-login-layout',
+    // dialog advanced extra vars
+    '--app-dialogs-margin',
+    '--app-dialogs-width',
 ] as const;
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -159,7 +166,7 @@ const ALL_THEME_CSS_VARS = [
         </p-dialog>
     `,
 })
-export class DialogShellComponent implements OnChanges {
+export class DialogShellComponent implements OnChanges, OnDestroy {
 
     // ── الـ inputs الأصليين ────────────────────────────────────────────────
     @Input() breakpoints: Record<string, string> = { '960px': '75vw', '641px': '90vw' };
@@ -181,23 +188,26 @@ export class DialogShellComponent implements OnChanges {
     /**
      * لما تبقى true — بيضيف class 'app-dialog-popup' على الـ p-dialog
      * عشان يطبق الـ gradient border + big radius style الخاص بالمشروع.
-     * شغّله لما dialogStyle = 'popup' في الـ personality builder.
      */
     @Input() popupStyle = false;
 
-    // ── الـ inputs الجديدة للـ design config ──────────────────────────────
+    // ── الـ inputs للـ design config (للـ personality builder / preview) ──
 
     /**
      * الـ personality tokens المطلوب تطبيقها.
      * - preview   → بتتطبق على الـ dialog element بس (معزولة)، real-time مع كل تغيير
      * - permanent → بتتطبق globally على document.documentElement
+     *
+     * الأولوية: designConfig (من برا) > advancedTokens (من UIStyleDesignerService).
+     * لو designConfig موجود، هو اللي بيكسب — عشان الـ personality preview
+     * ما يتأثرش بقيم الـ UI Style Designer في نفس الوقت.
      */
     @Input() designConfig: Partial<PersonalityTokens> | null = null;
 
     /**
-     * 'preview'   → scoped على الـ dialog el بس، real-time، بدون أي أثر على الصفحة
-     * 'permanent' → global apply (زي السلوك القديم)
-     * 'none'      → ما بيعملش حاجة (الـ default)
+     * 'preview'   → scoped على الـ dialog el بس، real-time
+     * 'permanent' → global apply
+     * 'none'      → الـ default
      */
     @Input() designMode: DialogDesignMode = 'none';
 
@@ -210,12 +220,41 @@ export class DialogShellComponent implements OnChanges {
     @ContentChild('dialogContent') contentTemplate?: TemplateRef<unknown>;
     @ContentChild('dialogFooter')  footerTemplate?:  TemplateRef<unknown>;
 
-    // نحتاج ref على الـ p-dialog عشان نوصل للـ DOM el بتاعه
     @ViewChild('pDialog') private pDialog?: Dialog;
 
-    // ── private ────────────────────────────────────────────────────────────
-    private readonly personalitySvc = inject(ThemePersonalityService);
-    private readonly platformId     = inject(PLATFORM_ID);
+    // ── services ───────────────────────────────────────────────────────────
+    private readonly personalitySvc  = inject(ThemePersonalityService);
+    private readonly platformId      = inject(PLATFORM_ID);
+    private readonly uiStyleSvc      = inject(UIStyleDesignerService);
+
+    /**
+     * computed signal: بيحوّل ComponentStyleConfig بتاعة dialogs
+     * لـ { tokens, extraVars } جاهزة للتطبيق.
+     * بيتحسب تلقائياً لما UIStyleDesignerService.config يتغير.
+     */
+    private readonly _advancedMapped = computed(() => {
+        const cfg = this.uiStyleSvc.config()['dialogs'];
+        return mapComponentStyleToPersonalityTokens('dialogs', cfg);
+    });
+
+    /**
+     * effect: لما _advancedMapped يتغير (يعني اليوزر دوس Save في الـ designer)
+     * وما فيش designConfig خارجي شغال (مش في preview mode)، طبّق على الـ dialog.
+     *
+     * لو الـ dialog مفتوح وقت التغيير → طبّق فوراً على الـ element.
+     * لو مقفول → هيتطبق تلقائياً في _onDialogShow() الجاية.
+     */
+    private readonly _advancedEffect = effect(() => {
+        const mapped = this._advancedMapped(); // اشترك في الـ signal
+        if (!isPlatformBrowser(this.platformId)) return;
+
+        // لو في designConfig خارجي شغال → سيبه يكسب، ما تتدخلش
+        if (this.designConfig && this.designMode !== 'none') return;
+
+        if (this.visible) {
+            requestAnimationFrame(() => this._applyAdvancedToElement(mapped));
+        }
+    });
 
     // ─────────────────────────────────────────────────────────────────────
     // Lifecycle
@@ -225,14 +264,16 @@ export class DialogShellComponent implements OnChanges {
         if (!changes['designConfig'] || this.designMode === 'none') return;
 
         if (this.designMode === 'preview' && this.visible) {
-            // real-time update — الـ dialog مفتوح، طبّق التغيير فوراً على الـ dialog el
             this._applyToDialogElement();
         }
 
         if (this.designMode === 'permanent' && this.visible) {
-            // real-time update — طبّق globally
             this._applyGlobally();
         }
+    }
+
+    ngOnDestroy(): void {
+        // effect بيتنظّف تلقائياً مع الـ component — مش محتاجين unsubscribe يدوي
     }
 
     // ─────────────────────────────────────────────────────────────────────
@@ -240,18 +281,23 @@ export class DialogShellComponent implements OnChanges {
     // ─────────────────────────────────────────────────────────────────────
 
     _onDialogShow(): void {
-        if (!this.designConfig || this.designMode === 'none') return;
-
-        if (this.designMode === 'preview') {
-            // نستنى frame واحد عشان p-dialog يكمل الـ render ويظهر الـ DOM el
-            requestAnimationFrame(() => this._applyToDialogElement());
-        } else {
-            this._applyGlobally();
+        // أولوية 1: designConfig خارجي (personality preview / permanent)
+        if (this.designConfig && this.designMode !== 'none') {
+            if (this.designMode === 'preview') {
+                requestAnimationFrame(() => this._applyToDialogElement());
+            } else {
+                this._applyGlobally();
+            }
+            return;
         }
+
+        // أولوية 2: advanced config من UIStyleDesignerService (بعد Apply)
+        requestAnimationFrame(() => {
+            this._applyAdvancedToElement(this._advancedMapped());
+        });
     }
 
     _onDialogHide(): void {
-        // preview — امسح الـ inline vars من الـ dialog el عشان ما يأثرش على حاجة
         if (this.designMode === 'preview') {
             this._clearDialogElementVars();
         }
@@ -269,17 +315,32 @@ export class DialogShellComponent implements OnChanges {
     // ─────────────────────────────────────────────────────────────────────
 
     /**
-     * PREVIEW MODE
-     * بيطبق الـ tokens على الـ .p-dialog DOM element بس (مش على الـ root).
-     * CSS vars بتـ cascade لأولاده — يعني كل حاجة جوا الـ dialog هتتأثر،
-     * وبره الـ dialog ما هيتغيرش حاجة.
+     * ADVANCED MODE — بيطبق tokens + extraVars من UIStyleDesignerService
+     * على الـ dialog element مباشرة (scoped، مش global).
+     */
+    private _applyAdvancedToElement(
+        mapped: ReturnType<typeof mapComponentStyleToPersonalityTokens>
+    ): void {
+        if (!isPlatformBrowser(this.platformId)) return;
+        const dialogEl = this._getDialogElement();
+        if (!dialogEl) return;
+
+        this._applyTokensToElement(mapped.tokens, dialogEl);
+
+        // extraVars (margin / width) — setProperty مباشر على الـ element
+        for (const [varName, value] of Object.entries(mapped.extraVars)) {
+            dialogEl.style.setProperty(varName, value);
+        }
+    }
+
+    /**
+     * PREVIEW MODE — designConfig خارجي على الـ element (معزول)
      */
     private _applyToDialogElement(): void {
         if (!this.designConfig || !isPlatformBrowser(this.platformId)) return;
 
         const dialogEl = this._getDialogElement();
         if (!dialogEl) {
-            // fallback لو ما لقيناش الـ element — طبّق globally مؤقت (نادر)
             console.warn('[DialogShell] Could not find dialog DOM element for preview scoping.');
             return;
         }
@@ -288,17 +349,13 @@ export class DialogShellComponent implements OnChanges {
     }
 
     /**
-     * PERMANENT MODE
-     * بيطبق الـ tokens على document.documentElement (global) عن طريق الـ service.
+     * PERMANENT MODE — global على document.documentElement
      */
     private _applyGlobally(): void {
         if (!this.designConfig || !isPlatformBrowser(this.platformId)) return;
         this.personalitySvc.applyPersonality(this.designConfig);
     }
 
-    /**
-     * بيمسح كل الـ inline CSS vars من الـ dialog element لما يتقفل.
-     */
     private _clearDialogElementVars(): void {
         if (!isPlatformBrowser(this.platformId)) return;
         const dialogEl = this._getDialogElement();
@@ -307,32 +364,21 @@ export class DialogShellComponent implements OnChanges {
         for (const varName of ALL_THEME_CSS_VARS) {
             dialogEl.style.removeProperty(varName);
         }
-        // امسح الـ font-family اللي ممكن اتحط على الـ dialog el
         dialogEl.style.removeProperty('font-family');
     }
 
-    /**
-     * بيجيب الـ .p-dialog DOM element الفعلي.
-     * p-dialog بيعمل appendTo="body" فالـ element مش جوا الـ component tree —
-     * بنوصله عن طريق pDialog.el.nativeElement.querySelector أو
-     * pDialog.container (exposed في PrimeNG v17+).
-     */
     private _getDialogElement(): HTMLElement | null {
         if (!this.pDialog) return null;
 
-        // PrimeNG v17+ بيعرض container$ أو container
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const dlg = this.pDialog as any;
 
-        // الـ container هو الـ .p-dialog div الفعلي
         if (dlg.container instanceof HTMLElement) {
             return dlg.container;
         }
 
-        // fallback: el.nativeElement هو الـ host element، والـ dialog div بيكون أول child
         if (dlg.el?.nativeElement instanceof HTMLElement) {
             const host = dlg.el.nativeElement as HTMLElement;
-            // لو appendTo=body — الـ dialog بيتنقل لـ body، نحتاج ندور عليه
             const byClass = document.body.querySelector<HTMLElement>('.p-dialog:last-of-type');
             return byClass ?? host.querySelector<HTMLElement>('.p-dialog') ?? host;
         }
@@ -340,11 +386,6 @@ export class DialogShellComponent implements OnChanges {
         return null;
     }
 
-    /**
-     * بيطبق الـ PersonalityTokens على عنصر معين (مش بالضرورة الـ root).
-     * نفس منطق ThemePersonalityService.applyPersonality بالظبط —
-     * بس بنبعت الـ element كـ parameter عشان نعمل scoping.
-     */
     private _applyTokensToElement(tokens: Partial<PersonalityTokens>, el: HTMLElement): void {
         const s = (varName: string, value: string | undefined) => {
             if (value) el.style.setProperty(varName, value);
@@ -358,7 +399,7 @@ export class DialogShellComponent implements OnChanges {
 
         if (tokens.fontFamily) {
             s('--app-font-family', tokens.fontFamily);
-            el.style.setProperty('font-family', tokens.fontFamily); // cascade للـ text جوا الـ dialog
+            el.style.setProperty('font-family', tokens.fontFamily);
         }
         if (tokens.arabicFontFamily) {
             s('--app-font-arabic', tokens.arabicFontFamily);

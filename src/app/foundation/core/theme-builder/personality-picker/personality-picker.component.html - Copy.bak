@@ -1,0 +1,717 @@
+<p-tabs value="0" styleClass="personality-picker__tabs">
+
+  <p-tablist>
+    <p-tab value="0"><i class="pi pi-palette"></i>&nbsp; Personalities</p-tab>
+    <p-tab value="1"><i class="pi pi-sliders-h"></i>&nbsp; Custom Builder</p-tab>
+  </p-tablist>
+
+  <p-tabpanels>
+
+    <!-- ══ TAB 1: PERSONALITIES ══════════════════════════════════════════════ -->
+    <p-tabpanel value="0">
+      <div class="personality-grid">
+        @for (p of personalities; track p.key) {
+          <div
+            class="personality-card"
+            [class.personality-card--active]="activeKey() === p.key"
+            (click)="selectPersonality(p.key)"
+            role="button"
+            [attr.aria-pressed]="activeKey() === p.key"
+          >
+            <div class="personality-card__stripe" [style.background]="accentOf(p.key)"></div>
+
+            <div class="mini-preview">
+              <div class="mini-topbar" [style.background]="p.topbarBg">
+                <span class="mini-dot" [style.background]="accentOf(p.key)"></span>
+                <span class="mini-dot" [style.background]="accentOf(p.key)"></span>
+              </div>
+              <div class="mini-body">
+                <div class="mini-sidebar" [style.background]="p.sidebarBg"></div>
+                <div class="mini-content">
+                  <div class="mini-table-header" [style.background]="p.tableHeaderBg"></div>
+                  <div class="mini-table-row" [class.mini-table-row--alt]="p.tableStriped"></div>
+                  <div class="mini-table-row"></div>
+                  <div class="mini-table-row" [class.mini-table-row--alt]="p.tableStriped"></div>
+                  <div class="mini-cards">
+                    <div class="mini-card"
+                         [style.background]="accentOf(p.key)"
+                         [style.border-radius]="p.radiusCard"
+                         [style.box-shadow]="p.cardShadow"></div>
+                    <div class="mini-card"
+                         [style.background]="accentOf(p.key)"
+                         [style.border-radius]="p.radiusCard"
+                         [style.box-shadow]="p.cardShadow"></div>
+                  </div>
+                  <div class="mini-btn-row">
+                    <div class="mini-btn"
+                         [style.background]="accentOf(p.key)"
+                         [style.border-radius]="p.buttonRadius"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="personality-card__info">
+              <div class="personality-card__name">{{ p.label }}</div>
+              <div class="personality-card__desc">{{ p.description }}</div>
+              <div class="personality-card__tags">
+                @for (tag of p.tags; track tag) {
+                  <span class="p-tag p-tag-secondary">{{ tag }}</span>
+                }
+              </div>
+            </div>
+
+            @if (activeKey() === p.key) {
+              <span class="personality-card__check">
+                <i class="pi pi-check-circle"></i>
+              </span>
+            }
+          </div>
+        }
+      </div>
+
+      <div class="picker-footer">
+        <p-button label="Apply personality" icon="pi pi-check" (onClick)="applyPreset()" />
+      </div>
+    </p-tabpanel>
+
+    <!-- ══ TAB 2: CUSTOM BUILDER ═════════════════════════════════════════════ -->
+    <p-tabpanel value="1">
+
+      <!-- ── LIVE PREVIEW PANEL ──────────────────────────────────────────────  -->
+      <div class="live-preview">
+        <p class="live-preview__label"><i class="pi pi-eye"></i> Live Preview</p>
+
+        <div class="lp-grid">
+
+          <!-- Dialog -->
+          <div class="lp-section">
+            <span class="lp-section__title">Dialog</span>
+            <div class="lp-dialog" [ngStyle]="previewDialogStyle()">
+              <div class="lp-dialog__header" [ngStyle]="previewDialogHeaderStyle()">
+                <i class="pi pi-info-circle" style="margin-right:6px; font-size:0.75rem;"></i>
+                Dialog header
+              </div>
+              <div class="lp-dialog__body">
+                <div class="lp-field" [style.border-radius]="previewInputRadius()"></div>
+                <div class="lp-field lp-field--short" [style.border-radius]="previewInputRadius()"></div>
+                <div class="lp-btn-row">
+                  <button class="lp-btn lp-btn--cancel" [style.border-radius]="previewBtnRadius()" [style.box-shadow]="previewBtnShadow()">Cancel</button>
+                  <button class="lp-btn lp-btn--ok"     [style.border-radius]="previewBtnRadius()" [style.box-shadow]="previewBtnShadow()">Confirm</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Card -->
+          <div class="lp-section">
+            <span class="lp-section__title">Card</span>
+            <div class="lp-card"
+                 [style.border-radius]="previewCardStyle().borderRadius"
+                 [style.border]="previewCardStyle().border"
+                 [style.box-shadow]="previewCardStyle().boxShadow"
+                 [style.background]="previewCardStyle().background">
+              <div class="lp-card__title-bar"></div>
+              <div class="lp-card__line"></div>
+              <div class="lp-card__line lp-card__line--short"></div>
+              <div class="lp-card__footer">
+                <button class="lp-btn lp-btn--ok lp-btn--sm"
+                        [style.border-radius]="previewBtnRadius()"
+                        [style.box-shadow]="previewBtnShadow()">Action</button>
+              </div>
+            </div>
+          </div>
+
+          <!-- Table -->
+          <div class="lp-section">
+            <span class="lp-section__title">Table</span>
+            <div class="lp-table"
+                 [class.lp-table--striped]="previewTableConfig().striped"
+                 [class.lp-table--bordered]="previewTableConfig().bordered"
+                 [class.lp-table--minimal]="previewTableConfig().minimal"
+                 [style.border-radius]="previewTableConfig().radius">
+              <div class="lp-table__head"
+                   [style.background]="previewTableConfig().headerBg"
+                   [style.color]="previewTableConfig().headerColor">
+                <span></span><span></span><span></span>
+              </div>
+              @for (row of [0,1,2]; track row) {
+                <div class="lp-table__row"
+                     [style.border-top]="previewTableConfig().rowSeparator"
+                     [class.lp-table__row--col-sep]="previewTableConfig().colSeparator">
+                  <span></span><span></span><span></span>
+                </div>
+              }
+            </div>
+          </div>
+
+          <!-- Buttons -->
+          <div class="lp-section">
+            <span class="lp-section__title">Buttons</span>
+            <div class="lp-btns-showcase">
+              <button class="lp-btn lp-btn--ok"
+                      [style.border-radius]="previewBtnRadius()"
+                      [style.box-shadow]="previewBtnShadow()">Primary</button>
+              <button class="lp-btn lp-btn--secondary"
+                      [style.border-radius]="previewBtnRadius()"
+                      [style.box-shadow]="previewBtnShadow()">Secondary</button>
+              <button class="lp-btn lp-btn--ghost"
+                      [style.border-radius]="previewBtnRadius()">Ghost</button>
+            </div>
+          </div>
+
+          <!-- Layout preview -->
+          <div class="lp-section lp-section--wide">
+            <span class="lp-section__title">Layout (Topbar + Sidebar)</span>
+            <div class="lp-layout-preview">
+              <div class="lp-layout__topbar" [ngStyle]="previewTopbarStyle()">
+                <div class="lp-layout__topbar-logo"></div>
+                <div class="lp-layout__topbar-actions">
+                  <div class="lp-layout__topbar-dot"></div>
+                  <div class="lp-layout__topbar-dot"></div>
+                </div>
+              </div>
+              <div class="lp-layout__body">
+                <div class="lp-layout__sidebar" [ngStyle]="previewSidebarStyle()">
+                  <div class="lp-layout__sidebar-item lp-layout__sidebar-item--active"></div>
+                  <div class="lp-layout__sidebar-item"></div>
+                  <div class="lp-layout__sidebar-item"></div>
+                </div>
+                <div class="lp-layout__content">
+                  <div class="lp-layout__content-block"></div>
+                  <div class="lp-layout__content-block lp-layout__content-block--short"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Login preview -->
+          <div class="lp-section lp-section--wide">
+            <span class="lp-section__title">Login Page</span>
+            <div class="lp-login-preview"
+                 [ngClass]="'lp-login--' + previewLoginStyle().layout"
+                 [style.background]="previewLoginStyle().background">
+              @if (previewLoginStyle().layout === 'split') {
+                <div class="lp-login__split-left">
+                  <div class="lp-login__split-graphic"></div>
+                </div>
+              }
+              <div class="lp-login__card" [style.border-radius]="previewCardStyle().borderRadius">
+                @if (previewLoginStyle().logoPos !== 'hidden') {
+                  <div class="lp-login__logo" [class.lp-login__logo--left]="previewLoginStyle().logoPos === 'left'">
+                    <div class="lp-login__logo-ph"></div>
+                  </div>
+                }
+                <div class="lp-login__field" [style.border-radius]="previewInputRadius()"></div>
+                <div class="lp-login__field" [style.border-radius]="previewInputRadius()"></div>
+                <button class="lp-btn lp-btn--ok lp-login__btn"
+                        [style.border-radius]="previewBtnRadius()">Sign In</button>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <p-divider />
+
+      <!-- ── BUILDER SECTION NAV ──────────────────────────────────────────── -->
+      <div class="builder-nav">
+        @for (sec of [
+          { key: 'shape',   icon: 'pi pi-stop',           label: 'Shape'   },
+          { key: 'colors',  icon: 'pi pi-palette',        label: 'Colors'  },
+          { key: 'table',   icon: 'pi pi-table',          label: 'Table'   },
+          { key: 'button',  icon: 'pi pi-send',           label: 'Button'  },
+          { key: 'dialog',  icon: 'pi pi-window-maximize',label: 'Dialog'  },
+          { key: 'topbar',  icon: 'pi pi-bars',           label: 'Topbar'  },
+          { key: 'sidebar', icon: 'pi pi-list',           label: 'Sidebar' },
+          { key: 'login',   icon: 'pi pi-sign-in',        label: 'Login'   }
+        ]; track sec.key) {
+          <button class="builder-nav__btn"
+                  [class.builder-nav__btn--active]="activeBuilderSection() === sec.key"
+                  (click)="activeBuilderSection.set($any(sec.key))">
+            <i [class]="sec.icon"></i>
+            <span>{{ sec.label }}</span>
+          </button>
+        }
+      </div>
+
+      <!-- ── SHAPE SECTION ────────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'shape') {
+
+        <div class="builder-section">
+          <div class="builder-section__title">
+            <i class="pi pi-star"></i> Global Shape Preset
+            <span class="builder-section__badge">Applied to all components</span>
+          </div>
+          <p class="builder-section__hint">Sets border-radius for buttons, cards, inputs, tables, and dialogs</p>
+
+          <div class="global-shape-strip">
+            @for (item of globalShapePreviewItems; track item.value) {
+              <div class="gss-item"
+                   [class.gss-item--active]="custom().shape === item.value"
+                   (click)="patchCustom({ shape: item.value, buttonShape: item.value })">
+                <div class="gss-item__demos">
+                  <div class="gss-item__btn"   [style.border-radius]="item.radius">Btn</div>
+                  <div class="gss-item__card"  [style.border-radius]="item.radius"></div>
+                  <div class="gss-item__input" [style.border-radius]="item.radius"></div>
+                  <div class="gss-item__table" [style.border-radius]="item.radius">
+                    <div class="gss-item__table-h"></div>
+                    <div class="gss-item__table-r"></div>
+                  </div>
+                </div>
+                <span class="gss-item__label">{{ item.label }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <p-divider />
+
+        <div class="builder-row">
+          <label class="builder-label">Dialog style</label>
+          <p-selectbutton [options]="dialogOptions" [ngModel]="custom().dialogStyle"
+            (ngModelChange)="patchCustom({ dialogStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+        </div>
+
+        <div class="builder-row">
+          <label class="builder-label">Card style</label>
+          <p-selectbutton [options]="cardOptions" [ngModel]="custom().cardStyle"
+            (ngModelChange)="patchCustom({ cardStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+        </div>
+
+        <div class="builder-row">
+          <label class="builder-label">Table style</label>
+          <p-selectbutton [options]="tableOptions" [ngModel]="custom().tableStyle"
+            (ngModelChange)="patchCustom({ tableStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+        </div>
+
+        <div class="builder-row builder-row--vertical">
+          <label class="builder-label">Font family</label>
+          <p-select [options]="fontOptions" [ngModel]="custom().fontFamily"
+            (ngModelChange)="patchCustom({ fontFamily: $event })"
+            optionLabel="label" optionValue="value" styleClass="w-full" />
+        </div>
+      }
+
+      <!-- ── COLOR ZONES SECTION ───────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'colors') {
+
+        <div class="builder-section">
+          <div class="builder-section__title">
+            <i class="pi pi-palette"></i> Color Zones
+            <span class="builder-section__badge">Override zone colors independently</span>
+          </div>
+          <p class="builder-section__hint">Leave empty to use the active theme's default colors</p>
+        </div>
+
+        <div class="color-zones-grid">
+
+          <div class="color-zone">
+            <div class="color-zone__icon" style="background: var(--surface-ground)">
+              <i class="pi pi-desktop"></i>
+            </div>
+            <div class="color-zone__info">
+              <span class="color-zone__label">Body Background</span>
+              <small class="color-zone__hint">Main content area</small>
+            </div>
+            <div class="color-zone__controls">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().colorZones.bodyBg || '#f8fafc'"
+                     (input)="patchColorZones({ bodyBg: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex" placeholder="#f8fafc"
+                     [ngModel]="custom().colorZones.bodyBg"
+                     (ngModelChange)="patchColorZones({ bodyBg: $event })" />
+              @if (custom().colorZones.bodyBg) {
+                <button class="color-zone__clear" (click)="patchColorZones({ bodyBg: '' })" title="Reset">
+                  <i class="pi pi-times"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="color-zone">
+            <div class="color-zone__icon" style="background: #1e293b">
+              <i class="pi pi-list" style="color:#fff"></i>
+            </div>
+            <div class="color-zone__info">
+              <span class="color-zone__label">Sidebar Background</span>
+              <small class="color-zone__hint">Navigation panel</small>
+            </div>
+            <div class="color-zone__controls">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().colorZones.sidebarBg || '#ffffff'"
+                     (input)="patchColorZones({ sidebarBg: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex" placeholder="default"
+                     [ngModel]="custom().colorZones.sidebarBg"
+                     (ngModelChange)="patchColorZones({ sidebarBg: $event })" />
+              @if (custom().colorZones.sidebarBg) {
+                <button class="color-zone__clear" (click)="patchColorZones({ sidebarBg: '' })">
+                  <i class="pi pi-times"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="color-zone">
+            <div class="color-zone__icon" style="background: #0ea5e9">
+              <i class="pi pi-bars" style="color:#fff"></i>
+            </div>
+            <div class="color-zone__info">
+              <span class="color-zone__label">Topbar Background</span>
+              <small class="color-zone__hint">Header/navbar area</small>
+            </div>
+            <div class="color-zone__controls">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().colorZones.topbarBg || '#ffffff'"
+                     (input)="patchColorZones({ topbarBg: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex" placeholder="default"
+                     [ngModel]="custom().colorZones.topbarBg"
+                     (ngModelChange)="patchColorZones({ topbarBg: $event })" />
+              @if (custom().colorZones.topbarBg) {
+                <button class="color-zone__clear" (click)="patchColorZones({ topbarBg: '' })">
+                  <i class="pi pi-times"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="color-zone">
+            <div class="color-zone__icon" style="background: #fff; border: 1px solid #e2e8f0">
+              <i class="pi pi-stop" style="color: #64748b"></i>
+            </div>
+            <div class="color-zone__info">
+              <span class="color-zone__label">Card / Surface</span>
+              <small class="color-zone__hint">Cards and panels</small>
+            </div>
+            <div class="color-zone__controls">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().colorZones.cardBg || '#ffffff'"
+                     (input)="patchColorZones({ cardBg: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex" placeholder="default"
+                     [ngModel]="custom().colorZones.cardBg"
+                     (ngModelChange)="patchColorZones({ cardBg: $event })" />
+              @if (custom().colorZones.cardBg) {
+                <button class="color-zone__clear" (click)="patchColorZones({ cardBg: '' })">
+                  <i class="pi pi-times"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="color-zone">
+            <div class="color-zone__icon" [style.background]="custom().colorZones.primaryAccent || 'var(--primary-color)'">
+              <i class="pi pi-star-fill" style="color:#fff"></i>
+            </div>
+            <div class="color-zone__info">
+              <span class="color-zone__label">Primary Accent</span>
+              <small class="color-zone__hint">Buttons, links, highlights</small>
+            </div>
+            <div class="color-zone__controls">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().colorZones.primaryAccent || '#0ea5e9'"
+                     (input)="patchColorZones({ primaryAccent: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex" placeholder="default"
+                     [ngModel]="custom().colorZones.primaryAccent"
+                     (ngModelChange)="patchColorZones({ primaryAccent: $event })" />
+              @if (custom().colorZones.primaryAccent) {
+                <button class="color-zone__clear" (click)="patchColorZones({ primaryAccent: '' })">
+                  <i class="pi pi-times"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="color-zone">
+            <div class="color-zone__icon" style="background: #1e293b">
+              <i class="pi pi-align-left" style="color:#fff"></i>
+            </div>
+            <div class="color-zone__info">
+              <span class="color-zone__label">Text Color</span>
+              <small class="color-zone__hint">Body text override</small>
+            </div>
+            <div class="color-zone__controls">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().colorZones.textColor || '#1e293b'"
+                     (input)="patchColorZones({ textColor: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex" placeholder="default"
+                     [ngModel]="custom().colorZones.textColor"
+                     (ngModelChange)="patchColorZones({ textColor: $event })" />
+              @if (custom().colorZones.textColor) {
+                <button class="color-zone__clear" (click)="patchColorZones({ textColor: '' })">
+                  <i class="pi pi-times"></i>
+                </button>
+              }
+            </div>
+          </div>
+
+        </div>
+
+        <p-divider />
+
+        <div class="builder-row builder-row--toggle">
+          <span class="builder-label">Accented topbar (fallback)</span>
+          <p-toggleswitch [ngModel]="custom().topbarAccented"
+            (ngModelChange)="patchCustom({ topbarAccented: $event })" />
+        </div>
+        <div class="builder-row builder-row--toggle">
+          <span class="builder-label">Dark sidebar (fallback)</span>
+          <p-toggleswitch [ngModel]="custom().sidebarDark"
+            (ngModelChange)="patchCustom({ sidebarDark: $event })" />
+        </div>
+      }
+
+      <!-- ── TABLE SECTION ─────────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'table') {
+
+        <div class="builder-section">
+          <div class="builder-section__title"><i class="pi pi-table"></i> Table Customization</div>
+        </div>
+
+        <div class="builder-row">
+          <label class="builder-label">Row separator</label>
+          <p-selectbutton [options]="tableRowSepOptions"
+            [ngModel]="custom().componentDetails.tableRowSeparator"
+            (ngModelChange)="patchComponentDetails({ tableRowSeparator: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row builder-row--toggle">
+          <span class="builder-label">Column separator</span>
+          <p-toggleswitch
+            [ngModel]="custom().componentDetails.tableColumnSeparator"
+            (ngModelChange)="patchComponentDetails({ tableColumnSeparator: $event })" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Header style</label>
+          <p-selectbutton [options]="tableHeaderStyleOptions"
+            [ngModel]="custom().componentDetails.tableHeaderStyle"
+            (ngModelChange)="patchComponentDetails({ tableHeaderStyle: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Table style</label>
+          <p-selectbutton [options]="tableOptions" [ngModel]="custom().tableStyle"
+            (ngModelChange)="patchCustom({ tableStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row builder-row--color">
+          <label class="builder-label">Row hover color</label>
+          <div class="inline-color-row">
+            <input type="color" class="color-zone__picker"
+                   [value]="custom().componentDetails.tableHoverColor || '#f0f9ff'"
+                   (input)="patchComponentDetails({ tableHoverColor: $any($event.target).value })" />
+            <input type="text" class="color-zone__hex" placeholder="default"
+                   [ngModel]="custom().componentDetails.tableHoverColor"
+                   (ngModelChange)="patchComponentDetails({ tableHoverColor: $event })" />
+            @if (custom().componentDetails.tableHoverColor) {
+              <button class="color-zone__clear" (click)="patchComponentDetails({ tableHoverColor: '' })">
+                <i class="pi pi-times"></i>
+              </button>
+            }
+          </div>
+        </div>
+      }
+
+      <!-- ── BUTTON SECTION ────────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'button') {
+
+        <div class="builder-section">
+          <div class="builder-section__title"><i class="pi pi-send"></i> Button Customization</div>
+        </div>
+
+        <div class="builder-row">
+          <label class="builder-label">Button shape</label>
+          <p-selectbutton [options]="shapeOptions" [ngModel]="custom().buttonShape"
+            (ngModelChange)="patchCustom({ buttonShape: $event })" optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Size</label>
+          <p-selectbutton [options]="btnSizeOptions"
+            [ngModel]="custom().componentDetails.buttonSize"
+            (ngModelChange)="patchComponentDetails({ buttonSize: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Shadow</label>
+          <p-selectbutton [options]="btnShadowOptions"
+            [ngModel]="custom().componentDetails.buttonShadow"
+            (ngModelChange)="patchComponentDetails({ buttonShadow: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Icon position</label>
+          <p-selectbutton [options]="btnIconPosOptions"
+            [ngModel]="custom().componentDetails.buttonIconPos"
+            (ngModelChange)="patchComponentDetails({ buttonIconPos: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+      }
+
+      <!-- ── DIALOG SECTION ────────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'dialog') {
+
+        <div class="builder-section">
+          <div class="builder-section__title"><i class="pi pi-window-maximize"></i> Dialog / Popup</div>
+        </div>
+
+        <div class="builder-row">
+          <label class="builder-label">Dialog style</label>
+          <p-selectbutton [options]="dialogOptions" [ngModel]="custom().dialogStyle"
+            (ngModelChange)="patchCustom({ dialogStyle: $event })" optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Header height</label>
+          <p-selectbutton [options]="dialogHeaderHOptions"
+            [ngModel]="custom().componentDetails.dialogHeaderHeight"
+            (ngModelChange)="patchComponentDetails({ dialogHeaderHeight: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Overlay opacity</label>
+          <p-selectbutton [options]="dialogOverlayOptions"
+            [ngModel]="custom().componentDetails.dialogOverlayOpacity"
+            (ngModelChange)="patchComponentDetails({ dialogOverlayOpacity: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Animation</label>
+          <p-selectbutton [options]="dialogAnimOptions"
+            [ngModel]="custom().componentDetails.dialogAnimation"
+            (ngModelChange)="patchComponentDetails({ dialogAnimation: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+      }
+
+      <!-- ── TOPBAR SECTION ────────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'topbar') {
+
+        <div class="builder-section">
+          <div class="builder-section__title"><i class="pi pi-bars"></i> Topbar</div>
+        </div>
+
+        <div class="builder-row builder-row--vertical">
+          <label class="builder-label">Height</label>
+          <p-selectbutton [options]="topbarHeightOptions"
+            [ngModel]="custom().componentDetails.topbarHeight"
+            (ngModelChange)="patchComponentDetails({ topbarHeight: $event })"
+            optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+        </div>
+        <div class="builder-row">
+          <label class="builder-label">Border / shadow style</label>
+          <p-selectbutton [options]="topbarBorderOptions"
+            [ngModel]="custom().componentDetails.topbarBorderStyle"
+            (ngModelChange)="patchComponentDetails({ topbarBorderStyle: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+        <div class="builder-row builder-row--toggle">
+          <span class="builder-label">Accented background</span>
+          <p-toggleswitch [ngModel]="custom().topbarAccented"
+            (ngModelChange)="patchCustom({ topbarAccented: $event })" />
+        </div>
+      }
+
+      <!-- ── SIDEBAR SECTION ───────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'sidebar') {
+
+        <div class="builder-section">
+          <div class="builder-section__title"><i class="pi pi-list"></i> Sidebar</div>
+        </div>
+
+        <div class="builder-row builder-row--vertical">
+          <label class="builder-label">Width</label>
+          <p-selectbutton [options]="sidebarWidthOptions"
+            [ngModel]="custom().componentDetails.sidebarWidth"
+            (ngModelChange)="patchComponentDetails({ sidebarWidth: $event })"
+            optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+        </div>
+        <div class="builder-row builder-row--toggle">
+          <span class="builder-label">Icons only mode</span>
+          <p-toggleswitch
+            [ngModel]="custom().componentDetails.sidebarIconsOnly"
+            (ngModelChange)="patchComponentDetails({ sidebarIconsOnly: $event })" />
+        </div>
+        <div class="builder-row builder-row--toggle">
+          <span class="builder-label">Dark sidebar</span>
+          <p-toggleswitch [ngModel]="custom().sidebarDark"
+            (ngModelChange)="patchCustom({ sidebarDark: $event })" />
+        </div>
+      }
+
+      <!-- ── LOGIN SECTION ─────────────────────────────────────────────────── -->
+      @if (activeBuilderSection() === 'login') {
+
+        <div class="builder-section">
+          <div class="builder-section__title"><i class="pi pi-sign-in"></i> Login Page</div>
+        </div>
+
+        <div class="builder-row builder-row--vertical">
+          <label class="builder-label">Layout</label>
+          <p-selectbutton [options]="loginLayoutOptions"
+            [ngModel]="custom().componentDetails.loginLayout"
+            (ngModelChange)="patchComponentDetails({ loginLayout: $event })"
+            optionLabel="label" optionValue="value" size="small" styleClass="w-full" />
+        </div>
+        <div class="builder-row builder-row--vertical">
+          <label class="builder-label">Background</label>
+          <p-selectbutton [options]="loginBgOptions"
+            [ngModel]="custom().componentDetails.loginBg"
+            (ngModelChange)="patchComponentDetails({ loginBg: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+
+        @if (custom().componentDetails.loginBg === 'solid') {
+          <div class="builder-row builder-row--color">
+            <label class="builder-label">Background color</label>
+            <div class="inline-color-row">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().componentDetails.loginBgColor"
+                     (input)="patchComponentDetails({ loginBgColor: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex"
+                     [ngModel]="custom().componentDetails.loginBgColor"
+                     (ngModelChange)="patchComponentDetails({ loginBgColor: $event })" />
+            </div>
+          </div>
+        }
+
+        @if (custom().componentDetails.loginBg === 'gradient') {
+          <div class="builder-row builder-row--color">
+            <label class="builder-label">Gradient from</label>
+            <div class="inline-color-row">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().componentDetails.loginBgGradientFrom"
+                     (input)="patchComponentDetails({ loginBgGradientFrom: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex"
+                     [ngModel]="custom().componentDetails.loginBgGradientFrom"
+                     (ngModelChange)="patchComponentDetails({ loginBgGradientFrom: $event })" />
+            </div>
+          </div>
+          <div class="builder-row builder-row--color">
+            <label class="builder-label">Gradient to</label>
+            <div class="inline-color-row">
+              <input type="color" class="color-zone__picker"
+                     [value]="custom().componentDetails.loginBgGradientTo"
+                     (input)="patchComponentDetails({ loginBgGradientTo: $any($event.target).value })" />
+              <input type="text" class="color-zone__hex"
+                     [ngModel]="custom().componentDetails.loginBgGradientTo"
+                     (ngModelChange)="patchComponentDetails({ loginBgGradientTo: $event })" />
+            </div>
+          </div>
+        }
+
+        <div class="builder-row">
+          <label class="builder-label">Logo position</label>
+          <p-selectbutton [options]="loginLogoPosOptions"
+            [ngModel]="custom().componentDetails.loginLogoPos"
+            (ngModelChange)="patchComponentDetails({ loginLogoPos: $event })"
+            optionLabel="label" optionValue="value" size="small" />
+        </div>
+      }
+
+      <p-divider />
+
+      <div class="picker-footer">
+        <p-button label="Apply custom theme" icon="pi pi-palette" (onClick)="applyCustom()" />
+      </div>
+
+    </p-tabpanel>
+  </p-tabpanels>
+</p-tabs>

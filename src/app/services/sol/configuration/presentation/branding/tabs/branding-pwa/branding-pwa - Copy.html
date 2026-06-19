@@ -1,0 +1,79 @@
+<div class="bg-(--surface-card) border border-(--surface-border) rounded-(--border-radius,8px) px-6 py-5 flex flex-col gap-3.5">
+  <div class="flex flex-col">
+    <h3 class="text-(--text-color) m-0!">
+      <i class="pi pi-mobile"></i> {{ 'configuration.branding.pwa.title' | transloco }}
+    </h3>
+    <span class="text-(--text-color-secondary)">{{ 'configuration.branding.pwa.hint' | transloco }}</span>
+  </div>
+
+  <div class="grid grid-cols-2 gap-4">
+    <div class="flex flex-col gap-1.5 col-span-full">
+      <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">
+        <i class="pi pi-bookmark me-[0.3rem]"></i> {{ 'configuration.branding.pwa.shortName.label' | transloco }} <span class="text-(--red-500) ms-0.5">*</span>
+      </label>
+      <div class="flex flex-wrap gap-3">
+        @for (lang of activeLanguages(); track lang.code) {
+        <div class="flex-[1_1_220px] flex flex-col gap-1.5">
+          <span class="self-start text-[0.7rem] font-bold tracking-[0.04em] text-(--text-color-secondary) py-px px-1.5 border border-(--surface-border) rounded bg-(--surface-ground)">{{ lang.label }}</span>
+          <input
+            pInputText
+            type="text"
+            [dir]="lang.rtl ? 'rtl' : 'ltr'"
+            [placeholder]="'configuration.branding.pwa.shortName.placeholder' | transloco"
+            [ngModel]="form().shortName[lang.code] ?? ''"
+            (ngModelChange)="patchLocalized('shortName', lang.code, $event)"
+            [class.ng-invalid]="submitted() && !(form().shortName[lang.code] ?? '').trim()"
+          />
+        </div>
+        }
+      </div>
+      @if (submitted() && activeLanguages().some(lang => !(form().shortName[lang.code] ?? '').trim())) {
+        <small class="text-(--red-500) text-xs">{{ 'configuration.branding.pwa.shortName.error' | transloco }}</small>
+      } @else {
+        <small class="text-xs text-(--text-color-secondary) opacity-70">
+          {{ 'configuration.branding.pwa.shortName.hint' | transloco }}
+        </small>
+      }
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">{{ 'configuration.branding.pwa.themeColor.label' | transloco }}</label>
+      <div class="flex items-center gap-2.5">
+        <input
+          type="color"
+          class="w-10.5 h-9.5 border border-(--surface-border) rounded-(--border-radius) cursor-pointer p-0.5"
+          [ngModel]="form().themeColor"
+          (ngModelChange)="patch.emit({ themeColor: $event })"
+        />
+        <input
+          pInputText
+          type="text"
+          class="flex-1"
+          [ngModel]="form().themeColor"
+          (ngModelChange)="patch.emit({ themeColor: $event })"
+        />
+      </div>
+      <small class="text-xs text-(--text-color-secondary) opacity-70">{{ 'configuration.branding.pwa.themeColor.hint' | transloco }}</small>
+    </div>
+
+    <div class="flex flex-col gap-1.5">
+      <label class="text-[0.8125rem] font-semibold text-(--text-color-secondary)">{{ 'configuration.branding.pwa.backgroundColor.label' | transloco }}</label>
+      <div class="flex items-center gap-2.5">
+        <input
+          type="color"
+          class="w-10.5 h-9.5 border border-(--surface-border) rounded-(--border-radius) cursor-pointer p-0.5"
+          [ngModel]="form().backgroundColor"
+          (ngModelChange)="patch.emit({ backgroundColor: $event })"
+        />
+        <input
+          pInputText
+          type="text"
+          class="flex-1"
+          [ngModel]="form().backgroundColor"
+          (ngModelChange)="patch.emit({ backgroundColor: $event })"
+        />
+      </div>
+      <small class="text-xs text-(--text-color-secondary) opacity-70">{{ 'configuration.branding.pwa.backgroundColor.hint' | transloco }}</small>
+    </div>
+  </div>
+</div>

@@ -1,24 +1,43 @@
 import { Component, signal } from '@angular/core';
-
 import { TableComponent } from '@/app/foundation/shared/components/table/table';
-import { USER_ATTRIBUTE_COLUMNS, USER_ATTRIBUTE_ROWS } from './user-attributes.data';
+import { DialogShellComponent } from '@/app/foundation/shared/components/dialog-shell';
+import { TagModule } from 'primeng/tag';
+import { USER_ATTRIBUTE_COLUMNS, USER_ATTRIBUTE_ROWS, UserAttributeRow } from './user-attributes.data';
 
-/**
- * Metadata page — lists the "user" entity's attributes.
- *
- * Previously rendered via `app-tree-table` with rows grouped by module under
- * a collapsible tree. Migrated to the flat `app-table` component: each row
- * now carries its own `module` column (sortable/filterable) instead of being
- * visually nested, since the underlying data was never actually hierarchical
- * (no row ever had children) — the grouping was presentation-only.
- */
 @Component({
   selector: 'app-metadata',
-  imports: [TableComponent],
+  imports: [TableComponent, DialogShellComponent, TagModule],
   templateUrl: './metadata.html',
   styleUrl: './metadata.scss'
 })
 export class Metadata {
   columns = USER_ATTRIBUTE_COLUMNS;
-  data = signal(USER_ATTRIBUTE_ROWS);
+  data    = signal(USER_ATTRIBUTE_ROWS);
+
+  // ── Row detail dialog ──────────────────────────────────────────────────────
+  selectedRow   = signal<UserAttributeRow | null>(null);
+  dialogVisible = signal(false);
+
+  openRow(row: UserAttributeRow): void {
+    this.selectedRow.set(row);
+    this.dialogVisible.set(true);
+  }
+
+  closeDialog(): void {
+    this.dialogVisible.set(false);
+  }
+
+  /** CSS severity للـ Tag بتاع النوع */
+  typeSeverity(type: string): 'info' | 'success' | 'warn' | 'secondary' | 'contrast' {
+    const map: Record<string, 'info' | 'success' | 'warn' | 'secondary' | 'contrast'> = {
+      string:   'info',
+      number:   'success',
+      boolean:  'warn',
+      datetime: 'secondary',
+      date:     'secondary',
+      text:     'info',
+      json:     'contrast',
+    };
+    return map[type] ?? 'secondary';
+  }
 }

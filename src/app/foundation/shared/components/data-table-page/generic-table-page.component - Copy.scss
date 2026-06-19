@@ -1,0 +1,19 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep table {
+  table-layout: auto;
+}
+
+:host ::ng-deep th,
+:host ::ng-deep td {
+  white-space: nowrap;
+}
+
+:host ::ng-deep .row-actions {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 0.25rem;
+}

@@ -5,9 +5,15 @@
  * component) lets a user pick from to scaffold a brand-new backend/project.
  * It is mock/seed data for the wizard's checklist UI — entirely unrelated to
  * this admin app's own sidebar (`DOMAINS` in `domain.config.ts`) or its own
- * branding (`ProjectConfigService`). No overlap, nothing to consolidate.
+ * branding (`ProjectConfigService`).
+ *
+ * تحديث (يونيو 2026): الـ `selectedModules` signal بقى bridge بسيط بين
+ * `Domains` component و `DemoLauncherService` — اليوزر بيختار الـ modules من
+ * شاشة الـ Domains، و`DemoLauncherService` بيقرا نفس الـ signal عشان يبني
+ * الـ domains اللي بيتبعتوا لزرار "Open Demo". لسه مفيش overlap مع
+ * `domain.config.ts` ولا `ProjectConfigService` الأصليين.
  */
-import { Injectable } from '@angular/core';
+import { Injectable, signal } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
 
@@ -60,6 +66,12 @@ export interface ConfigData {
 
 @Injectable({ providedIn: 'root' })
 export class ConfigDataService {
+
+  /**
+   * Signal مشترك: الـ modules اللي اليوزر اختارها في الـ Domains page.
+   * بيتحدث من Domains component وبيتقرأ من DemoLauncherService لبناء الـ demo config.
+   */
+  readonly selectedModules = signal<ConfigModule[]>([]);
 
   getData$(): Observable<ConfigData> {
     return of(this.buildData()).pipe(delay(300));

@@ -1,0 +1,180 @@
+<section class="settings-panel">
+
+  <!-- ══════════════ Header ══════════════ -->
+  <div class="settings-header">
+    <div class="settings-header__icon">
+      <i class="pi pi-sliders-h"></i>
+    </div>
+    <div>
+      <h2 class="settings-header__title">User Preferences</h2>
+      <p class="settings-header__sub">Changes apply instantly &amp; persist across sessions.</p>
+    </div>
+  </div>
+
+  <!-- ══════════════ Body ══════════════ -->
+  <div class="settings-body">
+
+    <!-- ─── Language ───────────────────────────────────── -->
+    <div class="settings-section">
+      <label class="settings-label">
+        <i class="pi pi-language"></i> Language
+      </label>
+      <p-selectbutton
+        [options]="languageOptions"
+        [ngModel]="prefs().language"
+        (ngModelChange)="onPreferenceChange('language', $event)"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        size="small"
+      />
+    </div>
+
+    <!-- ─── Dark Mode ─────────────────────────────────── -->
+    <div class="settings-section settings-section--row">
+      <label class="settings-label">
+        <i class="pi pi-moon"></i> Dark Mode
+      </label>
+      <div
+        class="toggle"
+        [class.toggle--on]="prefs().darkMode"
+        (click)="onPreferenceChange('darkMode', !prefs().darkMode)"
+        role="switch"
+        [attr.aria-checked]="prefs().darkMode"
+      >
+        <span class="toggle__thumb"></span>
+      </div>
+    </div>
+
+    <!-- ─── Theme Preset ──────────────────────────────── -->
+    <div class="settings-section">
+      <label class="settings-label">
+        <i class="pi pi-palette"></i> Theme Preset
+      </label>
+      <p-selectbutton
+        [options]="themeOptions"
+        [ngModel]="prefs().theme"
+        (ngModelChange)="onPreferenceChange('theme', $event)"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        size="small"
+      />
+    </div>
+
+    <!-- ─── Primary Colour ────────────────────────────── -->
+    <div class="settings-section">
+      <label class="settings-label">
+        <i class="pi pi-circle-fill"></i> Primary Color
+      </label>
+      <div class="color-grid">
+        @for (color of primaryColors; track color.name) {
+          <button
+            type="button"
+            class="color-swatch"
+            [class.color-swatch--active]="prefs().primaryColor === color.name"
+            [title]="color.name | titlecase"
+            [style.background-color]="color.hex"
+            (click)="onPreferenceChange('primaryColor', color.name)"
+          >
+            @if (prefs().primaryColor === color.name) {
+              <i class="pi pi-check"></i>
+            }
+          </button>
+        }
+      </div>
+    </div>
+
+    <!-- ─── Font Size ─────────────────────────────────── -->
+    <div class="settings-section">
+      <label class="settings-label">
+        <i class="pi pi-text"></i> Font Size
+      </label>
+      <p-selectbutton
+        [options]="fontSizeOptions"
+        [ngModel]="prefs().fontSize"
+        (ngModelChange)="onPreferenceChange('fontSize', $event)"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        size="small"
+      />
+    </div>
+
+    <!-- ─── Menu Mode ─────────────────────────────────── -->
+    <div class="settings-section">
+      <label class="settings-label">
+        <i class="pi pi-bars"></i> Menu Mode
+      </label>
+      <p-selectbutton
+        [options]="menuModeOptions"
+        [ngModel]="prefs().menuMode"
+        (ngModelChange)="onPreferenceChange('menuMode', $event)"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        size="small"
+      />
+    </div>
+
+    <!-- ─── Layout Density ────────────────────────────── -->
+    <div class="settings-section">
+      <label class="settings-label">
+        <i class="pi pi-th-large"></i> Layout Density
+      </label>
+      <p-selectbutton
+        [options]="densityOptions"
+        [ngModel]="prefs().layoutDensity"
+        (ngModelChange)="onPreferenceChange('layoutDensity', $event)"
+        optionLabel="label"
+        optionValue="value"
+        [allowEmpty]="false"
+        size="small"
+      />
+    </div>
+
+
+  </div>
+
+  <!-- ══════════════ Footer / Actions ══════════════ -->
+  <div class="settings-footer">
+    <button
+      type="button"
+      class="app-btn app-btn--ghost"
+      (click)="togglePayload()"
+      pTooltip="Preview the JSON that will be sent to the backend"
+      tooltipPosition="top"
+    >
+      <i class="pi pi-code"></i>
+      {{ showPayload() ? 'Hide' : 'API Payload' }}
+    </button>
+
+    <div class="settings-footer__actions">
+      <button type="button" class="app-btn app-btn--secondary" (click)="onReset()">
+        <i class="pi pi-refresh"></i> Reset
+      </button>
+      <button
+        type="button"
+        class="app-btn app-btn--primary"
+        [class.app-btn--success]="saveSuccess()"
+        (click)="onSave()"
+        [disabled]="isSaving()"
+      >
+        <i [class]="isSaving() ? 'pi pi-spin pi-spinner' : saveSuccess() ? 'pi pi-check' : 'pi pi-save'"></i>
+        {{ isSaving() ? 'Saving…' : saveSuccess() ? 'Saved!' : 'Save to API' }}
+      </button>
+    </div>
+  </div>
+
+  <!-- ══════════════ Payload Preview ══════════════ -->
+  @if (showPayload()) {
+    <div class="payload-preview">
+      <div class="payload-preview__header">
+        <span><i class="pi pi-send"></i> Backend Payload Preview</span>
+        <code class="payload-preview__badge">POST /api/user/preferences</code>
+      </div>
+      <pre class="payload-preview__code">{{ payloadPreview() }}</pre>
+    </div>
+  }
+
+</section>

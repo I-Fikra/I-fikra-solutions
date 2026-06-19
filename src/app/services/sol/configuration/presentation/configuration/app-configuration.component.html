@@ -1,46 +1,76 @@
 <p-toast />
+
+<!-- ══ PROGRESS STEPPER ══════════════════════════════════════════════════════ -->
 <nav class="app-config-nav__list mb-7">
-  @for (section of navSections; track section.key) {
+  @for (section of navSections; track section.key; let idx = $index) {
     <button
       class="app-config-nav__item"
       [class.app-config-nav__item--active]="activeSection() === section.key"
+      [class.app-config-nav__item--done]="isSectionDone(section.key)"
       (click)="setSection(section.key)"
     >
-      <span class="nav-item__icon-wrap">
-        <i [class]="section.icon"></i>
+      <span class="nav-item__step">
+        @if (isSectionDone(section.key)) {
+          <i class="pi pi-check"></i>
+        } @else {
+          {{ idx + 1 }}
+        }
       </span>
+
       <span class="nav-item__text">
         <span class="nav-item__label">{{ section.label }}</span>
         <span class="nav-item__desc">{{ section.description }}</span>
       </span>
-      @if (isSectionDone(section.key)) {
-        <i class="pi pi-check-circle nav-item__done"></i>
-      }
     </button>
+
+    @if (idx < navSections.length - 1) {
+      <span class="nav-item__connector"></span>
+    }
   }
 </nav>
 
-<!-- ── MAIN CONTENT ─────────────────────────────────────────────── -->
+<!-- ══ MAIN CONTENT ══════════════════════════════════════════════════════════ -->
 <main class="app-config-content">
-  <!-- ══ BRANDING SECTION ══════════════════════════════════════════ -->
+
   @if (activeSection() === 'branding') {
     <app-branding (saved)="onBrandingSaved()" />
   }
 
-  <!-- ══ THEME & APPEARANCE SECTION ════════════════════════════════ -->
-  @if (activeSection() === 'theme-appearance') {
-    <app-theme-appearance (done)="onThemeAppearanceDone()" />
-  }
-
-  <!-- ══ CUSTOMIZE SECTION ═════════════════════════════════════════ -->
-  @if (activeSection() === 'customize') {
-    <app-customize (themeApplied)="onCustomizeDone()" />
-  }
-
-  <!-- ══ PROJECT SETUP SECTION ════════════════════════════════════ -->
   @if (activeSection() === 'setup') {
     <div class="config-section config-section--fullwidth">
       <app-domains />
     </div>
   }
+
+  @if (activeSection() === 'ui-style') {
+    <div class="config-section config-section--fullwidth">
+      <app-ui-style-designer />
+    </div>
+  }
+
 </main>
+
+<!-- ══ BOTTOM NAV ARROWS ══════════════════════════════════════════════════════ -->
+<footer class="app-config-footer">
+  @if (canGoPrev()) {
+    <p-button
+      label="Back"
+      icon="pi pi-arrow-left"
+      iconPos="left"
+      severity="secondary"
+      [text]="true"
+      (onClick)="goPrev()"
+    />
+  }
+  <span class="app-config-footer__spacer"></span>
+  @if (canGoNext()) {
+    <p-button
+      label="Next"
+      icon="pi pi-arrow-right"
+      iconPos="right"
+      severity="secondary"
+      [outlined]="true"
+      (onClick)="goNext()"
+    />
+  }
+</footer>
