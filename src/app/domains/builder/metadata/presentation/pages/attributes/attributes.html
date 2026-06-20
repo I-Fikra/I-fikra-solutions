@@ -1,0 +1,736 @@
+<p-toast />
+
+<!-- Hidden delete-button trigger — opened programmatically via confirmDelete() -->
+<div class="hidden">
+  <app-delete-button
+    #deleteBtn
+    [title]="'Delete Attribute'"
+    [message]="'Are you sure you want to delete \'' + (pendingDeleteItem?.code ?? '') + '\'? This action cannot be undone.'"
+    (confirm)="onDeleteConfirmed()"
+  />
+</div>
+
+<app-table
+  title="User Attributes"
+  dataKey="code"
+  [columns]="columns"
+  [data]="data"
+  [rowActions]="rowActions"
+  [useExternalForm]="true"
+  toolbarSearchPlaceholder="Search attributes…"
+  [toolbarShowSearch]="false"
+  (onNew)="openNew()"
+/>
+
+<!-- ─── View Details Dialog ──────────────────────────────────────────────────── -->
+<app-dialog-shell
+  [header]="viewingItem?.code ?? ''"
+  [(visible)]="viewDialogVisible"
+  [hideFooter]="true"
+  [style]="{ width: '600px', maxWidth: '95vw' }"
+  (cancelled)="viewDialogVisible = false"
+>
+  <ng-template #dialogContent>
+    @if (viewingItem) {
+    <div class="flex flex-col gap-4 py-2">
+      <div class="flex items-start gap-3">
+        <span
+          class="flex items-center justify-center w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500 shrink-0"
+        >
+          <i [class]="(viewingItem?.icon || 'pi pi-database') + ' text-xl'"></i>
+        </span>
+        <div class="flex flex-col gap-1 min-w-0">
+          <div class="text-lg font-semibold">{{ viewingItem.name }}</div>
+          <div class="flex items-center gap-2 flex-wrap">
+            <span class="font-mono text-xs text-surface-400"
+              >{{ viewingItem.code }}</span
+            >
+            @if (viewingItem.feature) {
+            <span class="text-surface-300 dark:text-surface-600">·</span>
+            <span class="text-xs text-surface-400"
+              >{{ viewingItem.feature }}</span
+            >
+            }
+          </div>
+        </div>
+        <p-tag
+          [value]="viewingItem.type"
+          severity="info"
+          class="ml-auto shrink-0"
+        />
+      </div>
+
+      <p-divider class="my-0" />
+
+      <div class="grid grid-cols-2 gap-x-6 gap-y-4">
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Occurrence</span
+          >
+          <p-tag
+            [value]="viewingItem.isNullable ? 'Optional' : 'Mandatory'"
+            [severity]="viewingItem.isNullable ? 'secondary' : 'success'"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Unique</span
+          >
+          <p-tag
+            [value]="viewingItem.isUnique ? 'Yes' : 'No'"
+            [severity]="viewingItem.isUnique ? 'success' : 'secondary'"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Public</span
+          >
+          <p-tag
+            [value]="viewingItem.isPublic ? 'Yes' : 'No'"
+            [severity]="viewingItem.isPublic ? 'success' : 'secondary'"
+          />
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Reference</span
+          >
+          @if (viewingItem.reference) {
+          <p-tag [value]="viewingItem.reference" severity="warn" />
+          } @else {
+          <span class="text-sm text-surface-400">—</span>
+          }
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Length</span
+          >
+          <span class="text-sm font-medium font-mono"
+            >{{ viewingItem.length ?? '—' }}</span
+          >
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Value Range</span
+          >
+          <span class="text-sm font-medium font-mono"
+            >{{ viewingItem.value ?? '—' }}</span
+          >
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Repeat</span
+          >
+          <span class="text-sm font-medium font-mono"
+            >{{ viewingItem.repeat ?? '—' }}</span
+          >
+        </div>
+        <div class="flex flex-col gap-1">
+          <span
+            class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+            >Icon</span
+          >
+          @if (viewingItem.icon) {
+          <span class="flex items-center gap-2">
+            <i [class]="viewingItem.icon" style="font-size: 1.1rem"></i>
+            <span class="font-mono text-xs text-surface-400"
+              >{{ viewingItem.icon }}</span
+            >
+          </span>
+          } @else {
+          <span class="text-sm text-surface-400">—</span>
+          }
+        </div>
+      </div>
+
+      @if (viewingItem.summary) {
+      <div class="flex flex-col gap-1">
+        <span
+          class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+          >Summary</span
+        >
+        <p class="text-sm m-0 leading-relaxed">{{ viewingItem.summary }}</p>
+      </div>
+      } @if (viewingItem.tags?.length) {
+      <div class="flex flex-col gap-2">
+        <span
+          class="text-xs text-surface-400 font-semibold uppercase tracking-wide"
+          >Tags</span
+        >
+        <div class="flex flex-wrap gap-2">
+          @for (tag of viewingItem.tags; track tag) {
+          <p-chip [label]="tag" />
+          }
+        </div>
+      </div>
+      }
+    </div>
+    }
+  </ng-template>
+</app-dialog-shell>
+
+<!-- ─── Create / Edit Attribute Dialog ───────────────────────────────────────── -->
+<app-dialog-shell
+  [header]="dialogHeader"
+  [(visible)]="dialogVisible"
+  [saveDisabled]="submitted && !isFormValid"
+  [style]="{ width: '720px', maxWidth: '95vw' }"
+  (save)="saveAttribute()"
+  (cancelled)="cancelDialog()"
+>
+  <ng-template #dialogContent>
+    <div class="flex flex-col gap-4 py-2">
+      <!-- Attribute Name -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm"
+          >Attribute Name <span class="text-red-500">*</span></label
+        >
+        <input
+          pInputText
+          [(ngModel)]="form.attrName"
+          placeholder="e.g. firstName or first_name"
+          dir="ltr"
+          class="text-left"
+          [class.ng-invalid]="!!attrNameError"
+          [class.ng-dirty]="!!attrNameError"
+        />
+        @if (attrNameError) {
+        <small class="text-red-500">{{ attrNameError }}</small>
+        } @else {
+        <small class="text-surface-400"
+          >No spaces — used as the database column and code identifier.</small
+        >
+        }
+      </div>
+
+      <p-divider class="my-0" />
+
+      <!-- Name (dynamic per language) -->
+      <div class="flex flex-col gap-3">
+        <label class="font-bold text-sm"
+          >Name <span class="text-red-500">*</span></label
+        >
+
+        @for (lang of langs; track lang) {
+        <div class="flex flex-col gap-2">
+          <span class="text-xs text-surface-500 font-semibold"
+            >{{ langLabel(lang) }}</span
+          >
+          <div class="grid grid-cols-2 gap-3">
+            <div class="flex flex-col gap-1">
+              <label class="text-xs text-surface-400">Singular</label>
+              <input
+                pInputText
+                [(ngModel)]="form.nameSingular[lang]"
+                [placeholder]="isRtl(lang) ? 'مثلاً: الاسم الأول' : 'e.g. First Name'"
+                [dir]="isRtl(lang) ? 'rtl' : 'ltr'"
+                [class.text-right]="isRtl(lang)"
+                [class.text-left]="!isRtl(lang)"
+                [class.ng-invalid]="lang === primaryLang && submitted && !form.nameSingular[lang]?.trim()"
+                [class.ng-dirty]="lang === primaryLang && submitted && !form.nameSingular[lang]?.trim()"
+              />
+              @if (lang === primaryLang && submitted &&
+              !form.nameSingular[lang]?.trim()) {
+              <small class="text-red-500">Required.</small>
+              }
+            </div>
+            <div class="flex flex-col gap-1">
+              <label class="text-xs text-surface-400">Plural</label>
+              <input
+                pInputText
+                [(ngModel)]="form.namePlural[lang]"
+                [placeholder]="isRtl(lang) ? 'مثلاً: الأسماء الأولى' : 'e.g. First Names'"
+                [dir]="isRtl(lang) ? 'rtl' : 'ltr'"
+                [class.text-right]="isRtl(lang)"
+                [class.text-left]="!isRtl(lang)"
+              />
+            </div>
+          </div>
+        </div>
+        }
+      </div>
+
+      <p-divider class="my-0" />
+
+      <!-- Type -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm"
+          >Type <span class="text-red-500">*</span></label
+        >
+        <p-select
+          [options]="dataTypes"
+          [(ngModel)]="form.type"
+          placeholder="Select a data type"
+          appendTo="body"
+          (onChange)="onTypeChange()"
+          [class.ng-invalid]="submitted && !form.type"
+          [class.ng-dirty]="submitted && !form.type"
+        />
+        @if (submitted && !form.type) {
+        <small class="text-red-500">Type is required.</small>
+        }
+      </div>
+
+      <!-- Length -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">Length</label>
+        <div class="flex gap-3">
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400">Min</label>
+            <p-inputnumber
+              [(ngModel)]="form.lengthMin"
+              [min]="0"
+              placeholder="Min"
+              [showButtons]="false"
+            />
+          </div>
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400">Max</label>
+            <p-inputnumber
+              [(ngModel)]="form.lengthMax"
+              [min]="0"
+              placeholder="Max"
+              [showButtons]="false"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Value -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">Value</label>
+        <div class="flex gap-3">
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400">Min</label>
+            <p-inputnumber
+              [(ngModel)]="form.valueMin"
+              placeholder="Min"
+              [showButtons]="false"
+            />
+          </div>
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400">Max</label>
+            <p-inputnumber
+              [(ngModel)]="form.valueMax"
+              placeholder="Max"
+              [showButtons]="false"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Repeat -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">Repeat</label>
+        <div class="flex gap-3">
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400">Min</label>
+            <p-inputnumber
+              [(ngModel)]="form.repeatMin"
+              [min]="0"
+              placeholder="Min"
+              [showButtons]="false"
+            />
+          </div>
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400">Max</label>
+            <p-inputnumber
+              [(ngModel)]="form.repeatMax"
+              [min]="0"
+              placeholder="Max"
+              [showButtons]="false"
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Occurrence radio -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm"
+          >Occurrence <span class="text-red-500">*</span></label
+        >
+        <div class="flex gap-6 mt-1">
+          <div class="flex items-center gap-2">
+            <p-radioButton
+              name="occurrence"
+              value="mandatory"
+              [(ngModel)]="form.occurrence"
+              inputId="occ_mand"
+            />
+            <label for="occ_mand" class="cursor-pointer text-sm"
+              >Mandatory</label
+            >
+          </div>
+          <div class="flex items-center gap-2">
+            <p-radioButton
+              name="occurrence"
+              value="optional"
+              [(ngModel)]="form.occurrence"
+              inputId="occ_opt"
+            />
+            <label for="occ_opt" class="cursor-pointer text-sm">Optional</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <p-radioButton
+              name="occurrence"
+              value="conditional"
+              [(ngModel)]="form.occurrence"
+              inputId="occ_cond"
+            />
+            <label for="occ_cond" class="cursor-pointer text-sm"
+              >Conditional</label
+            >
+          </div>
+        </div>
+      </div>
+
+      <!-- Precision — float only -->
+      @if (isFloat) {
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">Precision</label>
+        <div class="flex gap-3">
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400"
+              >Digits before decimal point</label
+            >
+            <p-inputnumber
+              [(ngModel)]="form.precisionBefore"
+              [min]="1"
+              placeholder="e.g. 10"
+              [showButtons]="false"
+            />
+          </div>
+          <div class="flex flex-col gap-1 flex-1">
+            <label class="text-xs text-surface-400"
+              >Digits after decimal point</label
+            >
+            <p-inputnumber
+              [(ngModel)]="form.precisionAfter"
+              [min]="0"
+              placeholder="e.g. 2"
+              [showButtons]="false"
+            />
+          </div>
+        </div>
+      </div>
+      }
+
+      <p-divider class="my-0" />
+
+      <!-- Default Value (dynamic per language) -->
+      <div class="flex flex-col gap-2">
+        <label class="font-bold text-sm">Default Value</label>
+        <div class="grid grid-cols-2 gap-3">
+          @for (lang of langs; track lang) {
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-surface-500 font-semibold"
+              >{{ langLabel(lang) }}</label
+            >
+            <input
+              pInputText
+              [(ngModel)]="form.defaultValue[lang]"
+              [placeholder]="isRtl(lang) ? 'القيمة الافتراضية' : 'Default value'"
+              [dir]="isRtl(lang) ? 'rtl' : 'ltr'"
+              [class.text-right]="isRtl(lang)"
+              [class.text-left]="!isRtl(lang)"
+            />
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Description (dynamic per language) -->
+      <div class="flex flex-col gap-2">
+        <label class="font-bold text-sm">Description</label>
+        <div class="grid grid-cols-2 gap-3">
+          @for (lang of langs; track lang) {
+          <div class="flex flex-col gap-1">
+            <label class="text-xs text-surface-500 font-semibold"
+              >{{ langLabel(lang) }}</label
+            >
+            <textarea
+              pTextarea
+              rows="3"
+              [(ngModel)]="form.description[lang]"
+              [placeholder]="isRtl(lang) ? 'وصف هذه الخاصية…' : 'Describe this attribute…'"
+              [dir]="isRtl(lang) ? 'rtl' : 'ltr'"
+              [class.text-right]="isRtl(lang)"
+              [class.text-left]="!isRtl(lang)"
+              class="w-full"
+            ></textarea>
+          </div>
+          }
+        </div>
+      </div>
+
+      <!-- Icon -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">Icon</label>
+        <p-select
+          [options]="piIcons"
+          optionLabel="label"
+          optionValue="value"
+          [(ngModel)]="form.icon"
+          placeholder="Select an icon"
+          appendTo="body"
+          [filter]="true"
+          filterBy="label"
+          [showClear]="true"
+        >
+          <ng-template pTemplate="selectedItem" let-opt>
+            @if (opt) {
+            <div class="flex items-center gap-2">
+              <i
+                [class]="opt.value"
+                style="font-size: 1rem; width: 1rem; text-align: center"
+              ></i>
+              <span>{{ opt.label }}</span>
+              <span class="font-mono text-xs text-surface-400">{{ opt.value }}</span>
+            </div>
+            }
+          </ng-template>
+          <ng-template let-opt pTemplate="item">
+            <div class="flex items-center gap-2 py-1">
+              <i
+                [class]="opt.value"
+                style="font-size: 1rem; width: 1.25rem; text-align: center"
+              ></i>
+              <span>{{ opt.label }}</span>
+            </div>
+          </ng-template>
+        </p-select>
+      </div>
+
+      <p-divider class="my-0" />
+
+      <!-- Tags -->
+      <div class="flex flex-col gap-2">
+        <label class="font-bold text-sm">Tags</label>
+        <div class="flex gap-2">
+          <input
+            pInputText
+            [(ngModel)]="newTag"
+            placeholder="Type a keyword and press Enter"
+            dir="ltr"
+            class="text-left flex-1"
+            (keydown)="addTag($event)"
+          />
+          <p-button
+            icon="pi pi-plus"
+            severity="secondary"
+            [outlined]="true"
+            size="small"
+            (onClick)="addTagClick()"
+            [disabled]="!newTag.trim()"
+          />
+        </div>
+        @if (form.tags.length) {
+        <div class="flex flex-wrap gap-2">
+          @for (tag of form.tags; track tag) {
+          <p-chip
+            [label]="tag"
+            [removable]="true"
+            (onRemove)="removeTag(tag)"
+          />
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Visibility radio -->
+      <div class="flex flex-col gap-1">
+        <label class="font-bold text-sm">Visibility</label>
+        <div class="flex gap-6 mt-1">
+          <div class="flex items-center gap-2">
+            <p-radioButton
+              name="visibility"
+              [value]="false"
+              [(ngModel)]="form.isPublic"
+              inputId="vis_private"
+            />
+            <label for="vis_private" class="cursor-pointer text-sm">Private</label>
+          </div>
+          <div class="flex items-center gap-2">
+            <p-radioButton
+              name="visibility"
+              [value]="true"
+              [(ngModel)]="form.isPublic"
+              inputId="vis_public"
+            />
+            <label for="vis_public" class="cursor-pointer text-sm">Public</label>
+          </div>
+        </div>
+      </div>
+
+      <!-- Unique checkbox + key type -->
+      <div class="flex items-center gap-3">
+        <p-checkbox
+          [(ngModel)]="form.isUnique"
+          [binary]="true"
+          inputId="chk_unique"
+          (onChange)="onUniqueChange()"
+        />
+        <label for="chk_unique" class="cursor-pointer text-sm font-medium">Unique</label>
+        @if (form.isUnique) {
+        <p-select
+          [options]="uniqueTypes"
+          [(ngModel)]="form.uniqueType"
+          placeholder="Select key type"
+          appendTo="body"
+          class="flex-1"
+        />
+        }
+      </div>
+
+      <p-divider class="my-0" />
+
+      <!-- Reference dropdown -->
+      <div class="flex flex-col gap-3">
+        <div class="flex flex-col gap-1">
+          <label class="font-bold text-sm">Reference Type</label>
+          <p-select
+            [options]="referenceTypes"
+            [(ngModel)]="form.reference"
+            placeholder="None"
+            appendTo="body"
+            [showClear]="true"
+            (onChange)="onReferenceChange()"
+          />
+        </div>
+
+        <!-- Enum section -->
+        @if (isEnum) {
+        <div
+          class="flex flex-col gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800/40"
+        >
+          <!-- Entry builder -->
+          <div class="flex gap-2 items-end">
+            <div class="flex flex-col gap-1 w-28">
+              <label class="text-xs text-surface-500 font-semibold">Code</label>
+              <input
+                pInputText
+                [(ngModel)]="newEnumCode"
+                placeholder="ACTIVE"
+                dir="ltr"
+                class="text-left"
+              />
+            </div>
+            @for (lang of langs; track lang) {
+            <div class="flex flex-col gap-1 flex-1">
+              <label class="text-xs text-surface-500 font-semibold"
+                >Option ({{ langLabel(lang) }})</label
+              >
+              <input
+                pInputText
+                [(ngModel)]="newEnumOptions[lang]"
+                [placeholder]="isRtl(lang) ? 'التسمية' : 'Label'"
+                [dir]="isRtl(lang) ? 'rtl' : 'ltr'"
+                [class.text-right]="isRtl(lang)"
+                [class.text-left]="!isRtl(lang)"
+              />
+            </div>
+            }
+            <p-button
+              icon="pi pi-plus"
+              severity="primary"
+              [outlined]="true"
+              size="small"
+              (onClick)="addEnumEntry()"
+              [disabled]="!newEnumCode.trim()"
+            />
+          </div>
+
+          <!-- Entries list -->
+          @if (form.enumEntries.length) {
+          <div class="flex flex-col gap-1">
+            @for (entry of form.enumEntries; track entry.code; let i = $index) {
+            <div
+              class="flex items-center gap-3 px-3 py-2 rounded-md bg-surface-0 dark:bg-surface-900 border border-surface-200 dark:border-surface-700"
+            >
+              <span
+                class="font-mono text-xs font-semibold text-primary-600 dark:text-primary-400 w-28 shrink-0"
+                >{{ entry.code }}</span
+              >
+              @for (lang of langs; track lang) {
+              <span
+                class="flex-1 text-sm"
+                [dir]="isRtl(lang) ? 'rtl' : 'ltr'"
+                [class.text-right]="isRtl(lang)"
+              >
+                {{ entry.options[lang] || '—' }}
+              </span>
+              }
+              <p-button
+                icon="pi pi-times"
+                severity="danger"
+                [text]="true"
+                size="small"
+                (onClick)="removeEnumEntry(i)"
+              />
+            </div>
+            }
+          </div>
+          } @else {
+          <p class="text-sm text-surface-400 text-center m-0 py-1">
+            No options yet. Add one above.
+          </p>
+          }
+        </div>
+        }
+
+        <!-- Lookup / Foreign Key section -->
+        @if (isLookupOrFk) {
+        <div
+          class="flex flex-col gap-3 p-3 rounded-lg border border-surface-200 dark:border-surface-700 bg-surface-50 dark:bg-surface-800/40"
+        >
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-sm">Entity Type</label>
+            <p-select
+              [options]="entityTypes"
+              [(ngModel)]="form.refEntityType"
+              placeholder="Select entity"
+              appendTo="body"
+              (onChange)="onRefEntityChange()"
+            />
+          </div>
+          @if (form.refEntityType) {
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-sm">Attribute Name</label>
+            <p-select
+              [options]="refAttributeOptions"
+              [(ngModel)]="form.refAttributeName"
+              placeholder="Select attribute"
+              appendTo="body"
+            />
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="font-bold text-sm">Condition</label>
+            <textarea
+              pTextarea
+              rows="3"
+              [(ngModel)]="form.refCondition"
+              placeholder="e.g. status = 'active' AND type IN ('A', 'B')"
+              dir="ltr"
+              class="text-left w-full font-mono text-sm"
+              [class.ng-invalid]="!!refConditionError"
+              [class.ng-dirty]="!!refConditionError"
+            ></textarea>
+            @if (refConditionError) {
+            <small class="text-red-500">{{ refConditionError }}</small>
+            } @else {
+            <small class="text-surface-400">SQL WHERE expression — supports =, &lt;&gt;, &lt;, &gt;, LIKE, IN, BETWEEN, IS NULL, AND, OR, parentheses.</small>
+            }
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+  </ng-template>
+</app-dialog-shell>

@@ -1,92 +1,45 @@
-# Metadata Page — `app-tree-table` Usage
+# Metadata Page — Domains / Modules / Entities
 
-This page renders its content using the shared `TreeTableComponent`
-(`@/app/foundation/shared/components/tree-table/tree-table`).
+This page browses the platform's metadata as a 3-level hierarchy:
+
+```
+Domain
+  └─ Module
+       └─ Entity
+```
 
 ## Files
 
-- `metadata.ts` — defines `entityColumns` and the `modules` signal (initialized from `user-attributes.data.ts`)
-- `metadata.html` — renders `<app-tree-table>`
+- `metadata.ts` — defines the `DOMAINS_SOURCE` map and builds the sorted `domains` signal; also holds dialog state
+- `metadata.html` — renders collapsible domain/module panels (`p-panel`) and entity cards
 - `metadata.scss` — empty (styling is done via Tailwind utility classes per project convention)
-- `user-attributes.data.ts` — `TreeModule[]` data describing the `user` entity's attributes, grouped by `feature` (System Identifiers, Identity, Contact Info, Security & Authentication, Life Cycle, Personal Info, Media, Settings & Preferences, Classification, Multitenancy, Audit)
 
 ## Data shape
 
 ```ts
-TreeModule[]
-  └─ name: string
-  └─ entities: TreeNode[]
-       └─ key: string            // unique id, e.g. 'user.email'
-       └─ data: TreeNodeData      // row fields (must include `name`)
-       └─ children?: TreeNode[]   // shown in the nested table when expanded
+DOMAINS_SOURCE: Record<string /* domain */, Record<string /* module */, string[] /* entities */>>
 ```
 
-`user-attributes.data.ts` exports `USER_ATTRIBUTE_MODULES`, one module per attribute `feature`, each with a flat list of attribute entities (no nesting):
+`buildDomains()` converts this into `MetadataDomain[]`, sorting domains, modules and entities
+alphabetically:
 
 ```ts
-export const USER_ATTRIBUTE_MODULES: TreeModule[] = [
-  {
-    name: 'System Identifiers',
-    entities: [
-      { key: 'user.id',   data: { name: 'ID',   code: 'id',   type: 'number', required: 'Required', nullable: 'No' } },
-      { key: 'user.code', data: { name: 'Code', code: 'code', type: 'string', required: 'Required', nullable: 'No' } },
-    ],
-  },
-  // ...
-];
+interface MetadataEntity { name: string; }
+interface MetadataModule { name: string; entities: MetadataEntity[]; }
+interface MetadataDomain { name: string; modules: MetadataModule[]; }
 ```
 
-It was generated from a YAML attribute spec (`code`, `feature`, `type`, `isNullable`, `occurs.required`, `localization.name.en`, etc.) — see the project for the original source if the attribute set changes.
+## UI
 
-## Columns
-
-`entityColumns` describe each attribute row:
-
-- `name` (text, sortable/filterable) — localized attribute name
-- `code` (code) — raw attribute code
-- `type` (tag, `severityMap` per data type) — `string` / `number` / `boolean` / `datetime` / `date` / `text` / `json`
-- `required` (tag, `severityMap`) — `Required` / `Optional`
-- `nullable` (tag, `severityMap`) — `Yes` / `No`
-
-`cellType` controls how a column renders: `'tag'`, `'code'`, `'roles'`, `'org-name'`, or default text.
-
-## Template
-
-```html
-<app-tree-table
-  [modules]="modules()"
-  [entityColumns]="entityColumns"
-  [groupByModule]="true"
-  title="User Attributes"
-/>
-```
-
-- `[groupByModule]="true"` — shows the module name (feature group) as a heading above its entities
-- `[showToolbar]="true"` (default) — built-in search bar + title; pass `false` to use your own `<app-shared-toolbar>` in the host page
+- Each **domain** is a toggleable `p-panel` (expanded by default), with an icon + module count badge.
+- Each **module** is a nested toggleable `p-panel` (collapsed by default), with an entity count badge.
+- Each **entity** is rendered as a clickable card. Clicking it calls `openEntity(domain, module, entity)`,
+  which opens an `app-dialog-shell` popup showing the entity name, its module and domain.
 
 ## Replacing the static data with a real API
 
-1. Inject a data service that returns `TreeModule[]` (or maps your API response into that shape)
-2. Replace the `modules = signal<TreeModule[]>(USER_ATTRIBUTE_MODULES)` initializer with `signal<TreeModule[]>([])`
-3. Populate it in `ngOnInit` (implement `OnInit`):
-
-```ts
-ngOnInit(): void {
-  this.metadataService.getAttributes$()
-    .pipe(takeUntilDestroyed(this.destroyRef))
-    .subscribe(modules => this.modules.set(modules));
-}
-```
-
-## Optional features (not wired up yet)
-
-- **Sorting / column filters** — listen to `(sortChanged)` / `(colFilterChanged)` and recompute `modules` (or a `sortedEntitiesMap` signal) accordingly
-- **Selection / bulk actions** — bind `[selectedEntities]` / `[selectedItems]`, listen to `(entitySelectionChange)` / `(itemSelectionChange)`, and add `<app-shared-bottom-bar>`
-- **Cards/grid view** — set `[showLayoutToggle]="true"` + `[layoutInput]="layoutMode()"`, optionally with a custom `<ng-template #cardTemplate let-entity>`
-- **Custom row actions** — project `<ng-template #entityRowExtra>` / `#childRowExtra` / `#grandchildRowExtra`, or handle `(entityEdit)`, `(entityDelete)`, `(itemEdit)`, `(itemDelete)`
-
-## Full reference
-
-See [`docs/shared/tree-table.md`](../../../../../../../../docs/shared/tree-table.md) for the complete API
-(all inputs/outputs, `TreeTableColFilterEvent`, `TreeTableSortEvent`, and a full
-worked example based on the Permissions page).
+1. Inject a data service that returns the domain/module/entity hierarchy
+2. Replace `DOMAINS_SOURCE` / the `domains` signal initializer with data from the service
+   (still run it through `buildDomains()`, or have the API return pre-sorted data)
+3. Extend the dialog content in `metadata.html` (`#dialogContent`) with real entity metadata
+   once it's available
