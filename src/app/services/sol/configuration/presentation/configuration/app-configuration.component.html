@@ -16,13 +16,11 @@
           {{ idx + 1 }}
         }
       </span>
-
       <span class="nav-item__text">
         <span class="nav-item__label">{{ section.label }}</span>
         <span class="nav-item__desc">{{ section.description }}</span>
       </span>
     </button>
-
     @if (idx < navSections.length - 1) {
       <span class="nav-item__connector"></span>
     }
@@ -50,7 +48,48 @@
 
 </main>
 
-<!-- ══ BOTTOM NAV ARROWS ══════════════════════════════════════════════════════ -->
+<!-- ══ VALIDATION ERRORS PANEL (Step 11) ════════════════════════════════════ -->
+@if (validateState() === 'invalid' && validationErrors().length > 0) {
+  <div class="validation-panel" role="alert">
+    <div class="validation-panel__header">
+      <i class="pi pi-times-circle validation-panel__icon"></i>
+      <span class="validation-panel__title">
+        الكونفيج فيه {{ validationErrors().length === 1 ? 'خطأ' : validationErrors().length + ' أخطاء' }} — صلّحها قبل ما تكمّل
+      </span>
+      <button class="validation-panel__dismiss" (click)="clearValidationErrors()" aria-label="إغلاق">
+        <i class="pi pi-times"></i>
+      </button>
+    </div>
+    <ul class="validation-panel__list">
+      @for (err of validationErrors(); track $index) {
+        <li class="validation-panel__item">
+          <i class="pi pi-dot-circle"></i>
+          {{ err }}
+        </li>
+      }
+    </ul>
+  </div>
+}
+
+<!-- ══ PUBLISH SUCCESS PANEL (Step 13) ══════════════════════════════════════ -->
+@if (publishState() === 'done' && publishedUrl()) {
+  <div class="publish-panel" role="status">
+    <div class="publish-panel__header">
+      <i class="pi pi-check-circle publish-panel__icon"></i>
+      <span class="publish-panel__title">تم النشر بنجاح — رابط المعاينة جاهز</span>
+    </div>
+    <div class="publish-panel__url-row">
+      <a [href]="publishedUrl()!" target="_blank" rel="noopener" class="publish-panel__link">
+        {{ publishedUrl() }}
+      </a>
+      <button class="publish-panel__copy" (click)="copyPreviewUrl()" pTooltip="نسخ الرابط">
+        <i class="pi pi-copy"></i>
+      </button>
+    </div>
+  </div>
+}
+
+<!-- ══ BOTTOM NAV ════════════════════════════════════════════════════════════ -->
 <footer class="app-config-footer">
   @if (canGoPrev()) {
     <p-button
@@ -62,7 +101,35 @@
       (onClick)="goPrev()"
     />
   }
+
   <span class="app-config-footer__spacer"></span>
+
+  <!-- Publish (Step 13) -->
+  <p-button
+    [label]="publishState() === 'validating' ? 'جاري التحقق...' : publishState() === 'publishing' ? 'جاري النشر...' : 'Publish'"
+    icon="pi pi-upload"
+    iconPos="left"
+    severity="success"
+    [loading]="isPublishing()"
+    [disabled]="!canPreview() || isPublishing()"
+    pTooltip="حدد اسم/معرّف المشروع في Branding الأول"
+    [tooltipDisabled]="canPreview()"
+    (onClick)="publishConfig()"
+  />
+
+  <!-- Open Demo (Step 10 + 11) -->
+  <p-button
+    [label]="validateState() === 'validating' ? 'جاري التحقق...' : 'Open Demo'"
+    icon="pi pi-external-link"
+    iconPos="left"
+    [outlined]="true"
+    [loading]="validateState() === 'validating'"
+    [disabled]="!canPreview() || validateState() === 'validating'"
+    pTooltip="حدد اسم/معرّف المشروع في Branding الأول"
+    [tooltipDisabled]="canPreview()"
+    (onClick)="openDemoPreview()"
+  />
+
   @if (canGoNext()) {
     <p-button
       label="Next"

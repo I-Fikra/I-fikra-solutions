@@ -1,7 +1,9 @@
-import { Injectable, signal, computed, inject, PLATFORM_ID } from '@angular/core';
+import { Injectable, signal, computed, effect, inject, PLATFORM_ID } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemePersonalityService } from '@/app/foundation/core/theme-builder/theme-personality.service';
 import { mapComponentStyleToPersonalityTokens } from '@/app/foundation/core/theme-builder/component-style-mapper';
+import { ConfigBuilderService } from '@/app/foundation/core/services/config-builder.service';
+import { mapUiStyleConfigToProjectStyle } from '@/app/foundation/core/utils/map-ui-style-to-project-style.util';
 import {
   ComponentKey,
   ComponentStyleConfig,
@@ -19,8 +21,31 @@ const STORAGE_KEY = 'ui-style-designer-config';
 export class UIStyleDesignerService {
   private readonly platformId    = inject(PLATFORM_ID);
   private readonly personalitySvc = inject(ThemePersonalityService);
+  private readonly configBuilder  = inject(ConfigBuilderService);
 
   readonly config = signal<UIStyleConfig>(this._load());
+
+  /**
+   * ── ربط بـ ConfigBuilderService (Step 9) ───────────────────────────────────
+   * نفس باترن BrandingService (Step 7) و ConfigDataService (Step 8): effect()
+   * في الـ constructor بيراقب config() وبينادي ConfigBuilderService.setStyle()
+   * تلقائيًا مع كل patchComponent()/patchSubElement()/reset()/resetAll() —
+   * صفر تعديل مطلوب في ui-style-designer.component.ts. بيستخدم
+   * mapUiStyleConfigToProjectStyle المشتركة (foundation/core/utils).
+   *
+   * ملحوظة: بخلاف Step 7/8، هنا مفيش "حالة فاضية" حقيقية — config() دايمًا
+   * عنده الـ 5 component keys بقيمهم الافتراضية من DEFAULT_UI_STYLE_CONFIG من
+   * أول إنشاء للسيرفس (مش من أول تحميل للأبلكيشن — UIStyleDesignerService زي
+   * أي `providedIn: 'root'` تاني بيتعمله instantiate كسول (lazy) أول مرة حد
+   * يحقنه فعليًا، يعني شاشة "UI Style" أو DemoLauncherService). من لحظة ما
+   * السيرفس بيتعمله instantiate، ConfigBuilderService.config().style هيتملي
+   * بالقيم الافتراضية حتى لو اليوزر لسه ما لمسش حاجة — ده سلوك صحيح ومتوقع
+   * (الافتراضي نفسه "قيمة صالحة")، مش bug.
+   */
+  private readonly _syncStyleToConfigBuilder = effect(() => {
+    const style = mapUiStyleConfigToProjectStyle(this.config());
+    this.configBuilder.setStyle(style);
+  });
 
   readonly hasChanges = computed(() =>
     JSON.stringify(this.config()) !== JSON.stringify(DEFAULT_UI_STYLE_CONFIG)

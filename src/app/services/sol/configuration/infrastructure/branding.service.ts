@@ -8,15 +8,26 @@
  * own branding (see `ProjectConfigService`, loaded from `/api/projects.json`)
  * and NOT the sidebar config (`domain.config.ts`). No overlap with either —
  * two different products' branding, not a duplicate.
+ *
+ * ── ربط بـ ConfigBuilderService (Step 7) ───────────────────────────────────────
+ * بما إن BrandingConfig هنا هو فعلًا "براندينج التطبيق اللي هيتولّد" (مش
+ * براندينج الـ admin shell)، فهو المصدر الصح اللي يغذّي ConfigBuilderService —
+ * ده اللي خلّى الكوبلينج ده مقصود، مش تناقض مع الكومنت فوق. كل تغيير في
+ * config() (عن طريق save()/update()) بيتحوّل بـ mapBrandingToProjectFields()
+ * وبينبعت لـ ConfigBuilderService.updateBranding() تلقائيًا عن طريق effect()
+ * في الـ constructor — مفيش أي شاشة محتاجة تستدعي حاجة يدويًا.
  */
 import {
   Injectable,
   signal,
   computed,
+  effect,
   PLATFORM_ID,
   inject
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
+import { ConfigBuilderService } from '@/app/foundation/core/services/config-builder.service';
+import { mapBrandingToProjectFields } from './mappers/branding-to-config.mapper';
 
 /** A language the *generated app* (not the admin UI) can ship its content in. */
 export interface AppLanguage {
@@ -271,8 +282,35 @@ const DEFAULTS: BrandingConfig = {
 @Injectable({ providedIn: 'root' })
 export class BrandingService {
   private readonly platformId = inject(PLATFORM_ID);
+  private readonly configBuilder = inject(ConfigBuilderService);
 
   private readonly _config = signal<BrandingConfig>(this._load());
+
+  /**
+   * أي تغيير في config() (عن طريق save()/update()) بينعكس فورًا على
+   * ConfigBuilderService — ده اللي بيخلي شاشة Branding "موصّلة تلقائيًا"
+   * من غير ما الكومبونينت (branding.ts) يعرف حاجة عن وجود ConfigBuilderService
+   * أصلًا. الـ warnings من المابر (مثلاً: لوجو مش SVG) بتتسجل في console.warn
+   * بس — مش بتوقف الحفظ، عشان دي "تحويل غير مثالي" مش "خطأ" يمنع المستخدم
+   * من الاستمرار في تعبئة الفورم.
+   */
+  private readonly _syncToConfigBuilder = effect(() => {
+    const config = this._config();
+    const { fields, warnings } = mapBrandingToProjectFields({
+      appName: config.appName,
+      metaTitle: config.metaTitle,
+      themeColor: config.themeColor,
+      logo: config.logo,
+      favicon: config.favicon,
+      languages: config.languages
+    });
+    this.configBuilder.updateBranding(fields);
+    if (warnings.length && isPlatformBrowser(this.platformId)) {
+      for (const w of warnings) {
+        console.warn('[BrandingService → ConfigBuilderService]', w);
+      }
+    }
+  });
 
   readonly appName = computed<LocalizedText>(() =>
     this._mergeLocalized(this._config().appName, DEFAULTS.appName)
