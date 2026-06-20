@@ -3,7 +3,70 @@
   [columns]="columns"
   [dataKey]="'key'"
   [rows]="20"
-  [showActions]="false"
+  [showActions]="true"
   [toolbarShowAdd]="false"
   title="Metadata"
+  (onView)="openRow($event)"
 />
+
+<!-- ── Row Detail Dialog ──────────────────────────────────────────────────── -->
+<app-dialog-shell
+  [visible]="dialogVisible()"
+  (visibleChange)="dialogVisible.set($event)"
+  [header]="selectedRow()?.name ?? 'Attribute Details'"
+  [hideFooter]="true"
+  [style]="{ width: '480px' }"
+  (cancelled)="closeDialog()"
+>
+  @if (selectedRow(); as row) {
+    <div class="flex flex-col gap-4 py-1">
+
+      <!-- Module badge -->
+      <div class="flex items-center gap-2 pb-3 border-b border-(--surface-border)">
+        <i class="pi pi-box text-(--primary-color)"></i>
+        <span class="text-sm font-semibold text-(--text-color)">{{ row.module }}</span>
+      </div>
+
+      <!-- Fields grid -->
+      <div class="grid grid-cols-2 gap-x-6 gap-y-3">
+
+        <div class="flex flex-col gap-1">
+          <span class="text-[0.72rem] font-bold tracking-wide text-(--text-color-secondary) uppercase">Attribute Name</span>
+          <span class="text-sm font-medium text-(--text-color)">{{ row.name }}</span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-[0.72rem] font-bold tracking-wide text-(--text-color-secondary) uppercase">Code</span>
+          <code class="text-sm font-mono bg-(--surface-ground) px-2 py-0.5 rounded text-(--primary-color)">{{ row.code }}</code>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-[0.72rem] font-bold tracking-wide text-(--text-color-secondary) uppercase">Type</span>
+          <p-tag [value]="row.type" [severity]="typeSeverity(row.type)" styleClass="text-xs" />
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-[0.72rem] font-bold tracking-wide text-(--text-color-secondary) uppercase">Required</span>
+          <span class="text-sm" [class]="row.required === 'Required' ? 'text-(--green-600) font-semibold' : 'text-(--text-color-secondary)'">
+            <i class="pi" [class]="row.required === 'Required' ? 'pi-check-circle' : 'pi-minus-circle'"></i>
+            {{ row.required }}
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-[0.72rem] font-bold tracking-wide text-(--text-color-secondary) uppercase">Nullable</span>
+          <span class="text-sm" [class]="row.nullable === 'Yes' ? 'text-(--text-color-secondary)' : 'text-(--text-color) font-medium'">
+            {{ row.nullable }}
+          </span>
+        </div>
+
+        <div class="flex flex-col gap-1">
+          <span class="text-[0.72rem] font-bold tracking-wide text-(--text-color-secondary) uppercase">Key</span>
+          <code class="text-xs font-mono text-(--text-color-secondary)">{{ row.key }}</code>
+        </div>
+
+      </div>
+
+    </div>
+  }
+</app-dialog-shell>

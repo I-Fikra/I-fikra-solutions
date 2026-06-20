@@ -22,7 +22,7 @@ const builderRoutes: Routes = [
   {
     path: 'metadata',
     loadComponent: () =>
-      import('@/app/services/builder/metadata/presentation/pages/metadata/metadata').then(
+      import('@/app/domains/builder/metadata/presentation/pages/metadata/metadata').then(
         (m) => m.Metadata
       ),
     data: { titleKey: 'menu.metadata' }
@@ -32,7 +32,7 @@ const builderRoutes: Routes = [
   {
     path: 'generator',
     loadComponent: () =>
-      import('@/app/services/sol/configuration/presentation/domains/domains').then(
+      import('@/app/domains/sol/configuration/presentation/domains/domains').then(
         (m) => m.Domains
       ),
     data: { titleKey: 'menu.generator' }
@@ -42,7 +42,7 @@ const builderRoutes: Routes = [
   {
     path: 'configuration',
     loadComponent: () =>
-      import('@/app/services/sol/configuration/presentation/configuration/app-configuration.component').then(
+      import('@/app/domains/sol/configuration/presentation/configuration/app-configuration.component').then(
         (m) => m.AppConfigurationComponent
       ),
     data: { titleKey: 'menu.configuration' }

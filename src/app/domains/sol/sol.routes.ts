@@ -4,7 +4,7 @@ const solRoutes: Routes = [
   {
     path: 'app-config',
     loadComponent: () =>
-      import('@/app/services/sol/configuration/presentation/configuration/app-configuration.component').then(
+      import('@/app/domains/sol/configuration/presentation/configuration/app-configuration.component').then(
         (m) => m.AppConfigurationComponent
       ),
     data: { titleKey: 'menu.configuration' }

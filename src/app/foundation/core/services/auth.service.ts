@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Router } from '@angular/router';
 import { Observable, map, tap } from 'rxjs';
 
-import { environment } from '@/environments/environment.development';
+import { environment } from '@/environments/environment';
 
 interface TokenPayload {
   accessToken: string;

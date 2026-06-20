@@ -1,10 +1,10 @@
 ﻿import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
-import { UserDetailsComponent } from '@/app/services/iam/authorization/users/presentation/components/user-details/user-details';
+import { UserDetailsComponent } from '@/app/domains/iam/authorization/users/presentation/components/user-details/user-details';
 import { PopupShell } from '@/app/foundation/shared/components/popup-shell/popup-shell';
-import { GetLoggedInUserUseCase } from '@/app/services/iam/authorization/users/application/use-cases/queries/get-logged-in-user';
-import { UserRecord } from '@/app/services/iam/authorization/users/domain/entities/user.entity';
+import { GetLoggedInUserUseCase } from '@/app/domains/iam/authorization/users/application/use-cases/queries/get-logged-in-user';
+import { UserRecord } from '@/app/domains/iam/authorization/users/domain/entities/user.entity';
 
 @Component({
   selector: 'app-profile-menu',

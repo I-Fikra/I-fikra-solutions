@@ -1,20 +1,22 @@
-// ── Left Nav ──────────────────────────────────────────────────────────────────
+// ══ STEPPER NAV ═══════════════════════════════════════════════════════════════
 
 .app-config-nav {
   &__list {
     display: flex;
     flex-direction: row;
-    gap: 0.125rem;
-    flex: 1;
+    align-items: center;
+    gap: 0;
     background: var(--surface-card);
-    border-inline-end: 1px solid var(--surface-border);
+    border-radius: var(--border-radius);
+    padding: 0.75rem 1rem;
+    border: 1px solid var(--surface-border);
   }
 
   &__item {
     display: flex;
     align-items: center;
     gap: 0.75rem;
-    padding: 0.625rem 0.875rem;
+    padding: 0.5rem 0.75rem;
     border-radius: var(--border-radius);
     border: none;
     background: transparent;
@@ -22,16 +24,10 @@
     font-size: 0.875rem;
     font-weight: 500;
     cursor: pointer;
-    transition:
-      background 0.15s,
-      color 0.15s;
-    width: 100%;
+    transition: background 0.15s, color 0.15s;
     text-align: start;
-
-    i {
-      font-size: 0.9rem;
-      width: 1rem;
-    }
+    flex: 1;
+    min-width: 0;
 
     &:hover {
       background: var(--surface-hover);
@@ -39,116 +35,249 @@
     }
 
     &--active {
-      background: color-mix(in srgb, var(--primary-color) 10%, transparent);
       color: var(--primary-color);
       font-weight: 600;
-    }
-  }
-}
 
-// ── Nav item — enhanced multi-line layout ─────────────────────────────────────
-
-.app-config-nav__item {
-  align-items: flex-start !important;
-  padding: 0.625rem 0.875rem !important;
-
-  .nav-item__icon-wrap {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
-    background: var(--surface-ground);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    flex-shrink: 0;
-    margin-top: 1px;
-    transition: background 0.15s;
-
-    i {
-      font-size: 0.875rem;
-    }
-  }
-
-  .nav-item__text {
-    display: flex;
-    flex-direction: column;
-    gap: 0.125rem;
-    flex: 1;
-    min-width: 0;
-  }
-
-  .nav-item__label {
-    font-size: 0.875rem;
-    font-weight: 500;
-    line-height: 1.3;
-  }
-
-  .nav-item__desc {
-    font-size: 0.7rem;
-    color: var(--text-color-secondary);
-    opacity: 0.7;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    line-height: 1.3;
-  }
-
-  .nav-item__done {
-    color: var(--green-500);
-    font-size: 0.875rem;
-    margin-top: 3px;
-    flex-shrink: 0;
-  }
-
-  &--active {
-    .nav-item__icon-wrap {
-      background: color-mix(in srgb, var(--primary-color) 18%, transparent);
-
-      i {
-        color: var(--primary-color);
+      .nav-item__step {
+        background: var(--primary-color);
+        color: #fff;
+        border-color: var(--primary-color);
       }
     }
 
-    .nav-item__desc {
-      opacity: 1;
-      color: color-mix(
-        in srgb,
-        var(--primary-color) 70%,
-        var(--text-color-secondary)
-      );
-    }
-  }
+    &--done {
+      color: var(--green-600);
 
-  &:hover .nav-item__icon-wrap {
-    background: var(--surface-hover);
+      .nav-item__step {
+        background: var(--green-500);
+        color: #fff;
+        border-color: var(--green-500);
+      }
+    }
   }
 }
 
-// ── Main content ──────────────────────────────────────────────────────────────
+// ── Step badge ─────────────────────────────────────────────────────────────────
+
+.nav-item__step {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: 2px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+  color: var(--text-color-secondary);
+}
+
+// ── Text block ─────────────────────────────────────────────────────────────────
+
+.nav-item__text {
+  display: flex;
+  flex-direction: column;
+  gap: 0.1rem;
+  min-width: 0;
+}
+
+.nav-item__label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1.3;
+  white-space: nowrap;
+}
+
+.nav-item__desc {
+  font-size: 0.7rem;
+  color: var(--text-color-secondary);
+  opacity: 0.7;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  line-height: 1.3;
+}
+
+// ── Connector line between steps ───────────────────────────────────────────────
+
+.nav-item__connector {
+  flex: 0 0 24px;
+  height: 2px;
+  background: var(--surface-border);
+  border-radius: 1px;
+  margin: 0 0.25rem;
+}
+
+// ══ MAIN CONTENT ══════════════════════════════════════════════════════════════
 
 .app-config-content {
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-track {
-    background: transparent;
-  }
-
+  &::-webkit-scrollbar { width: 6px; }
+  &::-webkit-scrollbar-track { background: transparent; }
   &::-webkit-scrollbar-thumb {
     background: var(--surface-border);
     border-radius: 3px;
   }
 }
 
-// ── Section wrapper ───────────────────────────────────────────────────────────
-
 .config-section {
   display: flex;
   flex-direction: column;
   gap: 1.75rem;
 
-  &--fullwidth {
-    max-width: 100%;
+  &--fullwidth { max-width: 100%; }
+}
+
+// ══ FOOTER NAVIGATION ════════════════════════════════════════════════════════
+
+.app-config-footer {
+  display: flex;
+  align-items: center;
+  padding: 0.875rem 0 0;
+  margin-top: 1rem;
+  border-top: 1px solid var(--surface-border);
+
+  &__spacer {
+    flex: 1;
+  }
+}
+
+// ══ VALIDATION ERRORS PANEL (Step 11) ════════════════════════════════════════
+
+.validation-panel {
+  margin-top: 1.25rem;
+  border: 1.5px solid var(--red-300);
+  border-radius: var(--border-radius);
+  background: var(--red-50, #fef2f2);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    background: var(--red-100, #fee2e2);
+    border-bottom: 1px solid var(--red-200, #fecaca);
+  }
+
+  &__icon {
+    color: var(--red-500);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    flex: 1;
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--red-800, #991b1b);
+  }
+
+  &__dismiss {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    color: var(--red-400);
+    padding: 0.25rem;
+    border-radius: 4px;
+    line-height: 1;
+    transition: color 0.15s, background 0.15s;
+
+    &:hover {
+      color: var(--red-600);
+      background: var(--red-200, #fecaca);
+    }
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0;
+    padding: 0.75rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  &__item {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.5rem;
+    font-size: 0.8125rem;
+    color: var(--red-700, #b91c1c);
+    line-height: 1.5;
+
+    .pi-dot-circle {
+      font-size: 0.625rem;
+      margin-top: 0.35rem;
+      flex-shrink: 0;
+      color: var(--red-400);
+    }
+  }
+}
+
+// ══ PUBLISH SUCCESS PANEL (Step 13) ══════════════════════════════════════════
+
+.publish-panel {
+  margin-top: 1.25rem;
+  border: 1.5px solid var(--green-300);
+  border-radius: var(--border-radius);
+  background: var(--green-50, #f0fdf4);
+  overflow: hidden;
+
+  &__header {
+    display: flex;
+    align-items: center;
+    gap: 0.625rem;
+    padding: 0.75rem 1rem;
+    background: var(--green-100, #dcfce7);
+    border-bottom: 1px solid var(--green-200, #bbf7d0);
+  }
+
+  &__icon {
+    color: var(--green-500);
+    font-size: 1rem;
+    flex-shrink: 0;
+  }
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: var(--green-800, #166534);
+  }
+
+  &__url-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1rem;
+  }
+
+  &__link {
+    flex: 1;
+    font-size: 0.8125rem;
+    color: var(--primary-color);
+    word-break: break-all;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover { opacity: 0.8; }
+  }
+
+  &__copy {
+    background: transparent;
+    border: 1px solid var(--green-300);
+    border-radius: var(--border-radius);
+    color: var(--green-600);
+    cursor: pointer;
+    padding: 0.375rem 0.5rem;
+    line-height: 1;
+    transition: background 0.15s, color 0.15s;
+    flex-shrink: 0;
+
+    &:hover {
+      background: var(--green-100, #dcfce7);
+      color: var(--green-700);
+    }
   }
 }

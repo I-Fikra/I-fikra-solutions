@@ -18,7 +18,7 @@ import {
   LocalizedDocument,
   LocalizedText,
   SUPPORTED_APP_LANGUAGES
-} from '@/app/services/sol/configuration/infrastructure/branding.service';
+} from '@/app/domains/sol/configuration/infrastructure/branding.service';
 
 /** The two legal documents collected on this tab — one upload per active language each. */
 type DocumentField = 'privacyPolicyDocument' | 'termsDocument';

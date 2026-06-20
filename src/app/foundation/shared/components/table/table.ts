@@ -81,6 +81,7 @@ import {
   BOOLEAN_MATCH_MODES
 } from '../../utils/match-modes.constants';
 import { SharedBottomBarComponent } from '../bottom-bar/shared-bottombar.component';
+import { TableViewService } from './table-view.service';
 
 // Re-export so consumers can import from a single location
 export type { TableColumn, ToolbarFilterDefinition, BottomBarAction };
@@ -133,7 +134,7 @@ export interface CustomAction {
   ],
   templateUrl: './table.html',
   styleUrl: './table.scss',
-  providers: [MessageService, ConfirmationService]
+  providers: [MessageService, ConfirmationService, TableViewService]
 })
 export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   private readonly LIST_FILTER_SYNC_DELAY_MS = 0;
@@ -197,26 +198,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   /** عدد الـ fields اللي بتظهر في الـ card body (default 7) */
   @Input() cardMaxFields = 7;
 
-  // ✅ PERF: cached map بدل O(n) slice+filter على كل render
-  private _cardFieldIndexCache = new Map<string, number>();
-  private _cardFieldIndexCacheKey = '';
-
-  getCardFieldIndex(col: TableColumn, colIndex: number): number {
-    const cols = this.exportColumns();
-    const cacheKey = cols.map((c) => c.field).join(',');
-    if (cacheKey !== this._cardFieldIndexCacheKey) {
-      this._cardFieldIndexCache.clear();
-      this._cardFieldIndexCacheKey = cacheKey;
-      let bodyIdx = 0;
-      cols.forEach((c, i) => {
-        if (i !== 0 && c.type !== 'status' && !c.isStatus) {
-          this._cardFieldIndexCache.set(c.field, bodyIdx++);
-        }
-      });
-    }
-    return this._cardFieldIndexCache.get(col.field) ?? 0;
-  }
-
   // ── Outputs ───────────────────────────────────────────────────────────────
 
   // The EventEmitters below are intentionally typed `any` / `any[]`
@@ -267,6 +248,9 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   private cdr = inject(ChangeDetectorRef);
   private destroyRef = inject(DestroyRef);
 
+  /** exposed for template — all style/view helpers live here */
+  readonly view = inject(TableViewService);
+
   // ── State ─────────────────────────────────────────────────────────────────
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -286,8 +270,10 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   activeRowMenuItems: MenuItem[] = [];
   activeHeaderCol: TableColumn | null = null;
-  activeSortField = '';
-  activeSortOrder: 1 | -1 = 1;
+
+  /** Delegate sort state to TableViewService — single source of truth */
+  get activeSortField(): string { return this.view.activeSortField(); }
+  get activeSortOrder(): 1 | -1 { return this.view.activeSortOrder(); }
 
   toolbarFilterValues: Record<string, string[]> = {};
   colFilterSelections: Record<string, string[]> = {};
@@ -537,15 +523,13 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   // ── Sort ──────────────────────────────────────────────────────────────────
 
   sortColumn(col: TableColumn, order: 1 | -1): void {
-    this.activeSortField = col.field;
-    this.activeSortOrder = order;
+    this.view.setSortState(col.field, order);
     if (!this.dt) return;
     this.dt.sort({ field: col.field, order });
   }
 
   clearSort(): void {
-    this.activeSortField = '';
-    this.activeSortOrder = 1;
+    this.view.clearSortState();
     if (!this.dt) return;
     // PrimeNG's Table does not expose sortField/sortOrder/_sortField/_sortOrder
     // publicly — resetting them requires bypassing the type system.
@@ -559,44 +543,18 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     this.cdr.markForCheck();
   }
 
-  isSortable(col: TableColumn): boolean {
-    return col.sortable !== false;
-  }
+  // ── Style/view helpers — delegated to TableViewService ────────────────────
+  // الـ template ممكن يستخدمهم directly على الـ service عبر `view.xxx(col)`
+  // أو عبر هذه الـ shortcut methods عشان مش محتاج تغيير في الـ template.
 
-  isFilterable(col: TableColumn): boolean {
-    return col.filterable !== false;
-  }
-
-  canShowHeaderActions(col: TableColumn): boolean {
-    return this.isSortable(col) || this.isFilterable(col);
-  }
-
-  isColumnSorted(col: TableColumn): boolean {
-    return this.activeSortField === col.field;
-  }
-
-  getSortIcon(col: TableColumn): string {
-    if (this.activeSortField !== col.field) return '';
-    return this.activeSortOrder === 1
-      ? 'pi-sort-amount-up-alt'
-      : 'pi-sort-amount-down-alt';
-  }
-
-  getSortAscIcon(col: TableColumn): string {
-    return this.activeSortField === col.field && this.activeSortOrder === 1
-      ? 'pi pi-check'
-      : 'pi pi-sort-amount-up-alt';
-  }
-
-  getSortDescIcon(col: TableColumn): string {
-    return this.activeSortField === col.field && this.activeSortOrder === -1
-      ? 'pi pi-check'
-      : 'pi pi-sort-amount-down-alt';
-  }
-
-  getFilterType(col: TableColumn): string {
-    return resolveFilterType(col);
-  }
+  isSortable(col: TableColumn): boolean { return this.view.isSortable(col); }
+  isFilterable(col: TableColumn): boolean { return this.view.isFilterable(col); }
+  canShowHeaderActions(col: TableColumn): boolean { return this.view.canShowHeaderActions(col); }
+  isColumnSorted(col: TableColumn): boolean { return this.view.isColumnSorted(col); }
+  getSortIcon(col: TableColumn): string { return this.view.getSortIcon(col); }
+  getSortAscIcon(col: TableColumn): string { return this.view.getSortAscIcon(col); }
+  getSortDescIcon(col: TableColumn): string { return this.view.getSortDescIcon(col); }
+  getFilterType(col: TableColumn): string { return this.view.getFilterType(col); }
 
   // ── Search ────────────────────────────────────────────────────────────────
 
@@ -632,8 +590,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     this.colFilterSelections = { ...cleared };
 
     this.advancedFilterState.clear();
-    this.activeSortField = '';
-    this.activeSortOrder = 1;
+    this.view.clearSortState();
     this.dt?.clear();
     this.filteredItems.set(this.items());
   }
@@ -1043,27 +1000,15 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
    */
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hasCardFooterContent(item: any): boolean {
-    if (item['tags']) return true;
-    return this.exportColumns().some(
-      (col) => col.type === 'date' && this.isValidDate(item[col.field])
-    );
+    return this.view.hasCardFooterContent(item, this.exportColumns());
   }
 
-  /** Guard against placeholder values like "—" that the API sends instead of null */
   isValidDate(value: unknown): boolean {
-    if (!value || typeof value === 'boolean') return false;
-    const s = String(value).trim();
-    if (
-      !s ||
-      s === '—' ||
-      s === '-' ||
-      s === 'N/A' ||
-      s === 'null' ||
-      s === 'undefined'
-    )
-      return false;
-    const d = new Date(s);
-    return !isNaN(d.getTime());
+    return this.view.isValidDate(value);
+  }
+
+  getCardFieldIndex(col: TableColumn, colIndex: number): number {
+    return this.view.getCardFieldIndex(col, this.exportColumns());
   }
 
   openRowMenu(event: MouseEvent, item: unknown): void {

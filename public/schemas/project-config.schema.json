@@ -1,0 +1,290 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://internal/schemas/project-config.schema.json",
+  "title": "ProjectConfigInput",
+  "description": "العقد الموحد الوحيد بين الويزارد والديمو. أي تعديل في شكل الكونفيج يتم هنا فقط، ثم يُعاد توليد TypeScript types في الويزارد والديمو من هذا الملف نفسه.",
+  "type": "object",
+  "required": ["id", "projectName", "websiteTitle", "primaryColor", "domains"],
+  "additionalProperties": false,
+  "properties": {
+    "id": { "type": "string", "description": "معرّف المشروع الفريد" },
+    "projectName": { "type": "string", "description": "اسم المشروع" },
+    "websiteTitle": { "type": "string", "description": "عنوان التاب في المتصفح" },
+    "primaryColor": { "type": "string", "description": "Hex أو rgb، مثال #D94452" },
+    "logoSvg": { "type": "string", "description": "SVG خام للوجو" },
+    "logoSvgDark": { "type": "string", "description": "نسخة dark mode من اللوجو" },
+
+    "faviconSvg": {
+      "type": "string",
+      "description": "قرار مُتخذ: تمت إضافته من ProjectConfig (runtime) لأنه كان ناقصًا من ProjectConfigInput."
+    },
+    "isDefault": {
+      "type": "boolean",
+      "description": "قرار مُتخذ: تمت إضافته من ProjectConfig (runtime) للسبب نفسه."
+    },
+
+    "colors": {
+      "$ref": "#/definitions/ProjectColorConfig",
+      "description": "قرار مُتخذ: تُركت top-level (مطابقة لما يعمل فعليًا في project-config.service.ts الحالي)، ولم تُنقل تحت style، رغم أن الكومنت الأصلي في الكود كان يقترح ذلك."
+    },
+
+    "style": { "$ref": "#/definitions/ProjectStyleConfig" },
+
+    "domains": {
+      "type": "array",
+      "items": { "$ref": "#/definitions/ConfigInputDomain" }
+    }
+  },
+
+  "definitions": {
+    "ColorZoneTokens": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "topbarBg": { "type": "string" },
+        "topbarColor": { "type": "string" },
+        "topbarBorder": { "type": "string" },
+        "topbarShadow": { "type": "string" },
+        "sidebarBg": { "type": "string" },
+        "sidebarActiveColor": { "type": "string" },
+        "bodyBg": { "type": "string" },
+        "bodyColor": { "type": "string" },
+        "textOverride": { "type": "string" },
+        "cardBg": { "type": "string" },
+        "cardBorder": { "type": "string" },
+        "cardShadow": { "type": "string" },
+        "dialogHeaderBg": { "type": "string" },
+        "dialogHeaderColor": { "type": "string" },
+        "dialogBorder": { "type": "string" },
+        "dialogShadow": { "type": "string" },
+        "tableHeaderBg": { "type": "string" },
+        "tableHoverBg": { "type": "string" },
+        "accentOverride": { "type": "string" }
+      }
+    },
+
+    "ProjectColorConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "primary": { "type": "string", "description": "Seed hex يقود الـ PrimeNG palette" },
+        "light": { "$ref": "#/definitions/ColorZoneTokens" },
+        "dark": { "$ref": "#/definitions/ColorZoneTokens" }
+      }
+    },
+
+    "ComponentShape": {
+      "type": "string",
+      "enum": ["sharp", "rounded", "soft", "pill"]
+    },
+
+    "SubElementKey": {
+      "type": "string",
+      "enum": ["title", "body", "footer", "header", "row", "content"]
+    },
+
+    "SubElementStyle": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["fontFamily", "fontSize", "fontWeight", "fontColor", "textAlign"],
+      "properties": {
+        "fontFamily": { "type": "string" },
+        "fontSize": { "type": "number" },
+        "fontWeight": { "type": "string", "enum": ["Regular", "Medium", "Bold"] },
+        "fontColor": { "type": "string" },
+        "textAlign": { "type": "string", "enum": ["left", "center", "right", "justify"] }
+      }
+    },
+
+    "ComponentStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "cornerRadius", "elevationShadow", "width", "internalPadding",
+        "border", "borderWidth", "borderColor", "externalMargin",
+        "fontFamily", "fontWeight", "subElements"
+      ],
+      "properties": {
+        "cornerRadius": { "type": "number" },
+        "elevationShadow": { "type": "boolean" },
+        "width": { "type": "string", "enum": ["standard", "highlighted"] },
+        "internalPadding": { "type": "number" },
+        "border": { "type": "boolean" },
+        "borderWidth": { "type": "number" },
+        "borderColor": { "type": "string" },
+        "externalMargin": { "type": "number" },
+        "fontFamily": { "type": "string" },
+        "fontWeight": { "type": "string", "enum": ["Regular", "Medium", "Bold"] },
+        "subElements": {
+          "type": "object",
+          "additionalProperties": false,
+          "propertyNames": { "$ref": "#/definitions/SubElementKey" },
+          "patternProperties": {
+            "^(title|body|footer|header|row|content)$": { "$ref": "#/definitions/SubElementStyle" }
+          }
+        }
+      }
+    },
+
+    "TableStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": { "type": "string", "enum": ["default", "striped", "bordered", "minimal"] },
+        "headerStyle": { "type": "string", "enum": ["filled", "gradient", "minimal"] },
+        "rowSeparator": { "type": "string", "enum": ["none", "thin", "thick", "colored"] },
+        "columnSeparator": { "type": "boolean" },
+        "rowHeight": { "type": "string", "enum": ["compact", "normal", "spacious"] },
+        "shape": { "$ref": "#/definitions/ComponentShape" },
+        "advanced": { "$ref": "#/definitions/ComponentStyleConfig" }
+      }
+    },
+
+    "DialogStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": { "type": "string", "enum": ["flat", "accent-header", "gradient-header", "outlined"] },
+        "headerHeight": { "type": "string", "enum": ["compact", "normal", "tall"] },
+        "overlayOpacity": { "type": "string", "enum": ["light", "medium", "dark"] },
+        "animation": { "type": "string", "enum": ["fade", "slide", "zoom"] },
+        "shape": { "$ref": "#/definitions/ComponentShape" },
+        "advanced": { "$ref": "#/definitions/ComponentStyleConfig" }
+      }
+    },
+
+    "CardStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "style": { "type": "string", "enum": ["elevated", "bordered", "flat", "glass"] },
+        "shape": { "$ref": "#/definitions/ComponentShape" },
+        "advanced": { "$ref": "#/definitions/ComponentStyleConfig" }
+      }
+    },
+
+    "TopbarStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "قرار مُتخذ: بدون advanced — topbar لسه مش ComponentKey معترف بيه في ui-style-designer (tables|sidebars|cards|dialogs|shapes بس).",
+      "properties": {
+        "height": { "type": "string", "enum": ["compact", "normal", "tall"] },
+        "border": { "type": "string", "enum": ["none", "thin", "shadow"] },
+        "logoStyle": { "type": "string", "enum": ["icon-text", "icon-only", "text-only", "hidden"] },
+        "navAlign": { "type": "string", "enum": ["left", "center", "right"] },
+        "navStyle": { "type": "string", "enum": ["links", "pills", "underline", "buttons"] },
+        "showLang": { "type": "boolean" },
+        "showTheme": { "type": "boolean" },
+        "showConfig": { "type": "boolean" },
+        "showSearch": { "type": "boolean" },
+        "showNotif": { "type": "boolean" }
+      }
+    },
+
+    "SidebarStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "width": { "type": "string", "enum": ["narrow", "normal", "wide"] },
+        "iconsOnly": { "type": "boolean" },
+        "advanced": { "$ref": "#/definitions/ComponentStyleConfig" }
+      }
+    },
+
+    "ButtonStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "قرار مُتخذ: بدون advanced — button لسه مش ComponentKey مستقل، وممكن يتقابل مع shapes لاحقًا.",
+      "properties": {
+        "size": { "type": "string", "enum": ["sm", "md", "lg"] },
+        "shadow": { "type": "string", "enum": ["none", "soft", "lifted"] },
+        "shape": { "$ref": "#/definitions/ComponentShape" }
+      }
+    },
+
+    "LoginStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "layout": { "type": "string", "enum": ["centered", "split", "fullscreen"] },
+        "bg": { "type": "string", "enum": ["solid", "gradient", "image"] },
+        "bgColor": { "type": "string" },
+        "bgGradientFrom": { "type": "string" },
+        "bgGradientTo": { "type": "string" },
+        "logoPos": { "type": "string", "enum": ["top", "left", "hidden"] }
+      }
+    },
+
+    "ProjectStyleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "properties": {
+        "table": { "$ref": "#/definitions/TableStyleConfig" },
+        "dialog": { "$ref": "#/definitions/DialogStyleConfig" },
+        "card": { "$ref": "#/definitions/CardStyleConfig" },
+        "topbar": { "$ref": "#/definitions/TopbarStyleConfig" },
+        "sidebar": { "$ref": "#/definitions/SidebarStyleConfig" },
+        "button": { "$ref": "#/definitions/ButtonStyleConfig" },
+        "login": { "$ref": "#/definitions/LoginStyleConfig" }
+      }
+    },
+
+    "ConfigInputSubModule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "path"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "icon": { "type": "string" },
+        "path": { "type": "string", "description": "مثال: /org/communities" },
+        "enabled": { "type": "boolean", "default": true }
+      }
+    },
+
+    "ConfigInputModule": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "apiUrl"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "icon": { "type": "string" },
+        "apiUrl": { "type": "string" },
+        "fallbackJsonAr": { "type": "string" },
+        "fallbackJsonEn": { "type": "string" },
+        "idField": { "type": "string", "default": "id" },
+        "actions": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "create": { "type": "boolean", "default": true },
+            "edit": { "type": "boolean", "default": true },
+            "view": { "type": "boolean", "default": true },
+            "delete": { "type": "boolean", "default": true }
+          }
+        },
+        "enabled": { "type": "boolean", "default": true },
+        "subModules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ConfigInputSubModule" }
+        }
+      }
+    },
+
+    "ConfigInputDomain": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "label", "modules"],
+      "properties": {
+        "id": { "type": "string" },
+        "label": { "type": "string" },
+        "enabled": { "type": "boolean", "default": true },
+        "modules": {
+          "type": "array",
+          "items": { "$ref": "#/definitions/ConfigInputModule" }
+        }
+      }
+    }
+  }
+}

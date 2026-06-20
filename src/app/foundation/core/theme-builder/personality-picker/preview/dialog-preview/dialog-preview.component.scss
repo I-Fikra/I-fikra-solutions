@@ -1,68 +1,208 @@
-/* Scoped styles for dialog-preview — mirrors lp-dialog-preview-host from personality-picker */
+/* ─────────────────────────────────────────────────────────────────────────────
+   dialog-preview — mini dashboard shell + real overlay + animated dialog box
+   ───────────────────────────────────────────────────────────────────────────── */
 
-.lp-dialog-preview-host {
+// ── Host wrapper ───────────────────────────────────────────────────────────────
+
+.lp-dp-host {
+  flex: 1;
+  display: flex;
+  align-items: stretch;
+}
+
+// ── Shell (mini dashboard) ────────────────────────────────────────────────────
+
+.lp-dp-shell {
+  flex: 1;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--surface-border);
+  border-radius: 8px;
   overflow: hidden;
-  min-height: 320px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-
-  ::ng-deep .p-dialog-mask {
-    position: absolute !important;
-    border-radius: inherit;
-  }
-
-  ::ng-deep .p-dialog {
-    position: relative !important;
-    transform: none !important;
-    margin: 0 auto;
-    max-height: 90%;
-
-    .p-dialog-header {
-      background:    var(--app-dialog-header-bg,    var(--surface-card));
-      color:         var(--app-dialog-header-color, var(--text-color));
-      min-height:    var(--app-dialog-header-height, 52px);
-      border-radius: var(--app-dialog-radius, 12px) var(--app-dialog-radius, 12px) 0 0;
-      display: flex;
-      align-items: center;
-      padding: 0 1rem;
-    }
-
-    .p-dialog-content {
-      border-radius: 0 0 var(--app-dialog-radius, 12px) var(--app-dialog-radius, 12px);
-    }
-  }
-}
-
-.lp-preview-dialog-header {
-  display: flex;
-  align-items: center;
-  width: 100%;
-  font-weight: 600;
-  font-size: 0.9rem;
-}
-
-// ── Dialog body mock fields ────────────────────────────────────────────────────
-.lp-dialog__body { padding: 8px 10px 10px; }
-
-.lp-field {
-  height: 20px;
   background: var(--surface-ground);
-  margin-bottom: 6px;
+  min-height: 320px;
+}
+
+// ── Topbar ─────────────────────────────────────────────────────────────────────
+
+.lp-dp-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 8px;
+  flex-shrink: 0;
+  transition: height 0.25s, background 0.25s;
+
+  &__logo {
+    width: 28px; height: 6px; border-radius: 3px;
+    background: currentColor; opacity: 0.3;
+  }
+  &__actions { display: flex; gap: 4px; }
+  &__dot {
+    width: 12px; height: 12px; border-radius: 50%;
+    background: currentColor; opacity: 0.2;
+  }
+}
+
+// ── Body ───────────────────────────────────────────────────────────────────────
+
+.lp-dp-body {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+// ── Sidebar ────────────────────────────────────────────────────────────────────
+
+.lp-dp-sidebar {
+  flex-shrink: 0;
+  border-right: 1px solid rgba(0,0,0,0.08);
+  padding: 6px 4px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  transition: width 0.25s, background 0.25s;
+
+  &__item {
+    height: 8px; border-radius: 3px;
+    background: currentColor; opacity: 0.15;
+    &--active { opacity: 0.55; background: var(--primary-color); }
+  }
+}
+
+// ── Content area ───────────────────────────────────────────────────────────────
+
+.lp-dp-content {
+  flex: 1;
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  opacity: 0.35; // dimmed — dialog is the focus
+}
+
+.lp-dp-cards {
+  display: flex;
+  gap: 6px;
+}
+
+.lp-dp-card {
+  flex: 1;
+  background: var(--surface-card);
+  border-radius: 5px;
+  padding: 5px 6px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  border: 1px solid var(--surface-border);
+
+  &__label {
+    height: 5px; border-radius: 2px;
+    background: var(--text-color-secondary); opacity: 0.4; width: 55%;
+  }
+  &__value {
+    height: 9px; border-radius: 2px;
+    background: var(--text-color); opacity: 0.5; width: 40%;
+    &--accent { background: var(--primary-color); opacity: 0.7; }
+  }
+}
+
+.lp-dp-table-hint {
+  background: var(--surface-card);
+  border-radius: 5px;
+  border: 1px solid var(--surface-border);
+  padding: 4px 5px;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.lp-dp-table-row {
+  height: 6px; border-radius: 2px;
+  background: var(--text-color); opacity: 0.12;
+}
+
+// ── Overlay backdrop ───────────────────────────────────────────────────────────
+
+.lp-dp-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(2, 6, 23, 1);
+  // opacity is set via [style.opacity] bound to overlayOpacity()
+  z-index: 10;
+  border-radius: inherit;
+}
+
+// ── Dialog box ─────────────────────────────────────────────────────────────────
+
+.lp-dp-dialog {
+  position: absolute;
+  z-index: 11;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 240px;
+  min-width: 200px;
+  max-width: calc(100% - 20px);
+  background: var(--surface-card);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.25);
+  overflow: hidden;
+  // border-radius and border set via [ngStyle]
+
+  &--popup {
+    // gradient border via box-shadow trick (same as real app popup style)
+    &::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      padding: 2px;
+      background: linear-gradient(135deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 50%, #8b5cf6));
+      -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+      mask-composite: exclude;
+      pointer-events: none;
+    }
+  }
+}
+
+// ── Dialog header ──────────────────────────────────────────────────────────────
+
+.lp-dp-dialog__header {
+  font-size: 0.78rem;
+  font-weight: 600;
+  gap: 4px;
+  transition: background 0.2s, color 0.2s, min-height 0.2s;
+  // background/color/minHeight set via [ngStyle]
+
+  border-radius: var(--app-dialog-radius, 12px) var(--app-dialog-radius, 12px) 0 0;
+}
+
+// ── Dialog body ────────────────────────────────────────────────────────────────
+
+.lp-dp-dialog__body {
+  padding: 10px 12px 12px;
+  background: var(--surface-card);
+  border-radius: 0 0 var(--app-dialog-radius, 12px) var(--app-dialog-radius, 12px);
+}
+
+.lp-dp-field {
+  height: 18px;
+  background: var(--surface-ground);
+  margin-bottom: 5px;
   width: 100%;
   border: 1px solid var(--surface-border);
   transition: border-radius 0.2s;
-  &--short { width: 65%; }
+  &--short { width: 62%; }
 }
 
-.lp-btn-row { display: flex; gap: 6px; margin-top: 8px; }
+.lp-dp-btn-row { display: flex; gap: 5px; margin-top: 7px; }
 
-.lp-btn {
+.lp-dp-btn {
   flex: 1;
-  padding: 5px 10px;
+  padding: 4px 8px;
   border: none;
-  font-size: 0.72rem;
+  font-size: 0.68rem;
   font-weight: 600;
   cursor: default;
   transition: border-radius 0.2s, box-shadow 0.2s;
@@ -73,9 +213,40 @@
     color: var(--text-color-secondary);
     border: 1px solid var(--surface-border);
   }
-
   &--ok {
     background: var(--primary-color);
     color: #fff;
+  }
+}
+
+// ── Toggle button ──────────────────────────────────────────────────────────────
+
+.lp-dp-toggle {
+  position: absolute;
+  bottom: 7px;
+  right: 7px;
+  z-index: 12;
+  width: 22px; height: 22px;
+  border-radius: 50%;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  color: var(--text-color-secondary);
+  display: flex; align-items: center; justify-content: center;
+  cursor: pointer;
+  font-size: 0.6rem;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  transition: background 0.15s, color 0.15s, transform 0.15s;
+  padding: 0;
+
+  &:hover {
+    background: var(--primary-color);
+    color: #fff;
+    border-color: var(--primary-color);
+    transform: scale(1.1);
+  }
+
+  &--open {
+    background: var(--surface-ground);
+    color: var(--text-color-secondary);
   }
 }

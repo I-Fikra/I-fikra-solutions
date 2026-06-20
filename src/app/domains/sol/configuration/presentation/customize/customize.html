@@ -27,37 +27,36 @@
       </button>
     }
 
-    <!-- Expand / collapse live preview -->
+    <!-- Mobile only: toggle preview panel -->
     <button
-      class="preview-selector__chip preview-selector__chip--expand"
+      class="preview-selector__chip preview-selector__chip--expand preview-selector__chip--mobile-toggle"
       [class.preview-selector__chip--active]="previewExpanded()"
       (click)="togglePreviewExpanded()"
-      [pTooltip]="previewExpanded() ? 'Show settings only' : 'Show expanded live preview'"
+      [pTooltip]="previewExpanded() ? 'Hide Preview' : 'Show Preview'"
       tooltipPosition="top"
     >
-      <i class="pi" [class.pi-angle-double-left]="!previewExpanded()" [class.pi-angle-double-right]="previewExpanded()"></i>
-      <span>{{ previewExpanded() ? 'Settings Only' : 'Expand Preview' }}</span>
+      <i class="pi" [class.pi-eye-slash]="previewExpanded()" [class.pi-eye]="!previewExpanded()"></i>
+      <span>{{ previewExpanded() ? 'Hide Preview' : 'Preview' }}</span>
     </button>
   </div>
 
-  <div class="customize-layout" [class.customize-layout--expanded]="previewExpanded()">
+  <div class="customize-layout customize-layout--always-split" [class.customize-layout--preview-open]="previewExpanded()">
     <div class="customize-layout__settings config-card config-card--personality">
       <app-personality-picker
         [activeSection]="activeBuilderSection()"
-        [previewExpanded]="previewExpanded()"
+        [previewExpanded]="true"
         (activeSectionChange)="activeBuilderSection.set($event)"
       />
     </div>
 
-    @if (previewExpanded()) {
-      <div class="customize-layout__preview">
-        <app-personality-picker
-          [activeSection]="activeBuilderSection()"
-          [previewExpanded]="previewExpanded()"
-          [fullPageOnly]="true"
-        />
-      </div>
-    }
+    <!-- Always visible on large screens; toggled on small screens -->
+    <div class="customize-layout__preview" [class.customize-layout__preview--hidden]="!previewExpanded()">
+      <app-personality-picker
+        [activeSection]="activeBuilderSection()"
+        [previewExpanded]="true"
+        [fullPageOnly]="true"
+      />
+    </div>
   </div>
 
   <!-- ══ DEMO LAUNCHER ══════════════════════════════════════════════════════ -->
