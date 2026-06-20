@@ -6,7 +6,7 @@ import { TooltipModule } from 'primeng/tooltip';
 
 import { Domains } from '@/app/domains/sol/configuration/presentation/domains/domains';
 import { Branding } from '@/app/domains/sol/configuration/presentation/branding/branding';
-import { UIStyleDesignerComponent } from '@/app/foundation/core/ui-style-designer/ui-style-designer.component';
+import { UIStyleSectionComponent } from '@/app/foundation/core/ui-style-designer/ui-style-section.component';
 import { ConfigBuilderService } from '@/app/foundation/core/services/config-builder.service';
 import { ConfigValidatorService } from '@/app/foundation/core/services/config-validator.service';
 import { DemoLauncherService } from '@/app/foundation/core/theme-builder/demo-launcher.service';
@@ -34,7 +34,7 @@ interface NavSection {
     TooltipModule,
     Domains,
     Branding,
-    UIStyleDesignerComponent
+    UIStyleSectionComponent
   ],
   templateUrl: './app-configuration.component.html',
   styleUrls: ['./app-configuration.component.scss'],
