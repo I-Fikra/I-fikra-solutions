@@ -41,6 +41,9 @@ export class DemoLauncherService {
    * يرجع الـ URL اللي اتفتح (مفيد للـ testing وللـ "نسخ الرابط" مستقبلًا).
    */
   openDemo(): string {
+    const config = this.configBuilder.toJSON();
+    console.log('[DemoLauncher] Sending config to demo:', config);
+
     const url = this._buildDemoUrl();
     if (isPlatformBrowser(this.platformId)) {
       window.open(url, '_blank');
@@ -58,15 +61,23 @@ export class DemoLauncherService {
   // ── Private ──────────────────────────────────────────────────────────────────
 
   private _buildDemoUrl(): string {
-    const config  = this.configBuilder.toJSON();
+    const config = this.configBuilder.toJSON();
+
+    // حفظ الـ logo في localStorage عشان يوصل للديمو بغض النظر عن حجم الـ URL
+    if (isPlatformBrowser(this.platformId)) {
+      try {
+        localStorage.setItem('demo_logo_svg',      config.logoSvg      ?? '');
+        localStorage.setItem('demo_logo_svg_dark',  config.logoSvgDark  ?? '');
+      } catch { /* quota exceeded — ignore */ }
+    }
+
     const encoded = this._encodeConfig(config);
     const url     = `${DEMO_URL}?config=${encoded}`;
 
-    // حماية من URL طويل جدًا: لو تجاوز 7500 char، احذف الـ logo وجرب تاني
+    // لو الـ URL لسه كبير، احذف الـ logo من الـ URL بس هو محفوظ في localStorage
     if (url.length > 7500 && config.logoSvg) {
       console.warn(
-        `[DemoLauncher] URL طويل جدًا (${url.length} chars) — بيحذف logoSvg ويجرب تاني`,
-        'الحل الدائم: Publish flow (خطوات 13-16)'
+        `[DemoLauncher] URL طويل جدًا (${url.length} chars) — الـ logo محفوظ في localStorage`,
       );
       const { logoSvg, logoSvgDark, ...configWithoutLogo } = config;
       const encodedWithoutLogo = this._encodeConfig(configWithoutLogo);

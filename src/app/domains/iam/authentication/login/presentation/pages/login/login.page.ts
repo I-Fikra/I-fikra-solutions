@@ -1,11 +1,11 @@
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
-    AbstractControl,
+    // AbstractControl,
     FormBuilder,
     ReactiveFormsModule,
-    ValidationErrors,
-    Validators
+    // ValidationErrors,
+    // Validators
 } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
 
@@ -53,8 +53,8 @@ export class LoginPage {
     readonly loginError = signal<string | null>(null);
 
     readonly loginForm = this.fb.group({
-        username: ['', [Validators.required, Validators.minLength(3), Validators.maxLength(50), this.usernameValidator()]],
-        password: ['', [Validators.required, Validators.minLength(6)]],
+        username: [''/*, [Validators.required, Validators.minLength(3), Validators.maxLength(50), this.usernameValidator()]*/],
+        password: [''/*, [Validators.required, Validators.minLength(6)]*/],
         rememberMe: [false]
     });
 
@@ -84,21 +84,21 @@ export class LoginPage {
         });
     }
 
-    private usernameValidator() {
-        return (control: AbstractControl): ValidationErrors | null => {
-            const value = control.value;
-            if (!value) return null;
-
-            if (!/^[a-zA-Z0-9._-]+$/.test(value))
-                return { invalidUsername: 'Username can only contain letters, numbers, dots, hyphens, and underscores' };
-
-            if (/^[.-]|[.-]$/.test(value))
-                return { invalidUsername: 'Username cannot start or end with a dot or hyphen' };
-
-            if (/[._-]{2,}/.test(value))
-                return { invalidUsername: 'Username cannot have consecutive special characters' };
-
-            return null;
-        };
-    }
+    // private usernameValidator() {
+    //     return (control: AbstractControl): ValidationErrors | null => {
+    //         const value = control.value;
+    //         if (!value) return null;
+    //
+    //         if (!/^[a-zA-Z0-9._-]+$/.test(value))
+    //             return { invalidUsername: 'Username can only contain letters, numbers, dots, hyphens, and underscores' };
+    //
+    //         if (/^[.-]|[.-]$/.test(value))
+    //             return { invalidUsername: 'Username cannot start or end with a dot or hyphen' };
+    //
+    //         if (/[._-]{2,}/.test(value))
+    //             return { invalidUsername: 'Username cannot have consecutive special characters' };
+    //
+    //         return null;
+    //     };
+    // }
 }
