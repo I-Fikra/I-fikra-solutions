@@ -19,7 +19,7 @@
     "baseUrl": "./",
     "paths": {
       "@/*": ["src/*"],
-      "@features/*": ["src/app/services/*"]
+      "@features/*": ["src/app/domains/*"]
     }
   },
   "angularCompilerOptions": {

@@ -1,0 +1,205 @@
+/**
+ * detail-field.component.scss
+ * Fixed: hover no longer causes layout shift.
+ */
+
+:host {
+    display: contents;
+    --field-gap: 0.5rem;
+    --label-font-size: 0.7rem;
+    --value-font-size: 0.875rem;
+    --transition-speed: 0.15s;
+}
+
+.dp-detail-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--field-gap);
+    padding: 0.75rem 0.5rem;          // ✅ horizontal padding always present
+    border-bottom: 1px solid var(--surface-border);
+    border-radius: 0.375rem;
+    transition: background var(--transition-speed) ease;
+
+    &:last-child { border-bottom: none; }
+
+    // ✅ hover: only background changes — NO margin/padding shift
+    &:hover {
+        background: var(--surface-hover);
+    }
+
+    // ── Label ──────────────────────────────────────────────────────────────────
+    &__label {
+        display: flex;
+        align-items: center;
+        gap: 0.375rem;
+        font-size: var(--label-font-size);
+        font-weight: 600;
+        color: var(--text-color-secondary);
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        margin: 0;
+
+        &-icon { font-size: 0.7rem; color: var(--primary-color); }
+    }
+
+    // ── Value ──────────────────────────────────────────────────────────────────
+    &__value   { margin: 0; }
+    &__content { display: flex; flex-direction: column; gap: 0.4rem; }
+    &__main    { display: flex; align-items: center; gap: 0.75rem; flex-wrap: wrap; }
+
+    &__primary {
+        font-size: var(--value-font-size);
+        font-weight: 500;
+        color: var(--text-color);
+        line-height: 1.4;
+
+        &--mono {
+            font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+            font-size: 0.8125rem;
+            background: var(--surface-100);
+            padding: 0.125rem 0.375rem;
+            border-radius: 0.25rem;
+        }
+
+        &--link {
+            color: var(--primary-color);
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            &:hover { text-decoration: underline; }
+        }
+    }
+
+    // ── Empty ──────────────────────────────────────────────────────────────────
+    &__empty .dp-empty-value {
+        font-size: 0.875rem;
+        color: var(--text-color-secondary);
+        font-style: italic;
+    }
+
+    // ── Sub value ──────────────────────────────────────────────────────────────
+    &__sub-wrapper {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        .dp-sub-icon { font-size: 0.65rem; color: var(--text-color-secondary); }
+    }
+    &__sub {
+        font-size: 0.75rem;
+        color: var(--text-color-secondary);
+    }
+
+    // ── Hint ───────────────────────────────────────────────────────────────────
+    &__hint {
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+        padding: 0.3rem 0.5rem;
+        background: var(--surface-50);
+        border-radius: 0.25rem;
+        font-size: 0.7rem;
+        color: var(--text-color-secondary);
+        .dp-hint-icon { font-size: 0.65rem; color: var(--primary-color); }
+    }
+
+    // ── Code badge ─────────────────────────────────────────────────────────────
+    .dp-code-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+    }
+
+    .dp-code-badge {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        padding: 0.25rem 0.625rem;
+        border-radius: 0.375rem;
+        background: var(--surface-100);
+        border: 1px solid var(--surface-border);
+        font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+        font-size: 0.8rem;
+        font-weight: 500;
+        color: var(--text-color);
+
+        &--id {
+            background: color-mix(in srgb, var(--primary-color) 12%, transparent);
+            border-color: color-mix(in srgb, var(--primary-color) 30%, transparent);
+            color: var(--primary-color);
+        }
+
+        &--long {
+            max-width: 260px;
+            overflow-x: auto;
+            white-space: nowrap;
+            &::-webkit-scrollbar { height: 3px; }
+        }
+
+        .dp-code-icon { font-size: 0.65rem; opacity: 0.6; }
+    }
+
+    // ── Copy button ────────────────────────────────────────────────────────────
+    .dp-copy-btn {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        width: 1.625rem;
+        height: 1.625rem;
+        border: none;
+        background: transparent;
+        color: var(--text-color-secondary);
+        cursor: pointer;
+        border-radius: 0.25rem;
+        transition: background var(--transition-speed) ease,
+                    color    var(--transition-speed) ease;
+
+        &:hover {
+            background: var(--surface-200);
+            color: var(--primary-color);
+        }
+        &:active { transform: scale(0.92); }
+        &--inline { width: 1.375rem; height: 1.375rem; }
+    }
+
+    .dp-value-wrapper {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.375rem;
+        flex-wrap: wrap;
+    }
+
+    // ── Status indicator ───────────────────────────────────────────────────────
+    .dp-status-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.25rem;
+        padding: 0.125rem 0.5rem;
+        border-radius: 999px;
+        font-size: 0.7rem;
+        font-weight: 500;
+        i { font-size: 0.7rem; }
+
+        &.success { background: color-mix(in srgb, var(--green-500)  12%, transparent); color: var(--green-500);  }
+        &.warning { background: color-mix(in srgb, var(--yellow-500) 12%, transparent); color: var(--yellow-500); }
+        &.error   { background: color-mix(in srgb, var(--red-500)    12%, transparent); color: var(--red-500);    }
+    }
+}
+
+// ── Dark mode ─────────────────────────────────────────────────────────────────
+:host-context(.app-dark) {
+    .dp-detail-field {
+        &__primary--mono { background: var(--surface-800); }
+        &__hint          { background: var(--surface-800); }
+
+        .dp-code-badge {
+            background: var(--surface-800);
+            border-color: var(--surface-700);
+        }
+        .dp-copy-btn:hover { background: var(--surface-700); }
+    }
+}
+
+@media (max-width: 768px) {
+    .dp-detail-field__main { flex-direction: column; align-items: flex-start; }
+}

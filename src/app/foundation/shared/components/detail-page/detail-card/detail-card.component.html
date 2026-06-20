@@ -1,0 +1,56 @@
+<!-- detail-card.component.html -->
+<!--
+  Generic card shell.
+
+  Inputs
+  ──────
+  icon         : PrimeIcons class  e.g. 'pi-info-circle'
+  titleKey     : transloco key
+  iconVariant  : 'default' | 'send' | 'receive'
+  countBadge   : number | null | undefined  — pill in header
+  noPad        : boolean — strips body padding
+
+  Slots
+  ─────
+  [slot="header-actions"]  → extra controls placed after the badge
+  (default)                → card body content
+-->
+
+<div class="dp-detail-card">
+
+    <!-- ── Header ─────────────────────────────────────────────────────────── -->
+    <div class="dp-detail-card__header" role="heading" aria-level="3">
+
+        <div
+            class="dp-detail-card__header-icon"
+            [class.dp-detail-card__header-icon--send]="iconVariant() === 'send'"
+            [class.dp-detail-card__header-icon--receive]="iconVariant() === 'receive'"
+            aria-hidden="true"
+        >
+            <i class="pi {{ icon() }}"></i>
+        </div>
+
+        <span class="dp-detail-card__title" [id]="titleId()">
+            {{ title() ?? (resolvedTitleKey() | transloco) }}
+        </span>
+
+        @if (countBadge() != null) {
+            <span class="dp-count-badge" aria-label="{{ countBadge() }}">{{ countBadge() }}</span>
+        }
+
+        <div class="dp-detail-card__header-actions">
+            <ng-content select="[slot='header-actions']" />
+        </div>
+
+    </div>
+
+    <!-- ── Body ───────────────────────────────────────────────────────────── -->
+    <div
+        class="dp-detail-card__body"
+        [class.dp-detail-card__body--no-pad]="noPad()"
+        [attr.aria-labelledby]="titleId()"
+    >
+        <ng-content />
+    </div>
+
+</div>

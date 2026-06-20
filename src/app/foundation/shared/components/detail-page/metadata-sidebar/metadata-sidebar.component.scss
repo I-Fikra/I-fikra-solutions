@@ -1,0 +1,137 @@
+/**
+ * metadata-sidebar.component.scss
+ * Consistent with message-details sidebar style — clean label/value pairs.
+ */
+
+:host { display: block; }
+
+// ── Metadata list ─────────────────────────────────────────────────────────────
+
+.dp-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0;              // ✅ no gap — items are separated by padding + border
+    margin: 0;
+    padding: 0;
+
+    dd { margin: 0; }
+}
+
+// ✅ Each item: label on right (RTL), value badge on left — matches message sidebar
+.dp-meta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;    // ✅ label right, value left (RTL)
+    padding: 0.625rem 0;
+    border-bottom: 1px solid var(--surface-border);
+    gap: 0.75rem;
+    min-height: 2.25rem;
+
+    &:last-child { border-bottom: none; }
+
+    &--has-error .dp-meta-label {
+        color: var(--red-500, #ef4444);
+    }
+}
+
+// ✅ Label — uppercase tracking like "MESSAGE.CONNECTORID" in message-details
+.dp-meta-label {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    color: var(--text-color-secondary);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.dp-required-star {
+    color: var(--red-500, #ef4444);
+    margin-right: 0.25rem;  // RTL: margin-right
+}
+
+// ✅ Empty value dash
+.dp-empty-value {
+    font-size: 0.875rem;
+    color: var(--text-color-secondary);
+}
+
+// ✅ Value badge — matches the code pills in message-details sidebar (MSG-1000, SC-200)
+.dp-code-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
+    background: var(--surface-100);
+    border: 1px solid var(--surface-200);
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.8125rem;
+    font-style: normal;
+    color: var(--text-color);
+    max-width: 100%;
+    direction: ltr;               // ✅ code values always LTR
+
+    :host-context(.app-dark) & {
+        background: var(--surface-700);
+        border-color: var(--surface-600);
+        color: var(--text-color);
+    }
+
+    &--wrap {
+        white-space: normal;
+        word-break: break-all;
+        display: inline;
+    }
+
+    &--muted {
+        color: var(--text-color-secondary);
+        font-size: 0.75rem;
+    }
+
+    &--error {
+        background: var(--red-50, #fef2f2);
+        border-color: var(--red-200, #fecaca);
+        color: var(--red-700, #b91c1c);
+
+        :host-context(.app-dark) & {
+            background: var(--red-900, #7f1d1d);
+            border-color: var(--red-700, #b91c1c);
+            color: var(--red-200, #fecaca);
+        }
+    }
+
+    &--warning {
+        background: var(--yellow-50, #fefce8);
+        border-color: var(--yellow-200, #fef08a);
+        color: var(--yellow-700, #a16207);
+
+        :host-context(.app-dark) & {
+            background: var(--yellow-900, #713f12);
+            border-color: var(--yellow-700, #a16207);
+            color: var(--yellow-200, #fef08a);
+        }
+    }
+}
+
+// ── Field-level error / warning messages ──────────────────────────────────────
+
+.dp-field-error,
+.dp-field-warning {
+    display: flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.6875rem;
+    margin-top: 0.25rem;
+
+    i { font-size: 0.625rem; }
+}
+
+.dp-field-error {
+    color: var(--red-600, #dc2626);
+    i { color: var(--red-500, #ef4444); }
+}
+
+.dp-field-warning {
+    color: var(--yellow-600, #ca8a04);
+    i { color: var(--yellow-500, #eab308); }
+}

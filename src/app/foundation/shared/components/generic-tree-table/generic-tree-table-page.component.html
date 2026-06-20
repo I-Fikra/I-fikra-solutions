@@ -1,0 +1,80 @@
+<p-toast />
+
+<!-- ══ Hidden file input for import ══════════════════════════════════════════ -->
+@if (cfg.showImport) {
+  <input
+    #importInput
+    type="file"
+    accept=".csv,.xlsx,.xls"
+    style="display: none"
+    (change)="onImportFileSelected($event)"
+  />
+}
+
+<!-- ══ Toolbar ══════════════════════════════════════════════════════════════ -->
+<app-shared-toolbar
+  [title]="pageTitle()"
+  [hasFilters]="moduleOptions().length > 0 || toolbarFilters().length > 0"
+  [showAdd]="false"
+  [showBuiltInSearch]="true"
+  [showClearButton]="true"
+  [showLayoutToggle]="cfg.showLayoutToggle"
+  [activeLayout]="layoutMode()"
+  [searchValue]="searchText()"
+  [searchPlaceholder]="'actions.search' | transloco"
+  (searchChanged)="onSearchChanged($event)"
+  (clearSearch)="onClearSearch()"
+  (onExport)="onExport()"
+  (onExportPdf)="onExportPdf()"
+  (onImport)="cfg.showImport && onImport()"
+  (onDownloadTemplate)="cfg.showImport && onDownloadTemplate()"
+  (layoutChange)="setLayout($event)"
+>
+  <ng-container toolbar-filters>
+
+    <!-- Module filter — يظهر بس لو في أكتر من module -->
+    @if (moduleOptions().length > 1) {
+      <app-filter
+        [label]="'shared.table.module' | transloco"
+        [options]="moduleOptions()"
+        [(ngModel)]="moduleFilter"
+        (ngModelChange)="onModuleFilterChange($event)"
+      />
+    }
+
+    <!-- Dynamic filters من meta_data — نفس pattern الـ flat table -->
+    @for (f of toolbarFilters(); track f.field) {
+      <app-filter
+        [label]="f.label"
+        [options]="f.options"
+        [(ngModel)]="toolbarFilterValues[f.field]"
+        (ngModelChange)="onToolbarFilterChange()"
+      />
+    }
+
+  </ng-container>
+</app-shared-toolbar>
+
+<!-- ══ Loading skeleton ══════════════════════════════════════════════════════ -->
+@if (loading()) {
+  <div class="flex flex-col gap-3 p-4">
+    @for (_ of [1, 2, 3]; track $index) {
+      <p-skeleton height="3.5rem" class="rounded-xl" />
+    }
+  </div>
+}
+
+<!-- ══ Tree Table ════════════════════════════════════════════════════════════ -->
+@if (!loading()) {
+  <app-tree-table
+    [modules]="treeModules()"
+    [entityColumns]="entityColumns()"
+    [childColumns]="childColumns()"
+    [grandchildColumns]="grandchildColumns()"
+    [showToolbar]="false"
+    [groupByModule]="true"
+    [showLayoutToggle]="cfg.showLayoutToggle"
+    [layoutInput]="layoutMode()"
+    [toolbarFilters]="[]"
+  />
+}

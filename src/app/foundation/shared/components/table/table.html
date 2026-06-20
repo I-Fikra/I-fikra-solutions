@@ -7,6 +7,7 @@
   [title]="title"
   [hasFilters]="toolbarHasFilters"
   [showAdd]="toolbarShowAdd"
+  [showSearch]="toolbarShowSearch"
   [showBuiltInSearch]="toolbarShowBuiltInSearch"
   [showClearButton]="toolbarShowClearButton"
   [searchValue]="searchValue"
@@ -148,6 +149,14 @@
             [class.pi-times-circle]="!item[col.field]"
           ></i>
           {{ item[col.field] ? 'Yes' : 'No' }}
+        </span>
+        } @case ('icon') {
+        <span class="flex items-center justify-center">
+          @if (item[col.field]) {
+          <i [class]="item[col.field]" style="font-size: 1.1rem"></i>
+          } @else {
+          <span class="text-surface-400">—</span>
+          }
         </span>
         } @default {
         <span class="table-cell-stack">
@@ -297,6 +306,12 @@
               @if (col.type === 'numeric' || col.type === 'currency') {
               <span class="dynamic-card__value dynamic-card__value--num">
                 {{ item[col.field] }}
+              </span>
+              } @else if (col.type === 'icon') {
+              <span class="dynamic-card__value">
+                @if (item[col.field]) {
+                <i [class]="item[col.field]"></i>
+                } @else { — }
               </span>
               } @else {
               <span class="dynamic-card__value">

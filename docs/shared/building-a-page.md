@@ -43,7 +43,7 @@ Identity                          ← Domain
 
 | Sidebar level | في الكود |
 |---|---|
-| **Domain** | مجلد في `src/app/services/` (e.g. `msg/`, `auth/`) |
+| **Domain** | مجلد في `src/app/domains/` (e.g. `msg/`, `auth/`) |
 | **Module** | sub-folder داخل الـ domain (e.g. `msg/messages/`, `msg/schemas/`) |
 | **Entity** | الـ page component + route (e.g. `messages.ts` → `/msg/messages`) |
 
@@ -62,7 +62,7 @@ Identity                          ← Domain
 **① بنية المجلدات**
 
 ```
-src/app/services/msg/
+src/app/domains/msg/
 ├── msg.routes.ts
 └── messages/
     ├── pages/
@@ -309,7 +309,7 @@ export const MSG_ROUTES: Routes = [
 **① بنية المجلدات**
 
 ```
-src/app/services/auth/
+src/app/domains/auth/
 ├── auth.routes.ts
 └── permissions/
     ├── pages/

@@ -1,0 +1,307 @@
+<!-- ── Toolbar ─────────────────────────────────────────────────────────── -->
+<div class="dp-pv-toolbar" role="toolbar" [attr.aria-label]="'payload.toolbar' | transloco">
+
+    <div class="dp-pv-toggle">
+        <!-- Fields button — shown only when payload has a fields[] array -->
+        @if (resolvedViewType() === 'fields') {
+            <button
+                class="dp-pv-toggle__btn"
+                type="button"
+                [class.dp-pv-toggle__btn--active]="view() === 'fields'"
+                (click)="setView('fields')"
+                [attr.aria-pressed]="view() === 'fields'"
+                aria-label="Show fields table view"
+            >
+                <i class="pi pi-list"></i>
+                <span class="dp-pv-toggle__label">Fields</span>
+            </button>
+        }
+
+        <button
+            class="dp-pv-toggle__btn"
+            type="button"
+            [class.dp-pv-toggle__btn--active]="view() === 'segments'"
+            (click)="setView('segments')"
+            [attr.aria-pressed]="view() === 'segments'"
+            aria-label="Show segment table view"
+        >
+            <i class="pi pi-sitemap"></i>
+            <span class="dp-pv-toggle__label">Segments</span>
+        </button>
+
+        <button
+            class="dp-pv-toggle__btn"
+            type="button"
+            [class.dp-pv-toggle__btn--active]="view() === 'tree'"
+            (click)="setView('tree')"
+            [attr.aria-pressed]="view() === 'tree'"
+            [attr.aria-label]="'payload.treeView' | transloco"
+        >
+            <i class="pi pi-table"></i>
+            <span class="dp-pv-toggle__label">{{ 'payload.tree' | transloco }}</span>
+        </button>
+
+        <button
+            class="dp-pv-toggle__btn"
+            type="button"
+            [class.dp-pv-toggle__btn--active]="view() === 'raw'"
+            (click)="setView('raw')"
+            [attr.aria-pressed]="view() === 'raw'"
+            [attr.aria-label]="'payload.rawView' | transloco"
+        >
+            <i class="pi pi-code"></i>
+            <span class="dp-pv-toggle__label">{{ 'payload.raw' | transloco }}</span>
+        </button>
+    </div>
+
+    <span class="dp-pv-toolbar__spacer" aria-hidden="true"></span>
+
+    <button
+        class="dp-pv-copy-btn"
+        type="button"
+        [pTooltip]="'actions.copyPayload' | transloco"
+        tooltipPosition="left"
+        [attr.aria-label]="'actions.copyPayload' | transloco"
+        (click)="copyPayload()"
+    >
+        <i class="pi pi-copy"></i>
+    </button>
+</div>
+
+<!-- ── Content area ────────────────────────────────────────────────────── -->
+<div class="dp-pv-content">
+
+    @if (!hasPayload()) {
+
+        <!-- Empty state -->
+        <div class="dp-pv-empty" role="status">
+            <i class="pi pi-code dp-pv-empty__icon" aria-hidden="true"></i>
+            <span class="dp-pv-empty__text">{{ 'payload.empty' | transloco }}</span>
+        </div>
+
+    } @else {
+
+        <!-- 1️⃣ RAW JSON -->
+        @if (view() === 'raw') {
+            <pre
+                class="dp-pv-raw"
+                tabindex="0"
+                [attr.aria-label]="'payload.rawLabel' | transloco"
+            >{{ payload() | json }}</pre>
+        }
+
+        <!-- 2️⃣ SEGMENTS TABLE -->
+        @else if (view() === 'segments') {
+            @let segments = getPayloadSegments(payload());
+
+            @if (segments.length > 0) {
+                <div class="seg-table" role="table" aria-label="Message payload segments">
+
+                    <div class="seg-table__head" role="row">
+                        <span class="seg-table__th seg-table__th--pos"  role="columnheader">Position</span>
+                        <span class="seg-table__th seg-table__th--seg"  role="columnheader">Segment</span>
+                        <span class="seg-table__th seg-table__th--name" role="columnheader">Name</span>
+                        <span class="seg-table__th seg-table__th--max"  role="columnheader">Max use</span>
+                    </div>
+
+                    <!-- Flat rows (before first group) -->
+                    @for (row of segments; track i; let i = $index) {
+                        @if (!row.isGroup && getRowGroupIndex(segments, i) === -1) {
+                            <div class="seg-table__row" role="row">
+                                <div class="seg-table__row-main">
+                                    <span class="seg-table__cell seg-table__cell--pos" role="cell">{{ row.position }}</span>
+                                    <span class="seg-table__cell seg-table__cell--seg" role="cell">
+                                        <code class="seg-table__seg-badge">{{ row.segment }}</code>
+                                    </span>
+                                    <span class="seg-table__cell seg-table__cell--name" role="cell">
+                                        <span class="seg-table__name-text">{{ row.name }}</span>
+                                        @if (row.status === 'Mandatory') {
+                                            <span class="seg-table__mandatory">Mandatory</span>
+                                        } @else if (row.status === 'Conditional') {
+                                            <span class="seg-table__conditional">Conditional</span>
+                                        }
+                                    </span>
+                                    <span class="seg-table__cell seg-table__cell--max" role="cell">{{ row.maxUse }}</span>
+                                </div>
+                                @if (row.description) {
+                                    <div class="seg-table__desc" role="note">{{ row.description }}</div>
+                                }
+                            </div>
+                        }
+                    }
+
+                    <!-- Group blocks -->
+                    @for (group of getSegmentGroups(segments); track group.index) {
+                        <div
+                            class="seg-table__group-block"
+                            [class.seg-table__group-block--collapsed]="isGroupCollapsed(group.index)"
+                        >
+                            <!-- Group header -->
+                            <div
+                                class="seg-table__group-row"
+                                role="row"
+                                (click)="toggleGroup(group.index)"
+                                [attr.aria-expanded]="!isGroupCollapsed(group.index)"
+                            >
+                                <i
+                                    class="pi seg-table__group-chevron"
+                                    [class.pi-chevron-down]="!isGroupCollapsed(group.index)"
+                                    [class.pi-chevron-right]="isGroupCollapsed(group.index)"
+                                    aria-hidden="true"
+                                ></i>
+                                <span class="seg-table__group-label">{{ group.row.groupLabel }}</span>
+                                @if (group.row.groupRepeat) {
+                                    <span class="seg-table__group-repeat">Repeat {{ group.row.groupRepeat }}</span>
+                                }
+                            </div>
+
+                            <!-- Group children -->
+                            @if (!isGroupCollapsed(group.index)) {
+                                <div class="seg-table__group-body">
+                                    @for (child of group.children; track child.position) {
+                                        <div class="seg-table__row" role="row">
+                                            <div class="seg-table__row-main">
+                                                <span class="seg-table__cell seg-table__cell--pos" role="cell">{{ child.position }}</span>
+                                                <span class="seg-table__cell seg-table__cell--seg" role="cell">
+                                                    <code class="seg-table__seg-badge">{{ child.segment }}</code>
+                                                </span>
+                                                <span class="seg-table__cell seg-table__cell--name" role="cell">
+                                                    <span class="seg-table__name-text">{{ child.name }}</span>
+                                                    @if (child.status === 'Mandatory') {
+                                                        <span class="seg-table__mandatory">Mandatory</span>
+                                                    } @else if (child.status === 'Conditional') {
+                                                        <span class="seg-table__conditional">Conditional</span>
+                                                    }
+                                                </span>
+                                                <span class="seg-table__cell seg-table__cell--max" role="cell">{{ child.maxUse }}</span>
+                                            </div>
+                                            @if (child.description) {
+                                                <div class="seg-table__desc" role="note">{{ child.description }}</div>
+                                            }
+                                        </div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                    }
+                </div>
+            } @else {
+                <div class="dp-pv-empty" role="status">
+                    <i class="pi pi-table dp-pv-empty__icon" aria-hidden="true"></i>
+                    <span class="dp-pv-empty__text">No segments found</span>
+                </div>
+            }
+        }
+
+        <!-- 3️⃣ FIELDS TABLE -->
+        @else if (view() === 'fields') {
+            @let fields = getSchemaFieldsTree(payload());
+
+            @if (fields.length > 0) {
+                <div class="fields-table" role="table" aria-label="Schema fields">
+
+                    <div class="fields-table__head" role="row">
+                        <span class="fields-table__th" role="columnheader">Name</span>
+                        <span class="fields-table__th fields-table__th--type" role="columnheader">Type</span>
+                        <span class="fields-table__th fields-table__th--req" role="columnheader">Required</span>
+                        <span class="fields-table__th" role="columnheader">Description</span>
+                    </div>
+
+                    @for (field of fields; track field.name) {
+                        @if (field.isGroup) {
+                            <!-- Group header row -->
+                            <div
+                                class="fields-table__group-row"
+                                role="row"
+                                (click)="toggleField(field.name)"
+                                [attr.aria-expanded]="isFieldExpanded(field.name)"
+                            >
+                                <i
+                                    class="pi fields-table__group-chevron"
+                                    [class.pi-chevron-down]="isFieldExpanded(field.name)"
+                                    [class.pi-chevron-right]="!isFieldExpanded(field.name)"
+                                    aria-hidden="true"
+                                ></i>
+                                <span class="fields-table__group-label">{{ field.name }}</span>
+                                <span class="fields-table__group-type">{{ field.type }}</span>
+                                @if (field.required) {
+                                    <span class="dp-badge dp-badge--mandatory">Required</span>
+                                }
+                            </div>
+
+                            <!-- Nested children -->
+                            @if (isFieldExpanded(field.name)) {
+                                @for (child of field.children; track child.name) {
+                                    <div class="fields-table__row fields-table__row--nested" role="row">
+                                        <span class="fields-table__cell" role="cell">
+                                            <span class="dp-nested-indent" aria-hidden="true"></span>
+                                            <code class="fields-table__field-name">{{ child.name }}</code>
+                                        </span>
+                                        <span class="fields-table__cell" role="cell">
+                                            <span class="dp-type-badge">{{ child.type }}</span>
+                                        </span>
+                                        <span class="fields-table__cell" role="cell">
+                                            @if (child.required) {
+                                                <i class="pi pi-check dp-check-icon" aria-label="Required"></i>
+                                            } @else {
+                                                <i class="pi pi-minus dp-muted-icon" aria-label="Optional"></i>
+                                            }
+                                        </span>
+                                        <span class="fields-table__cell dp-muted-text" role="cell">{{ child.description }}</span>
+                                    </div>
+                                }
+                            }
+                        } @else {
+                            <div class="fields-table__row" role="row">
+                                <span class="fields-table__cell" role="cell">
+                                    <code class="fields-table__field-name">{{ field.name }}</code>
+                                </span>
+                                <span class="fields-table__cell" role="cell">
+                                    <span class="dp-type-badge">{{ field.type }}</span>
+                                </span>
+                                <span class="fields-table__cell" role="cell">
+                                    @if (field.required) {
+                                        <i class="pi pi-check dp-check-icon" aria-label="Required"></i>
+                                    } @else {
+                                        <i class="pi pi-minus dp-muted-icon" aria-label="Optional"></i>
+                                    }
+                                </span>
+                                <span class="fields-table__cell dp-muted-text" role="cell">{{ field.description }}</span>
+                            </div>
+
+                            @if (field.example != null) {
+                                <div class="fields-table__example" role="note">
+                                    <span class="fields-table__example-label">:Example</span>
+                                    <code class="dp-example-code">{{ field.example }}</code>
+                                </div>
+                            }
+                        }
+                    }
+                </div>
+            } @else {
+                <div class="dp-pv-empty" role="status">
+                    <i class="pi pi-list dp-pv-empty__icon" aria-hidden="true"></i>
+                    <span class="dp-pv-empty__text">No fields found</span>
+                </div>
+            }
+        }
+
+        <!-- 4️⃣ GENERIC TREE -->
+        @else if (view() === 'tree') {
+            <ng-container *ngTemplateOutlet="treeViewTpl; context: { $implicit: payload()! }" />
+        }
+    }
+
+</div>
+
+<!-- ── Generic tree template ───────────────────────────────────────────── -->
+<ng-template #treeViewTpl let-p>
+    <div class="dp-tree-view">
+        @for (row of getPayloadTree(p); track row.key) {
+            <div class="dp-tree-row" [style.padding-left.px]="row.depth * 20">
+                <span class="dp-tree-key">{{ row.key }}</span>
+                <span class="dp-tree-value">{{ row.value }}</span>
+            </div>
+        }
+    </div>
+</ng-template>

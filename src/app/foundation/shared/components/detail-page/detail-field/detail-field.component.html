@@ -1,0 +1,103 @@
+<!--
+  Renders a single label + value pair.
+
+  Inputs
+  ──────
+  label     : pre-translated label string from the API (takes precedence)
+  labelKey  : transloco key fallback — used only when label is not provided
+  value     : any — null/undefined/'' renders '—'
+  isCode    : boolean — render value in a <code> chip
+  isMono    : boolean — render value as primary monospace text
+  subValue  : string  — secondary muted text below main value
+  icon      : string  — optional icon class (e.g., 'pi-tag')
+  copyable  : boolean — show copy button for the value
+-->
+
+<div class="dp-detail-field" [class.dp-detail-field--has-icon]="icon()" [class]="customClass()">
+
+    <dt class="dp-detail-field__label">
+        @if (icon()) {
+            <i class="pi {{ icon() }} dp-detail-field__label-icon" aria-hidden="true"></i>
+        }
+        <span class="dp-detail-field__label-text">
+            {{ label() ? label() : (labelKey() | transloco) }}
+        </span>
+    </dt>
+
+    <dd class="dp-detail-field__value">
+
+        @if (isEmpty()) {
+            <div class="dp-detail-field__empty">
+                <span class="dp-empty-value" aria-label="No value">—</span>
+            </div>
+        } @else {
+            <div class="dp-detail-field__content">
+
+                <!-- Main value area -->
+                <div class="dp-detail-field__main">
+
+                    @if (isCode()) {
+                        <div class="dp-code-wrapper">
+                            <code class="dp-code-badge dp-code-badge--{{ getCodeVariant() }}">
+                                <i class="pi pi-hashtag dp-code-icon" aria-hidden="true"></i>
+                                {{ displayValue() }}
+                            </code>
+                            @if (copyable()) {
+                                <button class="dp-copy-btn" (click)="copyToClipboard($event)" [attr.aria-label]="'actions.copy' | transloco" type="button">
+                                    <i class="pi pi-copy"></i>
+                                </button>
+                            }
+                        </div>
+                    } @else {
+                        <div class="dp-value-wrapper">
+                            <span
+                                class="dp-detail-field__primary"
+                                [class.dp-detail-field__primary--mono]="isMono()"
+                                [class.dp-detail-field__primary--link]="isLink()"
+                                (click)="isLink() && onLinkClick()"
+                            >
+                                @if (isLink()) {
+                                    <i class="pi pi-external-link dp-link-icon" aria-hidden="true"></i>
+                                }
+                                {{ displayValue() }}
+                            </span>
+                            @if (copyable()) {
+                                <button class="dp-copy-btn dp-copy-btn--inline" (click)="copyToClipboard($event)" [attr.aria-label]="'actions.copy' | transloco" type="button">
+                                    <i class="pi pi-copy"></i>
+                                </button>
+                            }
+                        </div>
+                    }
+
+                    <!-- Status indicator for certain values -->
+                    @if (getStatusIndicator()) {
+                        <div class="dp-status-indicator" [class]="getStatusIndicator()">
+                            <i class="pi" [class.pi-check-circle]="getStatusIndicator() === 'success'"
+                               [class.pi-exclamation-circle]="getStatusIndicator() === 'warning'"
+                               [class.pi-times-circle]="getStatusIndicator() === 'error'"></i>
+                        </div>
+                    }
+                </div>
+
+                <!-- Sub value (secondary information) -->
+                @if (subValue()) {
+                    <div class="dp-detail-field__sub-wrapper">
+                        <i class="pi pi-clock dp-sub-icon" aria-hidden="true"></i>
+                        <span class="dp-detail-field__sub">{{ subValue() }}</span>
+                    </div>
+                }
+
+                <!-- Optional hint/description -->
+                @if (hint()) {
+                    <div class="dp-detail-field__hint">
+                        <i class="pi pi-info-circle dp-hint-icon" aria-hidden="true"></i>
+                        <span>{{ hint() }}</span>
+                    </div>
+                }
+
+            </div>
+        }
+
+    </dd>
+
+</div>

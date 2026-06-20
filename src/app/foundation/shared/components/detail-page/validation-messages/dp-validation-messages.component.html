@@ -1,0 +1,101 @@
+<!-- dp-validation-messages.component.html -->
+
+@if (hasMessages()) {
+    <div class="vm-card">
+
+        <!-- ── Card header ───────────────────────────────────────── -->
+        <div class="vm-header">
+            <span class="vm-header__title">{{ title() }}</span>
+            <div class="vm-header__badges">
+                @if (errorCount() > 0) {
+                    <span class="vm-badge vm-badge--error">
+                        <i class="pi pi-times-circle"></i>
+                        {{ errorCount() }}
+                    </span>
+                }
+                @if (warningCount() > 0) {
+                    <span class="vm-badge vm-badge--warn">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        {{ warningCount() }}
+                    </span>
+                }
+            </div>
+        </div>
+
+        <!-- ── Message list — one chip per entry ─────────────────── -->
+        <div class="vm-list">
+            @for (entry of allEntries(); track entry.labelKey + entry.severity) {
+                <button
+                    type="button"
+                    class="vm-item vm-item--{{ entry.severity }}"
+                    (click)="openDetail(entry)"
+                    [attr.aria-label]="severityLabel(entry.severity) + ': ' + entry.detail"
+                >
+                    <i class="pi {{ severityIcon(entry.severity) }} vm-item__icon"></i>
+                    <span class="vm-item__text">{{ entry.detail }}</span>
+                    <i class="pi pi-chevron-left vm-item__arrow"></i>
+                </button>
+            }
+        </div>
+
+    </div>
+}
+
+
+<!-- ── Detail dialog ─────────────────────────────────────────────── -->
+<app-dialog-shell
+    [(visible)]="dialogVisible"
+    [header]="activeEntry() ? (activeEntry()!.title || severityLabel(activeEntry()!.severity)) : ''"
+    [style]="{ width: '36rem' }"
+    [breakpoints]="{ '960px': '90vw', '641px': '95vw' }"
+    [styleClass]="activeEntry() ? 'vm-dialog vm-dialog--' + activeEntry()!.severity : 'vm-dialog'"
+    [hideFooter]="true"
+    appendTo="body"
+    (onHide)="closeDialog()"
+>
+    @if (activeEntry(); as entry) {
+        <div class="vm-dialog__body">
+
+            <!-- Code + Syntax row -->
+            @if (entry.code || entry.syntax) {
+                <div class="vm-dialog__meta-chips">
+                    @if (entry.code) {
+                        <span class="vm-dialog__chip vm-dialog__chip--code vm-dialog__chip--{{ entry.severity }}">
+                            <i class="pi pi-hashtag"></i>
+                            {{ entry.code }}
+                        </span>
+                    }
+                    @if (entry.syntax) {
+                        <span class="vm-dialog__chip vm-dialog__chip--syntax">
+                            <i class="pi pi-code"></i>
+                            {{ entry.syntax }}
+                        </span>
+                    }
+                </div>
+            }
+
+            <!-- Field label -->
+            @if (entry.fieldLabel) {
+                <div class="vm-dialog__field-row">
+                    <span class="vm-dialog__field-label">Field</span>
+                    <code class="vm-dialog__field-badge">{{ entry.fieldLabel }}</code>
+                </div>
+            }
+
+            <!-- Description (full) -->
+            @if (entry.description) {
+                <div class="vm-dialog__detail-row">
+                    <i class="pi {{ severityIcon(entry.severity) }} vm-dialog__detail-icon vm-dialog__detail-icon--{{ entry.severity }}"></i>
+                    <p class="vm-dialog__detail-text">{{ entry.description }}</p>
+                </div>
+            } @else {
+                <!-- Fallback to short detail -->
+                <div class="vm-dialog__detail-row">
+                    <i class="pi {{ severityIcon(entry.severity) }} vm-dialog__detail-icon vm-dialog__detail-icon--{{ entry.severity }}"></i>
+                    <p class="vm-dialog__detail-text">{{ entry.detail }}</p>
+                </div>
+            }
+
+        </div>
+    }
+</app-dialog-shell>

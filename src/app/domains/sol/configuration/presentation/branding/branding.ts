@@ -7,7 +7,7 @@ import {
   SocialPlatform,
   SUPPORTED_APP_LANGUAGES,
   AppLanguage
-} from '@/app/services/sol/configuration/infrastructure/branding.service';
+} from '@/app/domains/sol/configuration/infrastructure/branding.service';
 import {
   Component,
   computed,

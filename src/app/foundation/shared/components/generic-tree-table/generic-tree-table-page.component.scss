@@ -1,0 +1,12 @@
+:host {
+  display: block;
+}
+
+:host ::ng-deep table {
+  table-layout: auto;
+}
+
+:host ::ng-deep th,
+:host ::ng-deep td {
+  white-space: nowrap;
+}

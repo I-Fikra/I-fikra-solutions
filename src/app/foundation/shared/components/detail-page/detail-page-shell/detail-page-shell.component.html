@@ -1,0 +1,100 @@
+<!-- detail-page-shell.component.html -->
+<div class="dp-shell">
+
+    <!-- Projected page header -->
+    <div class="dp-header-wrapper">
+        <ng-content select="[slot='header']" />
+    </div>
+
+    <!-- ══════════════════════════════════════════════════════
+         LOADING SKELETON
+    ═══════════════════════════════════════════════════════ -->
+    @if (loading()) {
+        <div class="dp-layout-wrapper">
+            <div class="dp-layout" aria-busy="true" aria-label="Loading details">
+
+                <!-- ✅ aside skeleton FIRST in DOM = right side in RTL -->
+                <aside class="dp-layout__aside">
+                    @for (i of [1, 2]; track i) {
+                        <div class="dp-skeleton-card" aria-hidden="true">
+                            <div class="dp-skeleton-header">
+                                <div class="dp-skeleton-line dp-skeleton-line--short"></div>
+                            </div>
+                            <div class="dp-skeleton-body">
+                                @for (j of [1, 2, 3, 4]; track j) {
+                                    <div class="dp-skeleton-field dp-skeleton-field--stacked">
+                                        <div class="dp-skeleton-line dp-skeleton-line--label"></div>
+                                        <div class="dp-skeleton-line dp-skeleton-line--value"></div>
+                                    </div>
+                                }
+                            </div>
+                        </div>
+                    }
+                </aside>
+
+                <div class="dp-layout__main">
+                    @for (i of [1, 2, 3]; track i) {
+                        <div class="dp-skeleton-card" aria-hidden="true">
+                            <div class="dp-skeleton-header">
+                                <div class="dp-skeleton-line dp-skeleton-line--short"></div>
+                            </div>
+                            <div class="dp-skeleton-body">
+                                <div class="dp-skeleton-grid">
+                                    @for (j of [1, 2, 3, 4]; track j) {
+                                        <div class="dp-skeleton-field">
+                                            <div class="dp-skeleton-line dp-skeleton-line--label"></div>
+                                            <div class="dp-skeleton-line dp-skeleton-line--value"></div>
+                                        </div>
+                                    }
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+            </div>
+        </div>
+    }
+
+    <!-- ══════════════════════════════════════════════════════
+         EMPTY / NOT FOUND STATE
+    ═══════════════════════════════════════════════════════ -->
+    @if (!loading() && !hasData()) {
+        <div class="dp-empty-state-wrapper">
+            <div class="dp-empty-state" role="alert">
+                <div class="dp-empty-state__illustration" aria-hidden="true">
+                    <div class="dp-empty-state__circle dp-empty-state__circle--outer"></div>
+                    <div class="dp-empty-state__circle dp-empty-state__circle--inner"></div>
+                    <i class="pi pi-inbox dp-empty-state__icon"></i>
+                </div>
+                <h2 class="dp-empty-state__title">{{ notFoundKey() | transloco }}</h2>
+                <p class="dp-empty-state__desc">{{ notFoundDescKey() | transloco }}</p>
+                <p-button
+                    [label]="'actions.back' | transloco"
+                    icon="pi pi-arrow-right"
+                    iconPos="right"
+                    severity="secondary"
+                    (onClick)="backClick.emit()"
+                />
+            </div>
+        </div>
+    }
+
+    <!-- ══════════════════════════════════════════════════════
+         MAIN CONTENT
+    ═══════════════════════════════════════════════════════ -->
+    @if (!loading() && hasData()) {
+        <div class="dp-layout-wrapper">
+            <div class="dp-layout">
+                <!-- ✅ aside FIRST in DOM → appears on right in RTL flex -->
+                <aside class="dp-layout__aside" aria-label="Metadata and actions">
+                    <ng-content select="[slot='aside']" />
+                </aside>
+
+                <main class="dp-layout__main" role="main">
+                    <ng-content select="[slot='main']" />
+                </main>
+            </div>
+        </div>
+    }
+</div>

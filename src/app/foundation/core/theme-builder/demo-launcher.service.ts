@@ -1,12 +1,12 @@
 import { Injectable, inject, PLATFORM_ID, effect } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
 import { ThemeConfigurationStore } from './theme-configuration.store';
-import { BrandingService } from '@/app/services/sol/configuration/infrastructure/branding.service';
+import { BrandingService } from '@/app/domains/sol/configuration/infrastructure/branding.service';
 
-const DEMO_URL              = 'https://platform-demo-chi.vercel.app/';
+const DEMO_URL = 'https://platform-demo-chi.vercel.app/';
 const DEMO_PROJECT_CONFIG_KEY = 'demo_project_config';
-const DEMO_THEME_CONFIG_KEY   = 'theme_preview_config';
-const BROADCAST_CHANNEL_NAME  = 'theme_preview_channel';
+const DEMO_THEME_CONFIG_KEY = 'theme_preview_config';
+const BROADCAST_CHANNEL_NAME = 'theme_preview_channel';
 
 /**
  * الـ domains الثابتة للـ LMS project.
@@ -25,7 +25,7 @@ const LMS_DOMAINS = [
         fallbackJsonAr: '/api/lms-courses-ar.json',
         fallbackJsonEn: '/api/lms-courses-en.json',
         idField: 'course_id',
-        actions: { create: true, edit: true, view: true, delete: true },
+        actions: { create: true, edit: true, view: true, delete: true }
       },
       {
         id: 'categories',
@@ -35,9 +35,9 @@ const LMS_DOMAINS = [
         fallbackJsonAr: '/api/categories-ar.json',
         fallbackJsonEn: '/api/categories-en.json',
         idField: 'id',
-        actions: { create: true, edit: true, view: true, delete: true },
-      },
-    ],
+        actions: { create: true, edit: true, view: true, delete: true }
+      }
+    ]
   },
   {
     id: 'learners',
@@ -51,21 +51,22 @@ const LMS_DOMAINS = [
         fallbackJsonAr: '/api/lms-students-ar.json',
         fallbackJsonEn: '/api/lms-students-en.json',
         idField: 'student_id',
-        actions: { create: true, edit: true, view: true, delete: false },
-      },
-    ],
-  },
+        actions: { create: true, edit: true, view: true, delete: false }
+      }
+    ]
+  }
 ];
 
 @Injectable({ providedIn: 'root' })
 export class DemoLauncherService {
-  private readonly store      = inject(ThemeConfigurationStore);
-  private readonly branding   = inject(BrandingService);
+  private readonly store = inject(ThemeConfigurationStore);
+  private readonly branding = inject(BrandingService);
   private readonly platformId = inject(PLATFORM_ID);
 
   /** BroadcastChannel للـ real-time sync مع الـ demo tab */
   private readonly channel: BroadcastChannel | null =
-    isPlatformBrowser(this.platformId) && typeof BroadcastChannel !== 'undefined'
+    isPlatformBrowser(this.platformId) &&
+    typeof BroadcastChannel !== 'undefined'
       ? new BroadcastChannel(BROADCAST_CHANNEL_NAME)
       : null;
 
@@ -92,29 +93,35 @@ export class DemoLauncherService {
 
   openDemo(): void {
     // ── 1. بيانات الـ branding من BrandingService ──────────────────────────
-    const appName      = this.branding.appName();
-    const themeColor   = this.branding.themeColor();
-    const logoSvg      = this.branding.logo() ?? undefined;
+    const appName = this.branding.appName();
+    const themeColor = this.branding.themeColor();
+    const logoSvg = this.branding.logo() ?? undefined;
 
     // projectName: يأخذ العربي لو موجود، وإلا الإنجليزي، وإلا fallback
-    const projectName  = appName?.['ar'] || appName?.['en'] || 'LearnHub LMS';
+    const projectName = appName?.['ar'] || appName?.['en'] || 'LearnHub LMS';
     const websiteTitle = `${projectName} — منصة التعلم الإلكتروني`;
     const primaryColor = themeColor || '#059669';
 
     // ── 2. بنبني الـ ProjectConfigInput ───────────────────────────────────
     const projectConfig = {
-      id:           'lms',
+      id: 'lms',
       projectName,
       websiteTitle,
       primaryColor,
       ...(logoSvg ? { logoSvg } : {}),
-      domains: LMS_DOMAINS,
+      domains: LMS_DOMAINS
     };
 
     // ── 3. بنحفظ في localStorage (للـ initial load في الـ demo) ──────────
     try {
-      localStorage.setItem(DEMO_PROJECT_CONFIG_KEY, JSON.stringify(projectConfig));
-      localStorage.setItem(DEMO_THEME_CONFIG_KEY,   JSON.stringify(this.store.snapshot()));
+      localStorage.setItem(
+        DEMO_PROJECT_CONFIG_KEY,
+        JSON.stringify(projectConfig)
+      );
+      localStorage.setItem(
+        DEMO_THEME_CONFIG_KEY,
+        JSON.stringify(this.store.snapshot())
+      );
     } catch {
       // quota exceeded — silently ignore
     }
@@ -122,8 +129,8 @@ export class DemoLauncherService {
     // ── 4. بنبعت على الـ BroadcastChannel فورًا ──────────────────────────
     try {
       this.channel?.postMessage({
-        type:    'theme_update',
-        payload: this.store.snapshot(),
+        type: 'theme_update',
+        payload: this.store.snapshot()
       });
     } catch {
       // channel not available — silently ignore

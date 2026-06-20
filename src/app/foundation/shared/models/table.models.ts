@@ -11,7 +11,8 @@ export interface TableColumn {
         | 'status'
         | 'currency'
         | 'rating'
-        | 'time';
+        | 'time'
+        | 'icon';
     /** Secondary field rendered beneath the primary value */
     subField?: string;
     /** Optional PrimeIcons class displayed before the cell value, e.g. 'pi pi-tag' */

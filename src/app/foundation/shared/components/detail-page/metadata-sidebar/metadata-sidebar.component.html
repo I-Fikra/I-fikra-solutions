@@ -1,0 +1,41 @@
+<!-- metadata-sidebar.component.html -->
+<dl class="dp-meta-list">
+    @for (item of visibleItems(); track item.label) {
+        <div class="dp-meta-item" [class.dp-meta-item--has-error]="item.hasError">
+
+            <dt class="dp-meta-label">
+                {{ item.label }}
+            </dt>
+
+            <dd>
+                @if (isEmpty(item.value)) {
+                    <span class="dp-empty-value">—</span>
+                } @else {
+                    <code
+                        class="dp-code-badge"
+                        [class.dp-code-badge--wrap]="item.wrap"
+                        [class.dp-code-badge--muted]="item.muted"
+                        [class.dp-code-badge--error]="item.hasError"
+                        [class.dp-code-badge--warning]="item.hasWarning"
+                    >
+                        {{ item.value }}
+                    </code>
+                }
+
+                @if (item.errorMessage) {
+                    <small class="dp-field-error">
+                        <i class="pi pi-exclamation-circle"></i>
+                        {{ item.errorMessage }}
+                    </small>
+                }
+                @if (item.warningMessage && !item.errorMessage) {
+                    <small class="dp-field-warning">
+                        <i class="pi pi-exclamation-triangle"></i>
+                        {{ item.warningMessage }}
+                    </small>
+                }
+            </dd>
+
+        </div>
+    }
+</dl>

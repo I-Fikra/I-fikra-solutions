@@ -74,6 +74,7 @@ import {
             <!-- Search mode + layout toggle row -->
             <div class="toolbar-search-row">
               <app-search-mode
+                *ngIf="showSearch"
                 class="flex-1 min-w-0"
                 [mode]="searchMode"
                 [availableModes]="availableSearchModes"
@@ -214,6 +215,7 @@ export class SharedToolbarComponent implements OnInit {
 
   @Input() showClearButton = true;
   @Input() showBuiltInSearch = true;
+  @Input() showSearch = true;
   @Input() hasFilters = false;
   @Input() showAdd = false;
   @Input() currentLang: 'en' | 'ar' = 'en';

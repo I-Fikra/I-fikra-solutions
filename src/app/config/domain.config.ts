@@ -87,7 +87,7 @@ export const DOMAINS: DomainConfig[] = [
         icon: 'pi pi-fw pi-home',
         routePath: 'dashboard',
         loadRoutes: () =>
-          import('@/app/services/dashboard/feature').then((m) =>
+          import('@/app/domains/dashboard/feature').then((m) =>
             m.loadDashboardFeatureRoutes()
           ),
         enabled: true,
@@ -109,7 +109,7 @@ export const DOMAINS: DomainConfig[] = [
         id: 'auth',
         label: 'menu.iam',
         icon: 'pi pi-fw pi-user',
-        routePath: 'auth-mgmt', // auth pages live inside root layout, not /auth
+        routePath: 'iam', // ✅ auth pages live under /iam (see app.routes.ts → iam-management.routes.ts)
         loadRoutes: () => Promise.resolve({ default: [] as Routes }),
         enabled: true,
         preload: false,
@@ -118,14 +118,21 @@ export const DOMAINS: DomainConfig[] = [
             id: 'users',
             label: 'menu.users',
             icon: 'pi pi-fw pi-users',
-            routerLink: ['/users'],
+            routerLink: ['/iam/users'], // ✅ fixed (was '/users')
             enabled: true
           },
           {
             id: 'roles',
             label: 'menu.roles',
             icon: 'pi pi-fw pi-list-check',
-            routerLink: ['/roles'],
+            routerLink: ['/iam/roles'], // ✅ fixed (was '/roles')
+            enabled: true
+          },
+          {
+            id: 'permissions',
+            label: 'menu.permissions',
+            icon: 'pi pi-fw pi-lock',
+            routerLink: ['/iam/permissions'], // ✅ fixed (was '/permissions')
             enabled: true
           }
         ]
@@ -148,7 +155,7 @@ export const DOMAINS: DomainConfig[] = [
         icon: 'pi pi-fw pi-th-large',
         routePath: 'builder/platforms',
         loadRoutes: () =>
-          import('@/app/services/builder/feature').then((m) =>
+          import('@/app/domains/builder/feature').then((m) =>
             m.loadBuilderFeatureRoutes()
           ),
         enabled: true,
@@ -162,7 +169,7 @@ export const DOMAINS: DomainConfig[] = [
         icon: 'pi pi-fw pi-tag',
         routePath: 'builder/metadata',
         loadRoutes: () =>
-          import('@/app/services/builder/feature').then((m) =>
+          import('@/app/domains/builder/feature').then((m) =>
             m.loadBuilderFeatureRoutes()
           ),
         enabled: true,
@@ -176,7 +183,7 @@ export const DOMAINS: DomainConfig[] = [
         icon: 'pi pi-fw pi-box',
         routePath: 'builder/generator',
         loadRoutes: () =>
-          import('@/app/services/builder/feature').then((m) =>
+          import('@/app/domains/builder/feature').then((m) =>
             m.loadBuilderFeatureRoutes()
           ),
         enabled: true,
@@ -190,7 +197,7 @@ export const DOMAINS: DomainConfig[] = [
         icon: 'pi pi-fw pi-sliders-h',
         routePath: 'builder/configuration',
         loadRoutes: () =>
-          import('@/app/services/builder/feature').then((m) =>
+          import('@/app/domains/builder/feature').then((m) =>
             m.loadBuilderFeatureRoutes()
           ),
         enabled: true,
@@ -200,10 +207,6 @@ export const DOMAINS: DomainConfig[] = [
     ]
   }
 ];
-
-
-
-
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
@@ -219,21 +222,21 @@ export const AUTH_MANAGEMENT_PAGES = [
   {
     path: 'users',
     loadComponent: () =>
-      import('@/app/services/iam/authorization/users/presentation/pages/users/users').then(
+      import('@/app/domains/iam/authorization/users/presentation/pages/users/users').then(
         (m) => m.UsersPage
       )
   },
   {
     path: 'roles',
     loadComponent: () =>
-      import('@/app/services/iam/authorization/roles/pages/roles').then(
+      import('@/app/domains/iam/authorization/roles/pages/roles').then(
         (m) => m.RolesPage
       )
   },
   {
     path: 'roles/:id/permissions',
     loadComponent: () =>
-      import('@/app/services/iam/authorization/role-details/pages/role-details').then(
+      import('@/app/domains/iam/authorization/role-details/pages/role-details').then(
         (m) => m.RoleDetailsComponent
       )
   }

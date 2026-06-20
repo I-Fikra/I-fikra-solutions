@@ -4,5 +4,5 @@ export const DASHBOARD_FEATURE_ID = 'dashboard';
 
 /** Lazy-loads legacy dashboard routes under `src/app/services/dashboard`. */
 export function loadDashboardFeatureRoutes(): Promise<{ default: Routes }> {
-  return import('@/app/services/dashboard/dashboard.routes');
+  return import('@/app/domains/dashboard/dashboard.routes');
 }

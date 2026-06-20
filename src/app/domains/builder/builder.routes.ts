@@ -22,17 +22,25 @@ const builderRoutes: Routes = [
   {
     path: 'metadata',
     loadComponent: () =>
-      import('@/app/services/builder/metadata/presentation/pages/metadata/metadata').then(
+      import('@/app/domains/builder/metadata/presentation/pages/metadata/metadata').then(
         (m) => m.Metadata
       ),
     data: { titleKey: 'menu.metadata' }
+  },
+  {
+    path: 'metadata/:entityName',
+    loadComponent: () =>
+      import('@/app/domains/builder/metadata/presentation/pages/attributes/attributes').then(
+        (m) => m.Attributes
+      ),
+    data: { titleKey: 'menu.attributes' }
   },
 
   // ── Generator — project setup / module picker ─────────────────────────────
   {
     path: 'generator',
     loadComponent: () =>
-      import('@/app/services/sol/configuration/presentation/domains/domains').then(
+      import('@/app/domains/sol/configuration/presentation/domains/domains').then(
         (m) => m.Domains
       ),
     data: { titleKey: 'menu.generator' }
@@ -42,7 +50,7 @@ const builderRoutes: Routes = [
   {
     path: 'configuration',
     loadComponent: () =>
-      import('@/app/services/sol/configuration/presentation/configuration/app-configuration.component').then(
+      import('@/app/domains/sol/configuration/presentation/configuration/app-configuration.component').then(
         (m) => m.AppConfigurationComponent
       ),
     data: { titleKey: 'menu.configuration' }

@@ -14,5 +14,5 @@ export const AUTH_FEATURE_ID = 'auth';
  * { path: 'auth', loadChildren: loadAuthFeatureRoutes }
  */
 export function loadAuthFeatureRoutes(): Promise<{ default: Routes }> {
-  return import('@/app/services/auth/auth.routes');
+  return import('@/app/domains/iam/iam.routes');
 }

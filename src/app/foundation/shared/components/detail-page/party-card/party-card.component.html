@@ -1,0 +1,48 @@
+<!--
+  Renders a Sender OR Receiver card with avatar, identity block, and four KV rows.
+
+  Inputs
+  ──────
+  variant   : 'sender' | 'receiver'
+  data      : PartyCardData
+
+  Labels priority: data().labels.X (from API) → fallback transloco key
+-->
+
+<div class="dp-party-identity">
+    <div
+        class="dp-party-avatar"
+        [class.dp-party-avatar--receiver]="variant() === 'receiver'"
+        aria-hidden="true"
+    >
+        <i class="pi pi-user"></i>
+    </div>
+    <div class="dp-party-identity__info">
+        <span class="dp-party-identity__name">{{ display(data().name) }}</span>
+        <code class="dp-party-identity__id">ID: {{ display(data().id) }}</code>
+    </div>
+</div>
+
+<dl class="dp-party-meta-list">
+
+    <div class="dp-party-meta-item">
+        <dt class="dp-detail-label">{{ data().labels?.connectorId ?? ('message.connectorId' | transloco) }}</dt>
+        <dd><code class="dp-code-badge">{{ display(data().connectorId) }}</code></dd>
+    </div>
+
+    <div class="dp-party-meta-item">
+        <dt class="dp-detail-label">{{ data().labels?.channelId ?? ('message.channelId' | transloco) }}</dt>
+        <dd><code class="dp-code-badge">{{ display(data().channelId) }}</code></dd>
+    </div>
+
+    <div class="dp-party-meta-item">
+        <dt class="dp-detail-label">{{ data().labels?.connector ?? ('message.connector' | transloco) }}</dt>
+        <dd class="dp-party-meta-value">{{ display(data().connector) }}</dd>
+    </div>
+
+    <div class="dp-party-meta-item">
+        <dt class="dp-detail-label">{{ data().labels?.channel ?? ('message.channel' | transloco) }}</dt>
+        <dd class="dp-party-meta-value">{{ display(data().channel) }}</dd>
+    </div>
+
+</dl>

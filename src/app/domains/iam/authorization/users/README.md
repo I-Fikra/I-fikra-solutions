@@ -94,4 +94,4 @@ Use cases inject `UserRepository` (the abstraction). Angular resolves it to `Use
 |---|---|
 | `src/app.config.ts` | Added `UserRepository` → `UserRepositoryImpl` provider |
 | `src/app/foundation/core/layout/component/ProfileMenu.ts` | Replaced `UserService` injection with `GetLoggedInUserUseCase` |
-| `src/app/services/iam/iam-management.routes.ts` | Updated lazy-load path to `presentation/pages/users/users` |
+| `src/app/domains/iam/iam-management.routes.ts` | Updated lazy-load path to `presentation/pages/users/users` |

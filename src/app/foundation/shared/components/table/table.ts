@@ -46,7 +46,7 @@ import { SliderModule } from 'primeng/slider';
 import { ProgressBarModule } from 'primeng/progressbar';
 import { RatingModule } from 'primeng/rating';
 import { TooltipModule } from 'primeng/tooltip';
-import { Popover, PopoverModule } from 'primeng/popover';
+import { PopoverModule } from 'primeng/popover';
 import { CheckboxModule } from 'primeng/checkbox';
 import { Menu } from 'primeng/menu';
 import { TranslocoModule, TranslocoService } from '@jsverse/transloco';
@@ -141,16 +141,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   // ── Inputs ────────────────────────────────────────────────────────────────
 
   @Input() title = 'Items';
-  /**
-   * Row data to display. Typed `any[]` deliberately: this is a generic,
-   * domain-agnostic table — every consumer binds its own strongly-typed
-   * array, and the Outputs/callbacks below mirror this signature so
-   * consumers get back the same objects they passed in.
-   *
-   * @publicApi — do not narrow to `unknown[]`; existing consumers rely
-   * on plain arrays being assignable here without a cast.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() data: any[] = [];
   @Input() columns: TableColumn[] = [];
   @Input() rows = 10;
@@ -161,6 +151,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   @Input() showToolbar = true;
   @Input() toolbarHasFilters = true;
   @Input() toolbarShowAdd = true;
+  @Input() toolbarShowSearch = true;
   @Input() toolbarShowBuiltInSearch = true;
   @Input() toolbarShowClearButton = true;
   @Input() toolbarSearchPlaceholder = '';
@@ -176,13 +167,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     'success' | 'warn' | 'danger' | 'info' | 'secondary'
   > | null = null;
   @Input() customActions: CustomAction[] = [];
-  /**
-   * Factory that produces per-row PrimeNG `MenuItem[]` for the row action
-   * menu. Receives the raw row object — typed `any` so it stays
-   * assignable from whatever domain-typed array the consumer provides
-   * via `data`.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Input() rowActions: ((item: any) => MenuItem[]) | null = null;
   @Input() bulkActions: BottomBarAction[] = [];
   @Input() showBulkDelete = true;
@@ -219,28 +203,16 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   // ── Outputs ───────────────────────────────────────────────────────────────
 
-  // The EventEmitters below are intentionally typed `any` / `any[]`
-  // because this is a generic table component — consumers bind
-  // domain-typed handlers, and TypeScript allows assigning a
-  // strongly-typed handler to an `EventEmitter<any>`.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() save = new EventEmitter<any>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() delete = new EventEmitter<any>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() bulkDelete = new EventEmitter<any[]>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() selectionChange = new EventEmitter<any[]>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() onView = new EventEmitter<any>();
   @Output() onNew = new EventEmitter<void>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() onEdit = new EventEmitter<any>();
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() customAction = new EventEmitter<{ key: string; item: any }>();
   @Output() bulkAction = new EventEmitter<string>();
   /** بيبعت الداتا المفلترة الحالية بعد كل تغيير في الفلتر */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @Output() filteredDataChange = new EventEmitter<any[]>();
 
   // ── Toolbar pass-through outputs ──────────────────────────────────────────
@@ -253,10 +225,8 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   @ViewChild('dt') dt!: Table;
   @ViewChild('rowMenu') rowMenu!: Menu;
-  @ViewChild('sharedHeaderPopover') sharedHeaderPopover!: Popover;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  @ViewChild('sharedHeaderPopover') sharedHeaderPopover!: any;
   @ContentChild('actionTemplate') actionTemplate!: TemplateRef<any>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   @ContentChild('cardTemplate') cardTemplate!: TemplateRef<any>;
 
   // ── Services ──────────────────────────────────────────────────────────────
@@ -269,11 +239,9 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   // ── State ─────────────────────────────────────────────────────────────────
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   items = signal<any[]>([]);
-  private originalItems: unknown[] = []; // الترتيب الأصلي قبل أي sort
+  private originalItems: any[] = []; // الترتيب الأصلي قبل أي sort
   /** Always reflects the currently-filtered rows — shared by p-table AND DataView. */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   filteredItems = signal<any[]>([]);
   layout = signal<'list' | 'grid'>('list');
   hasCardTemplate = signal(false);
@@ -461,10 +429,8 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   // ── Selection ─────────────────────────────────────────────────────────────
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   selectedItems: any[] | null = null;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   onSelectionChange(value: any[] | null): void {
     this.selectedItems = value;
     this.selectionChange.emit(value ?? []);
@@ -547,9 +513,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     this.activeSortField = '';
     this.activeSortOrder = 1;
     if (!this.dt) return;
-    // PrimeNG's Table does not expose sortField/sortOrder/_sortField/_sortOrder
-    // publicly — resetting them requires bypassing the type system.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t = this.dt as any;
     t.sortField = null;
     t.sortOrder = 1;
@@ -697,13 +660,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     this.filteredDataChange.emit(result);
   }
 
-  /**
-   * Applies current toolbar filters and search against `items()`.
-   *
-   * @param fields - Set of field names to filter against.
-   * @returns Filtered array of raw row objects matching every active constraint.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   private applyManualFilter(fields: Set<string>): any[] {
     const search = this.searchValue.toLowerCase();
     // ✅ fallback: لو columnsSignal لسه فاضي، نستخدم this.columns مباشرة
@@ -776,14 +732,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     }
   }
 
-  /**
-   * Applies the active advanced-filter rules for a column to the underlying
-   * p-table, then hides the popover.
-   *
-   * @param col     - The column whose filter rules should be applied.
-   * @param popover - The PrimeNG Popover instance to hide after applying.
-   */
-  applyColumnFilter(col: TableColumn, popover: Popover): void {
+  applyColumnFilter(col: TableColumn, popover: any): void {
     if (!this.dt) return;
     const state = this.ensureFilterState(col);
 
@@ -807,16 +756,9 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
       this.dt.filter(
         String(validRules[0].value).trim(),
         col.field,
-        // PrimeNG's filter() expects its FilterMatchMode string union;
-        // duplicating that whole union here isn't worth it for one call site.
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         validRules[0].matchMode as any
       );
     } else {
-      // PrimeNG's Table does not expose a public multi-constraint filter
-      // API — writing to `filters` and calling `_filter()` directly is
-      // intentional, undocumented-internals usage.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const tableAny = this.dt as any;
       tableAny.filters = {
         ...tableAny.filters,
@@ -829,7 +771,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
           }))
         }
       };
-      tableAny._filter?.();
+      (tableAny as any)._filter?.();
     }
 
     setTimeout(() => {
@@ -838,13 +780,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     });
   }
 
-  /**
-   * Resets the advanced-filter state for a column and clears the p-table filter.
-   *
-   * @param col     - The column to clear.
-   * @param popover - The PrimeNG Popover instance to hide.
-   */
-  clearColumnFilter(col: TableColumn, popover: Popover): void {
+  clearColumnFilter(col: TableColumn, popover: any): void {
     const state = this.ensureFilterState(col);
     state.operator = 'and';
     state.rules = [{ matchMode: defaultMatchMode(col), value: null }];
@@ -857,13 +793,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     });
   }
 
-  /**
-   * Commits the current checkbox-filter selections for a column and hides the popover.
-   *
-   * @param col     - The column whose selections to apply.
-   * @param popover - The PrimeNG Popover instance to hide.
-   */
-  applyColFilterOptions(col: TableColumn, popover: Popover): void {
+  applyColFilterOptions(col: TableColumn, popover: any): void {
     this.toolbarFilterValues[col.field] = [
       ...(this.colFilterSelections[col.field] ?? [])
     ];
@@ -871,13 +801,7 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     popover?.hide();
   }
 
-  /**
-   * Clears all checkbox-filter selections for a column and hides the popover.
-   *
-   * @param col     - The column to clear.
-   * @param popover - The PrimeNG Popover instance to hide.
-   */
-  clearColFilterOptions(col: TableColumn, popover: Popover): void {
+  clearColFilterOptions(col: TableColumn, popover: any): void {
     this.colFilterSelections[col.field] = [];
     this.toolbarFilterValues[col.field] = [];
     this.onToolbarFilterChange();
@@ -1035,13 +959,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   _hoverPanelActive = false;
 
-  /**
-   * Returns true when a card row has footer content to display
-   * (a tags array, or at least one valid date column).
-   *
-   * @param item - Raw row object from the `items()` signal.
-   */
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   hasCardFooterContent(item: any): boolean {
     if (item['tags']) return true;
     return this.exportColumns().some(
@@ -1116,8 +1033,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     this._syncPending = true;
     setTimeout(() => {
       this._syncPending = false;
-      // `filteredValue` is an undocumented internal property on PrimeNG's Table.
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const filtered = (this.dt as any)?.filteredValue;
       const result = filtered ?? this.items();
       this.filteredItems.set(result);
@@ -1128,10 +1043,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   private runFilterCycle(): void {
     if (!this.dt) return;
-    // `_filter()` is an undocumented internal method on PrimeNG's Table,
-    // used as a fallback to re-run the filter pipeline without a user
-    // interaction event.
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const t = this.dt as any;
     if (typeof t._filter === 'function') {
       t._filter();

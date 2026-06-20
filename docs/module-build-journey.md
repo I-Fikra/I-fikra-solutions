@@ -7,7 +7,7 @@
 ### Step 1 — Create the folder structure
 
 ```
-src/app/services/{module-name}/
+src/app/domains/{module-name}/
 ├── {module-name}.routes.ts
 ├── feature.ts
 ├── index.ts

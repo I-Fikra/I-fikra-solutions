@@ -1,0 +1,108 @@
+/**
+ * party-card.component.scss
+ */
+
+:host { display: block; }
+
+.dp-party-identity {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--surface-border, #e2e8f0);
+
+    :host-context(.app-dark) & {
+        border-bottom-color: var(--surface-700, #334155);
+    }
+
+    &__info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.125rem;
+        min-width: 0;
+    }
+
+    &__name {
+        font-size: 1rem;
+        font-weight: 700;
+        color: var(--text-color, #0f172a);
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+    }
+
+    &__id {
+        font-size: 0.75rem;
+        color: var(--text-color-secondary, #64748b);
+        font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    }
+}
+
+.dp-party-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    background: var(--blue-50, #eff6ff);
+    color: var(--blue-500, #3b82f6);
+    font-size: 1rem;
+    flex-shrink: 0;
+
+    &--receiver {
+        background: var(--purple-50, #f5f3ff);
+        color: var(--purple-500, #8b5cf6);
+    }
+}
+
+.dp-party-meta-list {
+    display: flex;
+    flex-direction: column;
+    gap: 0.625rem;
+    margin: 0;
+    padding: 0;
+}
+
+.dp-party-meta-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+
+    dd { margin: 0; }
+}
+
+.dp-detail-label {
+    font-size: 0.75rem;
+    font-weight: 500;
+    color: var(--text-color-secondary, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+}
+
+.dp-party-meta-value {
+    font-size: 0.9375rem;
+    color: var(--text-color, #0f172a);
+}
+
+.dp-code-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.1875rem 0.5rem;
+    border-radius: 0.25rem;
+    background: var(--surface-100, #f1f5f9);
+    border: 1px solid var(--surface-200, #e2e8f0);
+    font-family: 'Cascadia Code', 'Fira Code', 'Consolas', monospace;
+    font-size: 0.8125rem;
+    font-style: normal;
+    color: var(--text-color, #0f172a);
+
+    :host-context(.app-dark) & {
+        background: var(--surface-700, #334155);
+        border-color: var(--surface-600, #475569);
+        color: var(--text-color, #e2e8f0);
+    }
+}

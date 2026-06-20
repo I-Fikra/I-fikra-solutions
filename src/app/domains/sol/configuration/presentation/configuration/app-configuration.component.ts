@@ -2,10 +2,10 @@ import { Component, signal } from '@angular/core';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
 
-import { Domains } from '@/app/services/sol/configuration/presentation/domains/domains';
-import { Branding } from '@/app/services/sol/configuration/presentation/branding/branding';
-import { Customize } from '@/app/services/sol/configuration/presentation/customize/customize';
-import { ThemeAppearanceComponent } from '@/app/services/sol/configuration/presentation/theme-appearance/theme-appearance.component';
+import { Domains } from '@/app/domains/sol/configuration/presentation/domains/domains';
+import { Branding } from '@/app/domains/sol/configuration/presentation/branding/branding';
+import { Customize } from '@/app/domains/sol/configuration/presentation/customize/customize';
+import { ThemeAppearanceComponent } from '@/app/domains/sol/configuration/presentation/theme-appearance/theme-appearance.component';
 
 // ── Section types ─────────────────────────────────────────────────────────────
 type SectionKey = 'branding' | 'theme-appearance' | 'customize' | 'setup';

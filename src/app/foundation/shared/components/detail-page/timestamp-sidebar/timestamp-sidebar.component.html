@@ -1,0 +1,38 @@
+<!-- timestamp-sidebar.component.html -->
+<dl class="dp-timestamp-list">
+    @for (entry of entries(); track entry.label) {
+        <div class="dp-timestamp-item">
+            <div
+                class="dp-timestamp-item__icon"
+                [class.dp-timestamp-item__icon--send]="entry.variant === 'send'"
+                [class.dp-timestamp-item__icon--process]="entry.variant === 'process'"
+                [class.dp-timestamp-item__icon--receive]="entry.variant === 'receive'"
+                aria-hidden="true"
+            >
+                <i
+                    class="pi"
+                    [class.pi-send]="entry.variant === 'send'"
+                    [class.pi-cog]="entry.variant === 'process'"
+                    [class.pi-inbox]="entry.variant === 'receive'"
+                ></i>
+            </div>
+            <div class="dp-timestamp-item__body">
+                <dt class="dp-ts-label">{{ entry.label }}</dt>
+                <dd>
+                    @if (entry.value) {
+                        <div class="dp-timestamp-item__value">
+                            <span class="dp-timestamp-item__date">
+                                {{ entry.value | date: 'MMM dd, yyyy' }}
+                            </span>
+                            <time class="dp-timestamp-item__time">
+                                {{ entry.value | date: 'hh:mm:ss a' }}
+                            </time>
+                        </div>
+                    } @else {
+                        <span class="dp-empty-value">—</span>
+                    }
+                </dd>
+            </div>
+        </div>
+    }
+</dl>

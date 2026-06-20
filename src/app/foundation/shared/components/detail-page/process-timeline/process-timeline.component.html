@@ -1,0 +1,35 @@
+<!-- process-timeline.component.html -->
+@if (steps()?.length) {
+    <ol class="dp-process-timeline" aria-label="Processing steps">
+        @for (step of steps()!; track step.label; let last = $last) {
+            <li
+                class="dp-process-step"
+                [class.dp-process-step--done]="step.done"
+                [class.dp-process-step--pending]="!step.done"
+                [attr.aria-label]="step.label + (step.done ? ' - completed' : ' - pending')"
+            >
+                <div class="dp-process-step__track" aria-hidden="true">
+                    <div class="dp-process-step__dot">
+                        <i class="pi" [class.pi-check]="step.done" [class.pi-clock]="!step.done"></i>
+                    </div>
+                    @if (!last) {
+                        <div class="dp-process-step__line"></div>
+                    }
+                </div>
+                <div class="dp-process-step__content">
+                    <span class="dp-process-step__label">{{ step.label }}</span>
+                    @if (step.timestamp) {
+                        <time class="dp-process-step__time" [attr.datetime]="step.timestamp">
+                            {{ step.timestamp | date: 'MMM dd · hh:mm a' }}
+                        </time>
+                    }
+                </div>
+            </li>
+        }
+    </ol>
+} @else {
+    <div class="dp-inline-empty" role="status">
+        <i class="pi pi-list-check dp-inline-empty__icon" aria-hidden="true"></i>
+        <span class="dp-inline-empty__text">{{ emptyKey() | transloco }}</span>
+    </div>
+}

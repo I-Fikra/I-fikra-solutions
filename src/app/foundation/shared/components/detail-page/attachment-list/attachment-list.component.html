@@ -1,0 +1,49 @@
+<!-- attachment-list.component.html -->
+@if (attachments()?.length) {
+    <ul class="dp-attachment-list" [attr.aria-label]="'attachments.listLabel' | transloco">
+        @for (att of attachments()!; track att.name) {
+            <li class="dp-attachment-item">
+
+                <div class="dp-attachment-item__icon" aria-hidden="true">
+                    <i class="pi" [ngClass]="getFileIcon(att.name)"></i>
+                </div>
+
+                <div class="dp-attachment-item__info">
+                    <span class="dp-attachment-item__name" [title]="att.name">{{ att.name }}</span>
+                    @if (att.size) {
+                        <span class="dp-attachment-item__meta">{{ att.size }}</span>
+                    }
+                </div>
+
+                <div class="dp-attachment-item__actions">
+                    <button
+                        class="dp-att-btn"
+                        type="button"
+                        [pTooltip]="'actions.view' | transloco"
+                        tooltipPosition="top"
+                        [attr.aria-label]="('actions.view' | transloco) + ' ' + att.name"
+                        (click)="viewFile.emit(att)"
+                    >
+                        <i class="pi pi-eye"></i>
+                    </button>
+                    <button
+                        class="dp-att-btn"
+                        type="button"
+                        [pTooltip]="'actions.download' | transloco"
+                        tooltipPosition="top"
+                        [attr.aria-label]="('actions.download' | transloco) + ' ' + att.name"
+                        (click)="downloadFile.emit(att)"
+                    >
+                        <i class="pi pi-download"></i>
+                    </button>
+                </div>
+
+            </li>
+        }
+    </ul>
+} @else {
+    <div class="dp-inline-empty" role="status" [attr.aria-label]="emptyKey() | transloco">
+        <i class="pi pi-paperclip dp-inline-empty__icon" aria-hidden="true"></i>
+        <span class="dp-inline-empty__text">{{ emptyKey() | transloco }}</span>
+    </div>
+}

@@ -1,0 +1,113 @@
+<!-- page-header.component.html -->
+<!--
+  Inputs
+  ──────
+  titleKey     : transloco key for the h1 title
+  iconClass    : PrimeIcons class, e.g. 'pi-envelope'
+  refId        : optional reference ID shown as #XXX
+  breadcrumb   : BreadcrumbConfig
+  statusLabel  : optional pre-translated status label string
+  statusColor  : CSS color string for text/border
+  statusBgColor: CSS background-color string
+  statusBorderColor: CSS border-color string
+  actions      : PageHeaderAction[]
+
+  Outputs
+  ───────
+  backClick    : void
+  actionClick  : string  (the PageHeaderAction.action value)
+-->
+
+<header class="dp-page-header">
+
+    <!-- ── Breadcrumb path — sits ABOVE the card ─────────────────────────── -->
+    @if (breadcrumb()) {
+        <nav class="dp-breadcrumb" aria-label="breadcrumb">
+            <span
+                class="dp-breadcrumb__parent"
+                (click)="backClick.emit()"
+                role="link"
+                tabindex="0"
+                (keydown.enter)="backClick.emit()"
+            >
+                {{ breadcrumb().parentLabel ?? (breadcrumb().parentKey | transloco) }}
+            </span>
+            <i class="pi pi-chevron-right dp-breadcrumb__sep" aria-hidden="true"></i>
+            <span class="dp-breadcrumb__current" aria-current="page">
+                {{ breadcrumb().currentLabel ?? (breadcrumb().currentKey | transloco) }}
+            </span>
+        </nav>
+    }
+
+    <!-- ── Title / actions card ──────────────────────────────────────────── -->
+    <div class="dp-page-header__body">
+        <div class="dp-page-header__title-row">
+
+            <!-- Icon + title + ref -->
+            <div class="dp-page-header__title-group">
+
+                <div class="dp-page-header__icon-wrap" aria-hidden="true">
+                    <i class="pi {{ iconClass() }}"></i>
+                </div>
+                <div class="dp-page-header__text">
+                    <h1 class="dp-page-header__title">
+                        {{ title() ? title() : (titleKey() | transloco) }}
+                    </h1>
+                    @if (refId()) {
+                        <span class="dp-page-header__ref font-mono">#{{ refId() }}</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Status badge + action buttons + back -->
+            <div class="dp-page-header__actions">
+                @if (statusLabel()) {
+                    <span
+                        class="dp-status-badge"
+                        [style.color]="statusColor()"
+                        [style.background-color]="statusBgColor()"
+                        [style.border-color]="statusBorderColor()"
+                        role="status"
+                        [attr.aria-label]="'Status: ' + statusLabel()"
+                    >
+                        <span class="dp-status-badge__dot" aria-hidden="true"></span>
+                        {{ statusLabel() }}
+                    </span>
+                }
+
+                @if (actions() && actions().length) {
+                    <div class="dp-action-bar" role="toolbar" [attr.aria-label]="title() ?? (titleKey() | transloco)">
+                        @for (act of actions(); track act.action) {
+                            <p-button
+                                [icon]="'pi ' + act.icon"
+                                [severity]="act.severity ?? 'primary'"
+                                [outlined]="act.outlined ?? false"
+                                size="small"
+                                [label]="act.label ?? (act.labelKey | transloco)"
+                                [pTooltip]="act.tooltipKey ? (act.tooltipKey | transloco) : ''"
+                                tooltipPosition="bottom"
+                                [attr.aria-label]="act.ariaLabel ?? (act.labelKey | transloco)"
+                                (onClick)="actionClick.emit(act.action)"
+                            />
+                        }
+                    </div>
+                }
+
+                @if (breadcrumb()) {
+                    <p-button
+                        class="dp-page-header__back-btn"
+                        icon="pi pi-arrow-left"
+                        severity="secondary"
+                        [text]="true"
+                        [rounded]="true"
+                        [pTooltip]="'actions.back' | transloco"
+                        tooltipPosition="bottom"
+                        (onClick)="backClick.emit()"
+                        aria-label="Go back"
+                    />
+                }
+            </div>
+
+        </div>
+    </div>
+</header>
