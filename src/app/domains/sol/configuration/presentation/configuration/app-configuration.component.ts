@@ -4,8 +4,8 @@ import { MessageService } from 'primeng/api';
 import { ButtonModule } from 'primeng/button';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { Domains } from '@/app/services/sol/configuration/presentation/domains/domains';
-import { Branding } from '@/app/services/sol/configuration/presentation/branding/branding';
+import { Domains } from '@/app/domains/sol/configuration/presentation/domains/domains';
+import { Branding } from '@/app/domains/sol/configuration/presentation/branding/branding';
 import { UIStyleDesignerComponent } from '@/app/foundation/core/ui-style-designer/ui-style-designer.component';
 import { ConfigBuilderService } from '@/app/foundation/core/services/config-builder.service';
 import { ConfigValidatorService } from '@/app/foundation/core/services/config-validator.service';

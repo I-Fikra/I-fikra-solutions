@@ -30,8 +30,8 @@ import {
   ConfigDataService,
   ConfigTranslations,
   ConfigModule
-} from '@/app/services/sol/configuration/infrastructure/config-data.service';
-import { BrandingService } from '@/app/services/sol/configuration/infrastructure/branding.service';
+} from '@/app/domains/sol/configuration/infrastructure/config-data.service';
+import { BrandingService } from '@/app/domains/sol/configuration/infrastructure/branding.service';
 import { SolutionConfig, SolutionMenuItem } from '@/app/foundation/core/models/solution-config.model';
 
 @Component({

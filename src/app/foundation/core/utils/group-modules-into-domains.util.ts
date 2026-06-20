@@ -18,7 +18,7 @@
  * منطق اشتقاق المسارات من الـ keys المستخدم بالفعل في apiUrl تحت. لو فيه مكان
  * تاني بيعرّف paths حقيقية لاحقًا، الأولوية له مش للـ placeholder ده.
  */
-import type { ConfigModule, ConfigFeature } from '@/app/services/sol/configuration/infrastructure/config-data.service';
+import type { ConfigModule, ConfigFeature } from '@/app/domains/sol/configuration/infrastructure/config-data.service';
 import type {
   ConfigInputDomain,
   ConfigInputModule,

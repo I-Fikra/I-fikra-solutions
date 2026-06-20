@@ -3,7 +3,7 @@ import { guestGuard } from './app/foundation/core/guards/guest.guard';
 import { authGuard } from './app/foundation/core/guards/auth.guard';
 import { platformGuard } from './app/foundation/core/guards/platform.guard';
 import { AppLayout } from './app/foundation/core/layout/component/app.layout';
-import dashboardRoutes from './app/services/dashboard/dashboard.routes';
+import dashboardRoutes from './app/domains/dashboard/dashboard.routes';
 
 /**
  * Root routes.
@@ -18,7 +18,7 @@ export const appRoutes: Routes = [
   {
     path: 'auth',
     canActivate: [guestGuard],
-    loadChildren: () => import('./app/services/iam/iam.routes')
+    loadChildren: () => import('./app/domains/iam/iam.routes')
   },
 
   // ─── IAM management (inside layout shell, authenticated) ──────────────
@@ -30,7 +30,7 @@ export const appRoutes: Routes = [
         (m) => m.AppLayout
       ),
     loadChildren: () =>
-      import('./app/services/iam/iam-management.routes').then((m) => m.default)
+      import('./app/domains/iam/iam-management.routes').then((m) => m.default)
   },
 
   // ─── Authenticated shell ───────────────────────────────────────────────
@@ -53,13 +53,13 @@ export const appRoutes: Routes = [
         path: 'sol',
         canActivate: [platformGuard],
         loadChildren: () =>
-          import('./app/services/sol/sol.routes').then((m) => m.default)
+          import('./app/domains/sol/sol.routes').then((m) => m.default)
       },
       {
         path: 'builder',
         canActivate: [platformGuard],
         loadChildren: () =>
-          import('./app/services/builder/builder.routes').then((m) => m.default)
+          import('./app/domains/builder/builder.routes').then((m) => m.default)
       }
     ]
   },
