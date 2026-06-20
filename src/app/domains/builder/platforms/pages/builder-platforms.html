@@ -1,97 +1,178 @@
 <div class="builder-platforms">
   <!-- ── Page Header ─────────────────────────────────────────────────── -->
   <div class="builder-platforms__header">
-    <h2 class="builder-platforms__title">
-      <i class="pi pi-th-large"></i>
-      Platforms
-    </h2>
-    <p class="builder-platforms__subtitle">
-      Manage and switch between your generated platform projects.
-    </p>
+    <div class="builder-platforms__heading">
+      <h2 class="builder-platforms__title">
+        <i class="pi pi-th-large"></i>
+        Platforms
+      </h2>
+      <p class="builder-platforms__subtitle">
+        Manage and switch between your generated platform projects.
+      </p>
+    </div>
+
+    <!-- View toggle -->
+    <div class="view-toggle">
+      <button type="button" class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'table'"
+        (click)="setViewMode('table')" title="Table view">
+        <i class="pi pi-list"></i>
+      </button>
+      <button type="button" class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'cards'"
+        (click)="setViewMode('cards')" title="Card view">
+        <i class="pi pi-th-large"></i>
+      </button>
+    </div>
   </div>
 
-  <!-- ── Tree Table ─────────────────────────────────────────────────── -->
+  <!-- ── Table View ─────────────────────────────────────────────────── -->
+  @if (viewMode() === 'table') {
   <div class="builder-tree">
     <!-- Table Head -->
     <div class="builder-tree__head">
+      <div class="builder-tree__col builder-tree__col--toggle"></div>
       <div class="builder-tree__col builder-tree__col--logo">Logo</div>
       <div class="builder-tree__col builder-tree__col--name">Platform Name</div>
-      <div class="builder-tree__col builder-tree__col--id">ID</div>
-      <div class="builder-tree__col builder-tree__col--color">Color</div>
       <div class="builder-tree__col builder-tree__col--status">Status</div>
       <div class="builder-tree__col builder-tree__col--actions">Actions</div>
     </div>
 
-    <!-- Rows -->
+    <!-- Parent Rows -->
     @for (row of rows(); track trackById($index, row)) {
-      <div
-        class="builder-tree__row"
-        [class.builder-tree__row--active]="row.isActive"
-      >
-        <!-- Logo -->
-        <div class="builder-tree__col builder-tree__col--logo">
-          <div class="platform-logo" [innerHTML]="row.safeLogo"></div>
-        </div>
 
-        <!-- Name -->
-        <div class="builder-tree__col builder-tree__col--name">
-          <span class="platform-name">{{ row.project.projectName }}</span>
-          <span class="platform-title">{{ row.project.websiteTitle }}</span>
-        </div>
-
-        <!-- ID -->
-        <div class="builder-tree__col builder-tree__col--id">
-          <code class="platform-id">{{ row.project.id }}</code>
-        </div>
-
-        <!-- Color swatch -->
-        <div class="builder-tree__col builder-tree__col--color">
-          <span
-            class="platform-color-swatch"
-            [style.background]="row.project.primaryColor"
-            [title]="row.project.primaryColor"
-          ></span>
-          <span class="platform-color-hex">{{ row.project.primaryColor }}</span>
-        </div>
-
-        <!-- Status -->
-        <div class="builder-tree__col builder-tree__col--status">
-          @if (row.isActive) {
-            <span class="platform-badge platform-badge--active">
-              <i class="pi pi-check-circle"></i> Active
-            </span>
-          } @else {
-            <span class="platform-badge platform-badge--idle">Idle</span>
-          }
-        </div>
-
-        <!-- Actions -->
-        <div class="builder-tree__col builder-tree__col--actions">
-          <button
-            class="platform-btn-apply"
-            [disabled]="row.isActive"
-            (click)="apply(row.project)"
-          >
-            <i class="pi pi-play"></i>
-            {{ row.isActive ? 'Active' : 'Apply' }}
-          </button>
-
-          <a
-            class="platform-btn-configure"
-            [routerLink]="['/sol/app-config']"
-            title="Configure"
-          >
-            <i class="pi pi-cog"></i>
-          </a>
-        </div>
+    <!-- Parent row -->
+    <div class="builder-tree__row" [class.builder-tree__row--active]="row.isActive">
+      <!-- Expand toggle -->
+      <div class="builder-tree__col builder-tree__col--toggle">
+        @if (row.children.length > 0) {
+<button class="tree-expand-btn" (click)="toggleExpand(row)" [title]="row.expanded ? 'Collapse' : 'Expand'"
+  [attr.aria-label]="row.expanded ? 'Collapse row' : 'Expand row'">
+  <i class="pi" [class.pi-chevron-down]="row.expanded" [class.pi-chevron-right]="!row.expanded"></i>
+</button>
+        }
       </div>
+
+      <!-- Logo -->
+      <div class="builder-tree__col builder-tree__col--logo">
+        <div class="platform-logo" [innerHTML]="row.safeLogo"></div>
+      </div>
+
+      <!-- Name Only -->
+      <div class="builder-tree__col builder-tree__col--name">
+        <span class="platform-name">{{ row.displayName }}</span>
+      </div>
+
+      <!-- Status -->
+      <div class="builder-tree__col builder-tree__col--status">
+        @if (row.isActive) {
+        <span class="platform-badge platform-badge--active">
+          <i class="pi pi-check-circle"></i> Active
+        </span>
+        } @else {
+        <span class="platform-badge platform-badge--idle">Idle</span>
+        }
+      </div>
+
+      <!-- Actions -->
+      <div class="builder-tree__col builder-tree__col--actions">
+        <button class="platform-btn-apply" [disabled]="row.isActive" (click)="apply(row.project)">
+          <i class="pi pi-play"></i>
+          {{ row.isActive ? 'Active' : 'Apply' }}
+        </button>
+        <a class="platform-btn-configure" [routerLink]="['/sol/app-config']" title="Configure">
+          <i class="pi pi-cog"></i>
+        </a>
+      </div>
+    </div>
+
+    <!-- Child rows -->
+    @if (row.expanded) {
+    @for (child of row.children; track trackByChildId($index, child)) {
+    <div class="builder-tree__row builder-tree__row--child" [class.builder-tree__row--active]="child.isActive">
+      <div class="builder-tree__col builder-tree__col--toggle">
+        <span class="tree-child-indent">
+          <i class="pi pi-minus tree-child-icon"></i>
+        </span>
+      </div>
+      <div class="builder-tree__col builder-tree__col--logo"></div>
+
+      <!-- يعرض نص الوصف الصافي فقط -->
+      <div class="builder-tree__col builder-tree__col--name">
+        <span class="platform-clean-desc">{{ child.cleanDescription }}</span>
+      </div>
+
+      <div class="builder-tree__col builder-tree__col--status"></div>
+      <div class="builder-tree__col builder-tree__col--actions"></div>
+    </div>
+    }
+    }
     }
 
     @if (rows().length === 0) {
-      <div class="builder-tree__empty">
-        <i class="pi pi-inbox"></i>
-        <span>No platforms found.</span>
-      </div>
+    <div class="builder-tree__empty">
+      <i class="pi pi-inbox"></i>
+      <span>No platforms found.</span>
+    </div>
     }
   </div>
+  }
+
+  <!-- ── Cards View Redesign ─────────────────────────────────────────── -->
+  @if (viewMode() === 'cards') {
+  <div class="builder-cards">
+    @for (row of rows(); track trackById($index, row)) {
+    <div class="platform-card" [class.platform-card--active]="row.isActive">
+
+      <!-- منطقة اللوجو الشفافة -->
+      <div class="platform-card__logo-wrapper">
+        <div class="platform-logo platform-logo--transparent" [innerHTML]="row.safeLogo"></div>
+      </div>
+
+      <!-- محتوى الكارد الموزع حسب الهيكل الجديد -->
+      <div class="platform-card__content">
+
+        <!-- السطر الأول: الاسم (يسار) + الـ Status وأيقونة الإعدادات (يمين) -->
+        <div class="platform-card__row platform-card__row--top">
+          <span class="platform-name-main">{{ row.displayName }}</span>
+
+          <div class="platform-card__meta-actions">
+            <!-- الـ Status -->
+            @if (row.isActive) {
+            <span class="platform-badge platform-badge--active">
+              <i class="pi pi-check-circle"></i> Active
+            </span>
+            } @else {
+            <span class="platform-badge platform-badge--idle">Idle</span>
+            }
+
+            <!-- أيقونة الإعدادات -->
+            <a class="platform-btn-configure" [routerLink]="['/sol/app-config']" title="Configure">
+              <i class="pi pi-cog"></i>
+            </a>
+          </div>
+        </div>
+
+        <!-- السطر الثاني: الوصف على الشمال تماماً والزرار على اليمين تماماً -->
+        <div class="platform-card__row platform-card__row--bottom">
+          <span class="platform-clean-desc-card">{{ row.description }}</span>
+
+          <button class="platform-btn-apply platform-btn-apply--sm" [disabled]="row.isActive"
+            (click)="apply(row.project)">
+            <i class="pi pi-play"></i>
+            {{ row.isActive ? 'Active' : 'Apply' }}
+          </button>
+        </div>
+
+      </div>
+
+    </div>
+    }
+
+    @if (rows().length === 0) {
+    <div class="builder-cards__empty">
+      <i class="pi pi-inbox"></i>
+      <span>No platforms found.</span>
+    </div>
+    }
+  </div>
+  }
 </div>

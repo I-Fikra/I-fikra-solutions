@@ -2,7 +2,16 @@
   padding: 2rem;
 
   &__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 1rem;
     margin-bottom: 2rem;
+  }
+
+  &__heading {
+    min-width: 0;
   }
 
   &__title {
@@ -14,7 +23,9 @@
     gap: 0.6rem;
     margin: 0 0 0.4rem;
 
-    i { color: var(--primary-color); }
+    i {
+      color: var(--primary-color);
+    }
   }
 
   &__subtitle {
@@ -24,17 +35,80 @@
   }
 }
 
-// ── Tree Table ──────────────────────────────────────────────────────────────
+// ── View toggle ───────────────────────────────────────────────────────────
+.view-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  border-radius: 0.625rem;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-section, var(--surface-hover));
+  flex-shrink: 0;
 
+  &__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    border: none;
+    border-radius: 0.45rem;
+    background: transparent;
+    color: var(--text-color-secondary);
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s;
+
+    &:hover {
+      color: var(--text-color);
+    }
+
+    &--active {
+      background: var(--surface-card);
+      color: var(--primary-color);
+      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
+    }
+  }
+}
+
+// ── Tree expand button ────────────────────────────────────────────────────
+.tree-expand-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--surface-border);
+  border-radius: 0.35rem;
+  background: var(--surface-hover);
+  color: var(--text-color-secondary);
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s, color 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: var(--surface-border);
+    color: var(--text-color);
+    border-color: var(--primary-color);
+  }
+
+  i {
+    font-size: 0.7rem;
+  }
+}
+
+// ── Tree Table ──────────────────────────────────────────────────────────────
 .builder-tree {
   border-radius: 0.875rem;
   border: 1px solid var(--surface-border);
   background: var(--surface-card);
   overflow: hidden;
 
+  $cols: 32px 72px 1fr 110px 180px;
+
   &__head {
     display: grid;
-    grid-template-columns: 72px 1fr 140px 160px 110px 140px;
+    grid-template-columns: $cols;
     gap: 1rem;
     padding: 0.75rem 1.25rem;
     background: var(--surface-section, var(--surface-hover));
@@ -48,14 +122,16 @@
 
   &__row {
     display: grid;
-    grid-template-columns: 72px 1fr 140px 160px 110px 140px;
+    grid-template-columns: $cols;
     gap: 1rem;
     align-items: center;
     padding: 1rem 1.25rem;
     border-bottom: 1px solid var(--surface-border);
     transition: background 0.15s;
 
-    &:last-child { border-bottom: none; }
+    &:last-child {
+      border-bottom: none;
+    }
 
     &:hover {
       background: var(--surface-hover);
@@ -66,6 +142,12 @@
       border-left: 3px solid var(--primary-color);
       padding-left: calc(1.25rem - 3px);
     }
+
+    &--child {
+      background: var(--surface-ground, var(--surface-hover));
+      padding-top: 0.75rem;
+      padding-bottom: 0.75rem;
+    }
   }
 
   &__col {
@@ -73,83 +155,149 @@
     align-items: center;
     min-width: 0;
 
-    &--logo { justify-content: center; }
-    &--name { flex-direction: column; align-items: flex-start; gap: 0.15rem; }
-    &--id   { font-family: monospace; }
-    &--color { gap: 0.5rem; }
-    &--actions { gap: 0.5rem; }
-  }
+    &--toggle,
+    &--logo {
+      justify-content: center;
+    }
 
-  &__empty {
-    display: flex;
-    align-items: center;
-    gap: 0.6rem;
-    padding: 2.5rem;
-    color: var(--text-color-secondary);
-    font-size: 0.9rem;
-    justify-content: center;
+    &--name {
+      display: flex;
+      align-items: flex-start;
+      min-width: 0;
+      width: 100%;
+    }
 
-    i { font-size: 1.4rem; }
+    &--actions {
+      gap: 0.5rem;
+      justify-content: flex-end;
+    }
   }
 }
 
-// ── Cell components ─────────────────────────────────────────────────────────
+// نص الوصف الصافي للجدول
+.platform-clean-desc {
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  text-align: left;
+  direction: rtl;
+}
 
+// ── Cards Grid ────────────────────────────────────────────────────────────
+.builder-cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 1.5rem;
+}
+
+// ── Platform Card Redesign ────────────────────────────────────────────────
+.platform-card {
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem;
+  border-radius: 0.875rem;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-card);
+  transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
+
+  &:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+  }
+
+  &--active {
+    border-color: var(--primary-color);
+    background: color-mix(in srgb, var(--primary-color) 3%, var(--surface-card));
+  }
+
+  &__logo-wrapper {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem 0;
+    background: transparent;
+    border-bottom: 1px solid var(--surface-border);
+    margin: -1.5rem -1.5rem 1rem -1.5rem;
+  }
+
+  &__content {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+  }
+
+  &__row {
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: 1rem;
+
+    // السطر الأول: يحتوي على الاسم (يسار) والـ Status مع الأيقونة (يمين)
+    &--top {
+      flex-direction: row;
+      justify-content: space-between;
+
+      .platform-name-main {
+        font-size: 1.2rem;
+        font-weight: 700;
+        color: var(--text-color);
+      }
+    }
+
+    // السطر الثاني: الوصف على الشمال تماماً والزرار على اليمين تماماً (LTR Structure)
+    &--bottom {
+      flex-direction: row !important;
+      justify-content: space-between !important;
+      direction: ltr !important; // يضمن بقاء المحاذاة الهندسية: الوصف يسار، والزرار يمين
+border-top: 1px solid rgba(128, 128, 128, 0.6); // Fallback للمتصفحات القديمة (Chrome < 111)
+  border-top: 1px solid color-mix(in srgb, var(--surface-border) 60%, transparent); // للمتصفحات الحديثة
+      padding-top: 1rem;
+    }
+  }
+
+  &__meta-actions {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+}
+
+// نص الوصف الصافي بداخل الكارد (محاذاة للشمال تماماً مع بقاء دعم التكست العربي متناسق)
+.platform-clean-desc-card {
+  font-size: 0.875rem;
+  color: var(--text-color-secondary);
+  font-weight: 500;
+  text-align: left;
+  direction: rtl; // يحافظ على تركيب الجملة العربية والشرطة المائلة سليمة
+  flex: 1;
+  margin-right: 1rem;
+}
+
+// ── Logo Design (Transparent Background) ──────────────────────────────────
 .platform-logo {
-  height: 40px;
-  width: 56px;
+  height: 48px;
+  width: 68px;
   display: flex;
   align-items: center;
   justify-content: center;
   overflow: hidden;
 
-  svg, img {
-    max-height: 40px;
-    max-width: 56px;
+  &--transparent {
+    background: transparent;
+  }
+
+  svg,
+  img {
+    max-height: 100%;
+    max-width: 100%;
     object-fit: contain;
   }
 }
 
+// ── UI Components & Badges ────────────────────────────────────────────────
 .platform-name {
   font-weight: 600;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--text-color);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.platform-title {
-  font-size: 0.75rem;
-  color: var(--text-color-secondary);
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-}
-
-.platform-id {
-  font-size: 0.78rem;
-  color: var(--primary-color);
-  background: color-mix(in srgb, var(--primary-color) 10%, transparent);
-  padding: 0.15rem 0.45rem;
-  border-radius: 4px;
-  white-space: nowrap;
-}
-
-.platform-color-swatch {
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  flex-shrink: 0;
-  border: 2px solid var(--surface-border);
-}
-
-.platform-color-hex {
-  font-size: 0.78rem;
-  font-family: monospace;
-  color: var(--text-color-secondary);
 }
 
 .platform-badge {
@@ -160,6 +308,7 @@
   border-radius: 1rem;
   font-size: 0.75rem;
   font-weight: 600;
+  flex-shrink: 0;
 
   &--active {
     background: color-mix(in srgb, var(--green-500, #22c55e) 15%, transparent);
@@ -185,7 +334,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background 0.15s, color 0.15s;
-  white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover:not(:disabled) {
     background: var(--primary-color);
@@ -195,6 +344,11 @@
   &:disabled {
     opacity: 0.4;
     cursor: default;
+  }
+
+  &--sm {
+    padding: 0.35rem 0.75rem;
+    font-size: 0.78rem;
   }
 }
 
