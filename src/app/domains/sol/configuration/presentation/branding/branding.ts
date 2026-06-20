@@ -298,7 +298,7 @@ export class Branding {
   }
 
   // ── Live Review ───────────────────────────────────────────────────────────
-  openLiveReview(): void {
-    console.log('[Branding] Live Review', this.brandingForm());
-  }
+  // openLiveReview(): void {
+  //   console.log('[Branding] Live Review', this.brandingForm());
+  // }
 }

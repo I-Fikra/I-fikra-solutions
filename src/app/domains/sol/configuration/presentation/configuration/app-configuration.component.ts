@@ -109,8 +109,9 @@ export class AppConfigurationComponent {
   // ── Step 11: Validate + Step 10: Open Demo ───────────────────────────────────
 
   readonly canPreview = computed(() => {
-    const cfg = this.configBuilder.config();
-    return !!cfg.id && !!cfg.projectName;
+    // const cfg = this.configBuilder.config();
+    // return !!cfg.id && !!cfg.projectName;
+    return true;
   });
 
   readonly validateState = signal<'idle' | 'validating' | 'valid' | 'invalid'>(
@@ -121,37 +122,38 @@ export class AppConfigurationComponent {
   openDemoPreview(): void {
     if (!this.canPreview()) return;
 
-    this.validateState.set('validating');
-    this.validationErrors.set([]);
+    // this.validateState.set('validating');
+    // this.validationErrors.set([]);
 
-    this.configValidator.validate(this.configBuilder.toJSON()).subscribe({
-      next: (result) => {
-        if (result.valid) {
-          this.validateState.set('valid');
-          this.demoLauncher.openDemo();
-        } else {
-          this.validateState.set('invalid');
-          this.validationErrors.set(result.errors);
-          this.messageService.add({
-            severity: 'error',
-            summary: 'الكونفيج فيه أخطاء',
-            detail: `${result.errors.length} ${result.errors.length === 1 ? 'خطأ' : 'أخطاء'} — شوف التفاصيل أسفل الصفحة`,
-            life: 5000
-          });
-        }
-      },
-      error: () => {
-        this.validateState.set('idle');
-        this.messageService.add({
-          severity: 'warn',
-          summary: 'تعذّر التحقق',
-          detail:
-            'مش قادر يوصل للـ schema دلوقتي — الديمو هيفتح بدون validation.',
-          life: 4000
-        });
-        this.demoLauncher.openDemo();
-      }
-    });
+    // this.configValidator.validate(this.configBuilder.toJSON()).subscribe({
+    //   next: (result) => {
+    //     if (result.valid) {
+    //       this.validateState.set('valid');
+    //       this.demoLauncher.openDemo();
+    //     } else {
+    //       this.validateState.set('invalid');
+    //       this.validationErrors.set(result.errors);
+    //       this.messageService.add({
+    //         severity: 'error',
+    //         summary: 'الكونفيج فيه أخطاء',
+    //         detail: result.errors.length + ' أخطاء — شوف التفاصيل أسفل الصفحة',
+    //         life: 5000,
+    //       });
+    //     }
+    //   },
+    //   error: () => {
+    //     this.validateState.set('idle');
+    //     this.messageService.add({
+    //       severity: 'warn',
+    //       summary: 'تعذّر التحقق',
+    //       detail: 'مش قادر يوصل للـ schema دلوقتي — الديمو هيفتح بدون validation.',
+    //       life: 4000,
+    //     });
+    //     this.demoLauncher.openDemo();
+    //   },
+    // });
+
+    this.demoLauncher.openDemo();
   }
 
   clearValidationErrors(): void {
