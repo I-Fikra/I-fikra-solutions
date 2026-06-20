@@ -5,12 +5,10 @@
  * Responsibilities:
  *   - Hold the active ThemeConfiguration in a writable signal
  *   - Expose per-section computed slices (shape, button, dialog, …)
- *   - Apply all CSS custom properties to document.documentElement on every change
+ *   - Apply ALL CSS custom properties to document.documentElement on every change
  *   - Persist to / hydrate from localStorage
- *
- * Step 3 of the Theme-Builder Refactor.
- * Does NOT touch theme-personality.service.ts — both run in parallel
- * until the old service is fully retired in a later step.
+ *   - Expose applyNow() so app.layout can eagerly push CSS vars on startup
+ *     even before any signal changes (avoids flash of un-styled components)
  */
 
 import { Injectable, PLATFORM_ID, computed, effect, inject, signal } from '@angular/core';
@@ -107,6 +105,47 @@ const LANG_CSS_VAR: Record<string, string> = {
 
 const STORAGE_KEY = 'app_theme_configuration';
 
+// ── Card style CSS var maps ───────────────────────────────────────────────────
+
+const CARD_SHADOW_MAP: Record<string, string> = {
+  elevated: '0 2px 12px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.06)',
+  bordered: 'none',
+  flat:     'none',
+  glass:    '0 8px 32px rgba(0,0,0,0.10)',
+};
+
+const CARD_BORDER_MAP: Record<string, string> = {
+  elevated: '1px solid var(--surface-border)',
+  bordered: '2px solid var(--surface-border)',
+  flat:     'none',
+  glass:    '1px solid rgba(255,255,255,0.25)',
+};
+
+const CARD_BG_MAP: Record<string, string> = {
+  elevated: 'var(--surface-card)',
+  bordered: 'var(--surface-card)',
+  flat:     'var(--surface-ground)',
+  glass:    'rgba(255,255,255,0.15)',
+};
+
+// ── Dialog style CSS var maps ─────────────────────────────────────────────────
+
+const DIALOG_HEADER_BG_MAP: Record<string, string> = {
+  'flat':            'var(--surface-card)',
+  'accent-header':   'var(--primary-color)',
+  'gradient-header': 'linear-gradient(135deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 60%, #8b5cf6))',
+  'outlined':        'var(--surface-card)',
+  'popup':           'var(--surface-card)',
+};
+
+const DIALOG_HEADER_COLOR_MAP: Record<string, string> = {
+  'flat':            'var(--text-color)',
+  'accent-header':   '#ffffff',
+  'gradient-header': '#ffffff',
+  'outlined':        'var(--text-color)',
+  'popup':           'var(--text-color)',
+};
+
 // ── Store ─────────────────────────────────────────────────────────────────────
 
 @Injectable({ providedIn: 'root' })
@@ -129,8 +168,16 @@ export class ThemeConfigurationStore {
   /** Full snapshot — useful for serialisation / demo sync */
   readonly snapshot = computed<ThemeConfiguration>(() => this._state());
 
+  // ── Flat convenience signals used by shared components ─────────────────────
+  readonly cardStyle    = computed(() => this._state().shape.cardStyle);
+  readonly tableStyle   = computed(() => this._state().table.style);
+  readonly dialogStyle  = computed(() => this._state().dialog.style);
+  readonly buttonSize   = computed(() => this._state().button.size);
+  readonly buttonShadow = computed(() => this._state().button.shadow);
+  readonly globalShape  = computed(() => this._state().shape.globalShape);
+
   constructor() {
-    // Apply CSS vars + persist on every state change
+    // Apply CSS vars + persist on every state change (fires immediately on init too)
     effect(() => {
       const cfg = this._state();
       if (isPlatformBrowser(this.platformId)) {
@@ -138,6 +185,27 @@ export class ThemeConfigurationStore {
         this._persist(cfg);
       }
     });
+  }
+
+  // ── Public: eager apply (call from app.layout on startup) ─────────────────
+
+  /**
+   * Push all CSS variables to document.documentElement immediately.
+   * Call this from app.layout's constructor (before Angular's first CD cycle)
+   * to avoid a flash of un-styled components on page load.
+   */
+  applyNow(): void {
+    if (isPlatformBrowser(this.platformId)) {
+      this._applyCssVars(this._state());
+    }
+  }
+
+  /**
+   * Reset everything to defaults AND re-apply immediately.
+   * Useful for the "Apply Defaults" button in the setup wizard.
+   */
+  applyDefaults(): void {
+    this._state.set(structuredClone(DEFAULT_THEME_CONFIGURATION));
   }
 
   // ── Update methods ─────────────────────────────────────────────────────────
@@ -189,7 +257,7 @@ export class ThemeConfigurationStore {
 
   /** Reset everything */
   resetAll(): void {
-    this._state.set({ ...DEFAULT_THEME_CONFIGURATION });
+    this._state.set(structuredClone(DEFAULT_THEME_CONFIGURATION));
   }
 
   // ── CSS variable application ───────────────────────────────────────────────
@@ -199,24 +267,30 @@ export class ThemeConfigurationStore {
 
     // ── Shape ────────────────────────────────────────────────────────────────
     const gs = cfg.shape.globalShape;
-    root.style.setProperty('--app-shape-radius',  SHAPE_RADIUS_MAP[gs]);
-    root.style.setProperty('--app-btn-radius',    BTN_RADIUS_MAP[cfg.button.shape]);
-    root.style.setProperty('--app-card-radius',   CARD_RADIUS_MAP[gs]);
-    root.style.setProperty('--app-dialog-radius', DIALOG_RADIUS_MAP[gs]);
-    root.style.setProperty('--app-table-radius',  SHAPE_RADIUS_MAP[gs]);
-    // PrimeNG token alias
+    root.style.setProperty('--border-radius',      SHAPE_RADIUS_MAP[gs]);
+    root.style.setProperty('--app-shape-radius',   SHAPE_RADIUS_MAP[gs]);
     root.style.setProperty('--p-border-radius-sm', SHAPE_RADIUS_MAP[gs]);
+    root.style.setProperty('--app-btn-radius',     BTN_RADIUS_MAP[cfg.button.shape]);
+    root.style.setProperty('--app-card-radius',    CARD_RADIUS_MAP[gs]);
+    root.style.setProperty('--app-dialog-radius',  DIALOG_RADIUS_MAP[gs]);
+    root.style.setProperty('--app-table-radius',   SHAPE_RADIUS_MAP[gs]);
+
+    // ── Card style ───────────────────────────────────────────────────────────
+    const cs = cfg.shape.cardStyle;
+    root.style.setProperty('--app-card-shadow', CARD_SHADOW_MAP[cs] ?? CARD_SHADOW_MAP['elevated']);
+    root.style.setProperty('--app-card-border', CARD_BORDER_MAP[cs] ?? CARD_BORDER_MAP['elevated']);
+    root.style.setProperty('--app-card-bg',     CARD_BG_MAP[cs]     ?? CARD_BG_MAP['elevated']);
 
     // ── Font ─────────────────────────────────────────────────────────────────
     const font = cfg.font;
     this._applyFontEntries(font.entries, root);
-    root.style.setProperty('--app-font-size-base',      font.fontSizeBase);
-    root.style.setProperty('--app-type-scale-ratio',    font.scaleRatio);
-    root.style.setProperty('--app-body-weight',         font.bodyWeight);
-    root.style.setProperty('--app-line-height',         font.bodyLineHeight);
-    root.style.setProperty('--app-letter-spacing',      font.bodyLetterSpacing);
-    root.style.setProperty('--app-body-color',          font.bodyColor);
-    root.style.setProperty('--app-body-background',     font.bodyBackground);
+    root.style.setProperty('--app-font-size-base',    font.fontSizeBase);
+    root.style.setProperty('--app-type-scale-ratio',  font.scaleRatio);
+    root.style.setProperty('--app-body-weight',       font.bodyWeight);
+    root.style.setProperty('--app-line-height',       font.bodyLineHeight);
+    root.style.setProperty('--app-letter-spacing',    font.bodyLetterSpacing);
+    root.style.setProperty('--app-body-color',        font.bodyColor);
+    root.style.setProperty('--app-body-background',   font.bodyBackground);
     if (font.responsiveMinWidth) root.style.setProperty('--app-responsive-min-width', font.responsiveMinWidth + 'px');
     if (font.responsiveFontSize) root.style.setProperty('--app-responsive-font-size', font.responsiveFontSize + 'px');
     if (font.responsiveScale)    root.style.setProperty('--app-responsive-scale',     font.responsiveScale);
@@ -228,17 +302,21 @@ export class ThemeConfigurationStore {
 
     // ── Dialog ───────────────────────────────────────────────────────────────
     const dlg = cfg.dialog;
-    root.style.setProperty('--app-dialog-header-height',  DIALOG_HEADER_H_MAP[dlg.headerHeight]);
+    root.style.setProperty('--app-dialog-header-height',   DIALOG_HEADER_H_MAP[dlg.headerHeight]);
     root.style.setProperty('--app-dialog-overlay-opacity', DIALOG_OVERLAY_MAP[dlg.overlayOpacity]);
-    root.style.setProperty('--app-dialog-animation',      dlg.animation);
-    this._applyDialogStyle(dlg.style, root);
+    root.style.setProperty('--app-dialog-animation',       dlg.animation);
+    root.style.setProperty('--app-dialog-header-bg',
+      DIALOG_HEADER_BG_MAP[dlg.style]    ?? 'var(--surface-card)');
+    root.style.setProperty('--app-dialog-header-color',
+      DIALOG_HEADER_COLOR_MAP[dlg.style] ?? 'var(--text-color)');
 
     // ── Table ────────────────────────────────────────────────────────────────
     const tbl = cfg.table;
-    root.style.setProperty('--app-table-row-separator',    TABLE_ROW_SEP_MAP[tbl.rowSeparator]);
-    root.style.setProperty('--app-table-col-separator',    tbl.columnSeparator ? '1px solid var(--surface-border)' : 'none');
-    root.style.setProperty('--app-table-header-style-bg',  TABLE_HEADER_BG_MAP[tbl.headerStyle]);
-    root.style.setProperty('--app-table-striped',          tbl.style === 'striped' ? '1' : '0');
+    root.style.setProperty('--app-table-row-separator',   TABLE_ROW_SEP_MAP[tbl.rowSeparator]);
+    root.style.setProperty('--app-table-col-separator',   tbl.columnSeparator ? '1px solid var(--surface-border)' : 'none');
+    root.style.setProperty('--app-table-header-style-bg', TABLE_HEADER_BG_MAP[tbl.headerStyle]);
+    root.style.setProperty('--app-table-striped',         tbl.style === 'striped' ? '1' : '0');
+    root.style.setProperty('--app-table-bordered',        tbl.style === 'bordered' ? '1' : '0');
     if (tbl.hoverColor) root.style.setProperty('--app-table-hover-bg', tbl.hoverColor);
 
     // ── Topbar ───────────────────────────────────────────────────────────────
@@ -251,6 +329,8 @@ export class ThemeConfigurationStore {
         ? 'var(--primary-color)'
         : 'var(--surface-card)';
     root.style.setProperty('--app-topbar-bg', topbarBg);
+    root.style.setProperty('--app-topbar-color',
+      (tb.accented && !tb.bgColor) ? '#ffffff' : 'var(--text-color)');
 
     // ── Sidebar ──────────────────────────────────────────────────────────────
     const sb = cfg.sidebar;
@@ -276,23 +356,6 @@ export class ThemeConfigurationStore {
         document.body.style.fontFamily = entry.font;
       }
     });
-  }
-
-  private _applyDialogStyle(style: string, root: HTMLElement): void {
-    const headerBgMap: Record<string, string> = {
-      'flat':            'var(--surface-card)',
-      'accent-header':   'var(--primary-color)',
-      'gradient-header': 'linear-gradient(135deg, var(--primary-color), color-mix(in srgb, var(--primary-color) 60%, #8b5cf6))',
-      'outlined':        'var(--surface-card)',
-      'popup':           'var(--surface-card)',
-    };
-    const headerColorMap: Record<string, string> = {
-      'flat': 'var(--text-color)', 'accent-header': '#fff',
-      'gradient-header': '#fff',   'outlined': 'var(--text-color)',
-      'popup': 'var(--text-color)',
-    };
-    root.style.setProperty('--app-dialog-header-bg',    headerBgMap[style]    ?? 'var(--surface-card)');
-    root.style.setProperty('--app-dialog-header-color', headerColorMap[style] ?? 'var(--text-color)');
   }
 
   private _applyTopbarBorder(borderStyle: TopbarBorder, root: HTMLElement): void {

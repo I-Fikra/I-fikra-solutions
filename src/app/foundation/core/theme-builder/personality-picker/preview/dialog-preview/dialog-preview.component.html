@@ -1,36 +1,96 @@
-<div class="lp-focused lp-focused--center lp-dialog-preview-host">
-  <p-dialog
-    [visible]="visible"
-    [modal]="false"
-    [closable]="false"
-    [draggable]="false"
-    [resizable]="false"
-    [appendTo]="'self'"
-    [showHeader]="true"
-    [blockScroll]="false"
-    header="Dialog Preview"
-    [style]="dialogStyle()"
-    [contentStyle]="{ padding: '1.25rem' }"
-  >
-    <ng-template pTemplate="header">
-      <span [ngStyle]="headerStyle()" class="lp-preview-dialog-header">
-        <i class="pi pi-info-circle" style="margin-right:6px; font-size:0.85rem;"></i>
-        Dialog Preview
-      </span>
-    </ng-template>
+<!-- ── Mini dashboard shell ── -->
+<div class="lp-dp-host">
+  <div class="lp-dp-shell">
 
-    <div class="lp-dialog__body">
-      <div class="lp-field"       [style.border-radius]="inputRadius()"></div>
-      <div class="lp-field"       [style.border-radius]="inputRadius()"></div>
-      <div class="lp-field lp-field--short" [style.border-radius]="inputRadius()"></div>
-      <div class="lp-btn-row">
-        <button class="lp-btn lp-btn--cancel"
-                [style.border-radius]="btnRadius()"
-                [style.box-shadow]="btnShadow()">Cancel</button>
-        <button class="lp-btn lp-btn--ok"
-                [style.border-radius]="btnRadius()"
-                [style.box-shadow]="btnShadow()">Confirm</button>
+    <!-- Topbar -->
+    <div class="lp-dp-topbar" [ngStyle]="shellTopbarStyle()">
+      <div class="lp-dp-topbar__logo"></div>
+      <div class="lp-dp-topbar__actions">
+        <div class="lp-dp-topbar__dot"></div>
+        <div class="lp-dp-topbar__dot"></div>
+        <div class="lp-dp-topbar__dot"></div>
       </div>
     </div>
-  </p-dialog>
+
+    <!-- Body: sidebar + content -->
+    <div class="lp-dp-body">
+
+      <!-- Sidebar -->
+      <div class="lp-dp-sidebar" [ngStyle]="shellSidebarStyle()">
+        <div class="lp-dp-sidebar__item lp-dp-sidebar__item--active"></div>
+        <div class="lp-dp-sidebar__item"></div>
+        <div class="lp-dp-sidebar__item"></div>
+        <div class="lp-dp-sidebar__item"></div>
+      </div>
+
+      <!-- Content area with mock cards -->
+      <div class="lp-dp-content">
+        <div class="lp-dp-cards">
+          <div class="lp-dp-card">
+            <div class="lp-dp-card__label"></div>
+            <div class="lp-dp-card__value"></div>
+          </div>
+          <div class="lp-dp-card">
+            <div class="lp-dp-card__label"></div>
+            <div class="lp-dp-card__value lp-dp-card__value--accent"></div>
+          </div>
+        </div>
+        <div class="lp-dp-table-hint">
+          <div class="lp-dp-table-row" *ngFor="let r of [0,1,2]"></div>
+        </div>
+      </div>
+
+    </div><!-- /body -->
+
+    <!-- ── Overlay + Dialog (positioned over shell) ── -->
+    @if (open()) {
+      <!-- Backdrop -->
+      <div
+        class="lp-dp-overlay"
+        [@overlayFade]
+        [style.opacity]="overlayOpacity()"
+      ></div>
+
+      <!-- Dialog box -->
+      <div
+        class="lp-dp-dialog"
+        [class.lp-dp-dialog--popup]="isPopup()"
+        [ngStyle]="dialogBoxStyle()"
+        [@dialogPop]="{ value: ':enter', params: animParams() }"
+      >
+        <!-- Header -->
+        <div class="lp-dp-dialog__header" [ngStyle]="headerStyle()">
+          <i class="pi pi-bell" style="font-size:0.78rem; margin-right:6px; opacity:.8;"></i>
+          <span>Confirm Action</span>
+        </div>
+
+        <!-- Body -->
+        <div class="lp-dp-dialog__body">
+          <div class="lp-dp-field" [style.border-radius]="inputRadius()"></div>
+          <div class="lp-dp-field" [style.border-radius]="inputRadius()"></div>
+          <div class="lp-dp-field lp-dp-field--short" [style.border-radius]="inputRadius()"></div>
+
+          <div class="lp-dp-btn-row">
+            <button class="lp-dp-btn lp-dp-btn--cancel"
+                    [style.border-radius]="btnRadius()"
+                    [style.box-shadow]="btnShadow()">Cancel</button>
+            <button class="lp-dp-btn lp-dp-btn--ok"
+                    [style.border-radius]="btnRadius()"
+                    [style.box-shadow]="btnShadow()">Confirm</button>
+          </div>
+        </div>
+      </div>
+    }
+
+    <!-- Toggle button -->
+    <button
+      class="lp-dp-toggle"
+      [class.lp-dp-toggle--open]="open()"
+      (click)="toggleOpen()"
+      title="{{ open() ? 'Close dialog' : 'Open dialog' }}"
+    >
+      <i [class]="open() ? 'pi pi-times' : 'pi pi-external-link'"></i>
+    </button>
+
+  </div>
 </div>

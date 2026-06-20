@@ -43,7 +43,9 @@ const DOMAINS_SOURCE: Record<string, Record<string, string[]>> = {
   }
 };
 
-function buildDomains(source: Record<string, Record<string, string[]>>): MetadataDomain[] {
+function buildDomains(
+  source: Record<string, Record<string, string[]>>
+): MetadataDomain[] {
   return Object.keys(source)
     .sort((a, b) => a.localeCompare(b))
     .map((domainName) => {
@@ -63,7 +65,13 @@ function buildDomains(source: Record<string, Record<string, string[]>>): Metadat
 
 @Component({
   selector: 'app-metadata',
-  imports: [CommonModule, PanelModule, ButtonModule, TranslocoModule, DialogShellComponent],
+  imports: [
+    CommonModule,
+    PanelModule,
+    ButtonModule,
+    TranslocoModule,
+    DialogShellComponent
+  ],
   templateUrl: './metadata.html',
   styleUrl: './metadata.scss'
 })
@@ -75,9 +83,16 @@ export class Metadata {
   selectedModule = signal<MetadataModule | null>(null);
   selectedDomain = signal<MetadataDomain | null>(null);
 
-  constructor(private router: Router, private route: ActivatedRoute) {}
+  constructor(
+    private router: Router,
+    private route: ActivatedRoute
+  ) {}
 
-  openEntity(domain: MetadataDomain, module: MetadataModule, entity: MetadataEntity): void {
+  openEntity(
+    domain: MetadataDomain,
+    module: MetadataModule,
+    entity: MetadataEntity
+  ): void {
     this.selectedDomain.set(domain);
     this.selectedModule.set(module);
     this.selectedEntity.set(entity);
@@ -88,7 +103,9 @@ export class Metadata {
     const entity = this.selectedEntity();
     if (!entity) return;
     this.dialogVisible.set(false);
-    this.router.navigate(['./', entity.name.toLowerCase()], { relativeTo: this.route });
+    this.router.navigate(['./', entity.name.toLowerCase()], {
+      relativeTo: this.route
+    });
   }
 
   toggleDomain(domain: MetadataDomain): void {

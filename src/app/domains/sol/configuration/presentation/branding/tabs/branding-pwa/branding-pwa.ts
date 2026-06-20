@@ -13,7 +13,7 @@ import {
   BrandingConfig,
   LocalizedText,
   SUPPORTED_APP_LANGUAGES
-} from '@/app/services/sol/configuration/infrastructure/branding.service';
+} from '@/app/domains/sol/configuration/infrastructure/branding.service';
 
 @Component({
   selector: 'app-branding-pwa',

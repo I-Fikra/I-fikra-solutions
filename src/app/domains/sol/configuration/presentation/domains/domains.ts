@@ -63,19 +63,20 @@ export class Domains implements OnInit, OnDestroy {
   loading = signal(true);
   selectedMenuItems = signal<MenuItem[]>([]);
 
-  public allModules = signal<ConfigModule[]>([]);
-  activeModuleKey = signal<string | null>(null);
-
-  // ── Generated SolutionConfig preview ──────────────────────────────────────
-  generatedSolution = signal<SolutionConfig | null>(null);
-  showPreviewDialog = signal(false);
-
   private readonly destroy$ = new Subject<void>();
   private readonly dataService = inject(ConfigDataService);
   private readonly brandingService = inject(BrandingService);
   private readonly messageService = inject(MessageService);
   private readonly cdr = inject(ChangeDetectorRef);
   private readonly router = inject(Router);
+
+  // ── مشترك مع DemoLauncherService عن طريق ConfigDataService ──────────────
+  readonly allModules = this.dataService.selectedModules;
+  activeModuleKey = signal<string | null>(null);
+
+  // ── Generated SolutionConfig preview ──────────────────────────────────────
+  generatedSolution = signal<SolutionConfig | null>(null);
+  showPreviewDialog = signal(false);
 
   tr = computed(() => this.translations() ?? ({} as ConfigTranslations));
 

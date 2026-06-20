@@ -13,6 +13,7 @@ import {
   applyColorZones,
   tokensFromCustom,
 } from '@/app/foundation/core/theme-builder/theme-personality.service';
+import { ThemeConfigurationStore } from '@/app/foundation/core/theme-builder/theme-configuration.store';
 
 @Component({
   selector: 'app-layout',
@@ -39,33 +40,37 @@ import {
   </div> `
 })
 export class AppLayout {
-  layoutService         = inject(LayoutService);
+  layoutService          = inject(LayoutService);
   private personalitySvc = inject(ThemePersonalityService);
+  private themeStore     = inject(ThemeConfigurationStore);
   private platformId     = inject(PLATFORM_ID);
 
   constructor() {
-    // ── Apply saved personality tokens on startup ──────────────────────────
     if (isPlatformBrowser(this.platformId)) {
+      // ── 1. ThemeConfigurationStore (new) — push all CSS vars eagerly ──────
+      //    applyNow() writes every CSS variable to documentElement immediately,
+      //    before Angular's first change-detection cycle, so there's no flash
+      //    of un-styled components even if localStorage has no saved config
+      //    (defaults are written automatically in that case).
+      this.themeStore.applyNow();
+
+      // ── 2. ThemePersonalityService (legacy) — still active in parallel ────
+      //    Kept so that the PersonalityPicker / CustomBuilder continue to work
+      //    while the full migration to ThemeConfigurationStore is in progress.
       const custom = this.personalitySvc.customPersonality();
       const root   = document.documentElement;
 
-      // Apply component-level CSS vars (height, border, shadow, etc.)
       applyComponentDetails(custom.componentDetails, root);
-
-      // Apply color zone overrides (topbarBg, sidebarBg, etc.)
       applyColorZones(custom.colorZones, root);
 
-      // Apply personality tokens (topbarBg from accented flag, typography, etc.)
       const tokens = tokensFromCustom(custom);
       this.personalitySvc.applyPersonality(tokens);
 
-      // Apply topbar accented flag if no explicit colorZone override
       if (custom.topbarAccented && !custom.colorZones.topbarBg) {
         root.style.setProperty('--app-topbar-bg',    'var(--primary-color)');
         root.style.setProperty('--app-topbar-color', '#ffffff');
       }
 
-      // Separate shadow from border-bottom (personality service puts both in --app-topbar-border)
       const borderStyle = custom.componentDetails.topbarBorderStyle;
       if (borderStyle === 'shadow') {
         root.style.setProperty('--app-topbar-border', 'none');

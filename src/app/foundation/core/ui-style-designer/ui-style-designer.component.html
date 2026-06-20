@@ -1,0 +1,429 @@
+<p-toast />
+
+<div class="usd-wrapper" (click)="closePopover()">
+
+  <!-- ══ PREVIEW AREA ═════════════════════════════════════════════════════════ -->
+  <div class="usd-preview-area">
+    <div class="usd-preview-frame">
+
+      <div class="usd-preview-toolbar">
+        <span class="usd-preview-toolbar__icon">
+          <i class="pi" [class]="componentMeta[activeKey()].icon"></i>
+        </span>
+        <span class="usd-preview-toolbar__title">
+          {{ componentMeta[activeKey()].label.slice(0, -1) }}<span>Preview</span>
+        </span>
+      </div>
+
+      <div class="usd-preview-canvas">
+
+      <!-- Sidebar -->
+      @if (isActiveComponent('sidebars')) {
+      <div class="usd-preview-block">
+        <div class="usd-preview-sidebar"
+          [ngStyle]="previewStyles('sidebars')">
+          @for (item of sidebarItems; track item.label) {
+            <div class="usd-preview-sidebar__item"
+              [class.usd-preview-sidebar__item--active]="item.active"
+              (click)="isActiveComponent('sidebars') && openSubElementPopover('content', $event)">
+              <i class="pi" [class]="item.icon"></i>
+              <span>{{ item.label }}</span>
+            </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Table -->
+      @if (isActiveComponent('tables')) {
+      <div class="usd-preview-block">
+        <div class="usd-preview-table"
+          [ngStyle]="previewStyles('tables')">
+          <div class="usd-preview-table__head"
+            [ngStyle]="isActiveComponent('tables') ? subElStyle('header') : {}"
+            (click)="isActiveComponent('tables') && openSubElementPopover('header', $event)">
+            <span>ID</span><span>Name</span><span>Status</span>
+          </div>
+          @for (row of tableRows; track row.id) {
+            <div class="usd-preview-table__row"
+              [ngStyle]="isActiveComponent('tables') ? subElStyle('row') : {}"
+              (click)="isActiveComponent('tables') && openSubElementPopover('row', $event)">
+              <span>{{ row.id }}</span>
+              <span>{{ row.name }}</span>
+              <span class="usd-badge usd-badge--{{ row.severity }}">{{ row.status }}</span>
+            </div>
+          }
+        </div>
+      </div>
+      }
+
+      <!-- Card -->
+      @if (isActiveComponent('cards')) {
+      <div class="usd-preview-block">
+        <div class="usd-preview-card"
+          [ngStyle]="previewStyles('cards')">
+          <div class="usd-preview-card__img"><i class="pi pi-image"></i></div>
+          <div class="usd-preview-card__body">
+            <strong
+              [ngStyle]="isActiveComponent('cards') ? subElStyle('title') : {}"
+              (click)="isActiveComponent('cards') && openSubElementPopover('title', $event)"
+              [class.usd-sub-el-clickable]="isActiveComponent('cards')">
+              @if (isActiveComponent('cards')) {
+                Custom Styled Card:
+              } @else {
+                Title here
+              }
+            </strong>
+            <p [ngStyle]="isActiveComponent('cards') ? subElStyle('body') : {}"
+              (click)="isActiveComponent('cards') && openSubElementPopover('body', $event)"
+              [class.usd-sub-el-clickable]="isActiveComponent('cards')">
+              @if (isActiveComponent('cards')) {
+                (Selected, Showing Title Styles Popover)
+              } @else {
+                Lorem ipsum dolor sit amet, consectetur adipiscing elit.
+              }
+            </p>
+            @if (isActiveComponent('cards')) {
+              <small class="usd-preview-card__hint"
+                (click)="openSubElementPopover('footer', $event)"
+                [class.usd-sub-el-clickable]="true">
+                Card Specific Details...
+              </small>
+            }
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Dialog -->
+      @if (isActiveComponent('dialogs')) {
+      <div class="usd-preview-block">
+        <div class="usd-preview-dialog"
+          [ngStyle]="previewStyles('dialogs')">
+          <div class="usd-preview-dialog__header"
+            [ngStyle]="isActiveComponent('dialogs') ? subElStyle('header') : {}"
+            (click)="isActiveComponent('dialogs') && openSubElementPopover('header', $event)"
+            [class.usd-sub-el-clickable]="isActiveComponent('dialogs')">
+            <span>System Update (Dialog)</span>
+            <i class="pi pi-times"></i>
+          </div>
+          <div class="usd-preview-dialog__body"
+            [ngStyle]="isActiveComponent('dialogs') ? subElStyle('body') : {}"
+            (click)="isActiveComponent('dialogs') && openSubElementPopover('body', $event)"
+            [class.usd-sub-el-clickable]="isActiveComponent('dialogs')">
+            Unified Style across all components. Modern &amp; Approachable.
+          </div>
+          <div class="usd-preview-dialog__footer">
+            <button class="usd-preview-btn usd-preview-btn--secondary">Cancel</button>
+            <button class="usd-preview-btn usd-preview-btn--primary">Update</button>
+          </div>
+        </div>
+      </div>
+      }
+
+      <!-- Shape -->
+      @if (isActiveComponent('shapes')) {
+      <div class="usd-preview-block">
+        <div class="usd-preview-shape"
+          [ngStyle]="previewStyles('shapes')"></div>
+      </div>
+      }
+
+    </div><!-- /usd-preview-canvas -->
+    </div><!-- /usd-preview-frame -->
+
+    <!-- ── Sub-element popover ──────────────────────────────────────────────── -->
+    @if (activeSubElement() && popoverAnchor()) {
+      <div class="usd-sub-popover"
+        [style.top.px]="popoverAnchor()!.top"
+        [style.left.px]="popoverAnchor()!.left"
+        (click)="$event.stopPropagation()">
+
+        <div class="usd-sub-popover__header">
+          SUB-ELEMENT: {{ activeSubElementLabel() | uppercase }}
+        </div>
+
+        <!-- Font Family -->
+        <div class="usd-sub-popover__row">
+          <span class="usd-sub-popover__label">FONT FAMILY</span>
+          <select class="usd-sub-select"
+            [ngModel]="activeSubElementStyle().fontFamily"
+            (ngModelChange)="patchSubEl({ fontFamily: $event })">
+            @for (f of fontFamilies; track f) {
+              <option [value]="f">{{ f }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Font Size -->
+        <div class="usd-sub-popover__row">
+          <span class="usd-sub-popover__label">FONT SIZE</span>
+          <div class="usd-sub-slider-row">
+            <p-slider
+              [ngModel]="activeSubElementStyle().fontSize"
+              (ngModelChange)="patchSubEl({ fontSize: $event })"
+              [min]="8" [max]="48" [step]="1"
+              class="usd-slider" />
+            <div class="usd-input-pill">
+              <input type="number"
+                [value]="activeSubElementStyle().fontSize"
+                (input)="patchSubEl({ fontSize: +$any($event.target).value })"
+                min="8" max="48" />
+              <span>px</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Font Weight -->
+        <div class="usd-sub-popover__row">
+          <span class="usd-sub-popover__label">FONT WEIGHT</span>
+          <select class="usd-sub-select"
+            [ngModel]="activeSubElementStyle().fontWeight"
+            (ngModelChange)="patchSubEl({ fontWeight: $event })">
+            @for (w of fontWeights; track w) {
+              <option [value]="w">{{ w }}</option>
+            }
+          </select>
+        </div>
+
+        <!-- Font Color -->
+        <div class="usd-sub-popover__row">
+          <span class="usd-sub-popover__label">FONT COLOR</span>
+          <div class="usd-sub-color-row">
+            <div class="usd-color-swatch" [style.background]="activeSubElementStyle().fontColor"></div>
+            <input type="text" class="usd-color-hex"
+              [value]="activeSubElementStyle().fontColor"
+              (change)="onSubElColorInput($event)"
+              maxlength="7" />
+            <input type="color" class="usd-color-picker"
+              [value]="activeSubElementStyle().fontColor"
+              (input)="onSubElColorInput($event)" />
+          </div>
+        </div>
+
+        <!-- Text Align -->
+        <div class="usd-sub-popover__row">
+          <span class="usd-sub-popover__label">TEXT ALIGN</span>
+          <div class="usd-align-btns">
+            @for (a of textAligns; track a.value) {
+              <button class="usd-align-btn"
+                [class.usd-align-btn--active]="activeSubElementStyle().textAlign === a.value"
+                (click)="patchSubEl({ textAlign: a.value })">
+                <i class="pi" [class]="a.icon"></i>
+              </button>
+            }
+          </div>
+        </div>
+
+      </div>
+    }
+  </div><!-- /usd-preview-area -->
+
+  <!-- ══ CONTROLS ═════════════════════════════════════════════════════════════ -->
+
+  <!-- Component tabs -->
+  <div class="usd-section-header">COMPONENTS APPLIED TO:</div>
+  <div class="usd-component-tabs">
+    @for (key of componentKeys; track key) {
+      <button class="usd-tab"
+        [class.usd-tab--active]="activeKey() === key"
+        (click)="setActiveKey(key)">
+        <i class="pi" [class]="componentMeta[key].icon"></i>
+        {{ componentMeta[key].label }}
+      </button>
+    }
+  </div>
+
+  <!-- Two-column controls grid -->
+  <div class="usd-grid">
+
+    <!-- ── Left: SHAPE & DEPTH ──────────────────────────────────────────────── -->
+    <div class="usd-grid-col">
+      <div class="usd-section-header">{{ shapeLabel() }}</div>
+      <div class="usd-controls-col">
+
+        <!-- Corner Radius -->
+             @if (isActiveComponent('shapes')) {
+        <div class="usd-control-group">
+          <label class="usd-label">Corner Radius</label>
+          <div class="usd-slider-row">
+            <p-slider class="usd-slider"
+              [ngModel]="activeConfig().cornerRadius"
+              (ngModelChange)="patch({ cornerRadius: $event })"
+              [min]="0" [max]="25" [step]="1" />
+            <div class="usd-input-pill">
+              <input type="number" [value]="activeConfig().cornerRadius"
+                (input)="onNumericInput('cornerRadius', 0, 48)($event)" min="0" max="48" />
+              <span>px</span>
+            </div>
+          </div>
+        </div>
+      }
+        <!-- Elevation + Width row -->
+        <div class="usd-inline-pair">
+          <div class="usd-control-group usd-control-group--inline">
+            <label class="usd-label">Elevation/Shadow</label>
+            <p-toggleswitch [ngModel]="activeConfig().elevationShadow"
+              (ngModelChange)="patch({ elevationShadow: $event })" />
+          </div>
+
+          <div class="usd-control-group">
+            <label class="usd-label">Width</label>
+            <div class="usd-segmented">
+              <button class="usd-seg-btn"
+                [class.usd-seg-btn--active]="activeConfig().width === 'standard'"
+                (click)="patch({ width: 'standard' })">Standard</button>
+              <button class="usd-seg-btn"
+                [class.usd-seg-btn--active]="activeConfig().width === 'highlighted'"
+                (click)="patch({ width: 'highlighted' })">Highlighted</button>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Right: STROKE & COLOR (top) ─────────────────────────────────────── -->
+    <div class="usd-grid-col">
+      <div class="usd-section-header">COMPONENT STROKE &amp; COLOR</div>
+      <div class="usd-controls-col">
+
+        <!-- Internal Padding -->
+        <div class="usd-control-group">
+          <label class="usd-label">Internal Padding</label>
+          <div class="usd-slider-row">
+            <span class="usd-slider-start-val">0</span>
+            <p-slider class="usd-slider"
+              [ngModel]="activeConfig().internalPadding"
+              (ngModelChange)="patch({ internalPadding: $event })"
+              [min]="0" [max]="64" [step]="1" />
+            <span class="usd-slider-end-val">{{ activeConfig().internalPadding }}px</span>
+            <div class="usd-input-pill">
+              <input type="number" [value]="activeConfig().internalPadding"
+                (input)="onNumericInput('internalPadding', 0, 64)($event)" min="0" max="64" />
+              <span>px</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Left: STROKE & COLOR (border) ───────────────────────────────────── -->
+    <div class="usd-grid-col">
+      <div class="usd-section-header">{{ strokeLabel() }}</div>
+      <div class="usd-controls-col">
+
+        <!-- Border row -->
+        <div class="usd-inline-triple">
+          <div class="usd-control-group usd-control-group--inline">
+            <label class="usd-label">Border</label>
+            <p-toggleswitch [ngModel]="activeConfig().border"
+              (ngModelChange)="patch({ border: $event })" />
+          </div>
+
+          <div class="usd-control-group" [class.usd-control-group--disabled]="!activeConfig().border">
+            <label class="usd-label">Border Width</label>
+            <div class="usd-slider-row">
+              <p-slider class="usd-slider"
+                [ngModel]="activeConfig().borderWidth"
+                (ngModelChange)="patch({ borderWidth: $event })"
+                [min]="1" [max]="16" [step]="1"
+                [disabled]="!activeConfig().border" />
+              <div class="usd-input-pill">
+                <input type="number" [value]="activeConfig().borderWidth"
+                  (input)="onNumericInput('borderWidth', 1, 16)($event)"
+                  [disabled]="!activeConfig().border" min="1" max="16" />
+                <span>px</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="usd-control-group" [class.usd-control-group--disabled]="!activeConfig().border">
+            <label class="usd-label">Border Color</label>
+            <div class="usd-color-input">
+              <div class="usd-color-swatch" [style.background]="activeConfig().borderColor"></div>
+              <input type="text" class="usd-color-hex"
+                [value]="activeConfig().borderColor"
+                (change)="onBorderColorInput($event)"
+                [disabled]="!activeConfig().border" maxlength="7" />
+              <input type="color" class="usd-color-picker"
+                [value]="activeConfig().borderColor"
+                (input)="onBorderColorInput($event)"
+                [disabled]="!activeConfig().border" />
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ── Right: LAYOUT & SPACING ─────────────────────────────────────────── -->
+    <div class="usd-grid-col">
+      <div class="usd-section-header">COMPONENT LAYOUT &amp; SPACING</div>
+      <div class="usd-controls-col">
+
+        <!-- External Margin -->
+        <div class="usd-control-group">
+          <label class="usd-label">External Margin</label>
+          <div class="usd-slider-row">
+            <p-slider class="usd-slider"
+              [ngModel]="activeConfig().externalMargin"
+              (ngModelChange)="patch({ externalMargin: $event })"
+              [min]="0" [max]="64" [step]="1" />
+            <div class="usd-input-pill">
+              <input type="number" [value]="activeConfig().externalMargin"
+                (input)="onNumericInput('externalMargin', 0, 64)($event)" min="0" max="64" />
+              <span>px</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div><!-- /usd-grid -->
+
+  <!-- ── COMPONENT TYPOGRAPHY ─────────────────────────────────────────────── -->
+  <div class="usd-section-header">COMPONENT TYPOGRAPHY</div>
+  <div class="usd-controls-row usd-typo-row">
+
+    <div class="usd-control-group">
+      <label class="usd-label">Font Family</label>
+      <select class="usd-sub-select usd-sub-select--full"
+        [ngModel]="activeConfig().fontFamily"
+        (ngModelChange)="patch({ fontFamily: $event })">
+        @for (f of fontFamilies; track f) {
+          <option [value]="f">{{ f }}</option>
+        }
+      </select>
+    </div>
+
+    <div class="usd-control-group">
+      <label class="usd-label">Font Weight</label>
+      <div class="usd-segmented">
+        @for (w of fontWeights; track w) {
+          <button class="usd-seg-btn"
+            [class.usd-seg-btn--active]="activeConfig().fontWeight === w"
+            (click)="patch({ fontWeight: w })">{{ w }}</button>
+        }
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ── Actions ───────────────────────────────────────────────────────────── -->
+  <div class="usd-actions">
+    <p-button icon="pi pi-refresh" severity="secondary" [text]="true"
+      pTooltip="Reset to defaults" tooltipPosition="top"
+      (onClick)="resetCurrent()" />
+    <p-button icon="pi pi-star" severity="secondary" [outlined]="true"
+      pTooltip="Save as favourite" tooltipPosition="top" />
+    <p-button label="GLOBAL APPLY TO SYSTEM" icon="pi pi-globe"
+      severity="secondary" [outlined]="true"
+      (onClick)="applyGlobal()" />
+    <p-button [label]="saveLabel()" icon="pi pi-check"
+      (onClick)="saveStyles()" />
+  </div>
+
+</div>

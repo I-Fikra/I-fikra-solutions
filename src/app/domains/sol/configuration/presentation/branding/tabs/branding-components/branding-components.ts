@@ -3,7 +3,7 @@ import {
   BrandingConfig,
   PLATFORM_COMPONENT_TYPES,
   PlatformComponentType
-} from '@/app/services/sol/configuration/infrastructure/branding.service';
+} from '@/app/domains/sol/configuration/infrastructure/branding.service';
 import { TranslocoPipe } from '@jsverse/transloco';
 
 @Component({

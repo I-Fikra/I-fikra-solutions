@@ -5,11 +5,26 @@
  * component) lets a user pick from to scaffold a brand-new backend/project.
  * It is mock/seed data for the wizard's checklist UI — entirely unrelated to
  * this admin app's own sidebar (`DOMAINS` in `domain.config.ts`) or its own
- * branding (`ProjectConfigService`). No overlap, nothing to consolidate.
+ * branding (`ProjectConfigService`).
+ *
+ * تحديث (يونيو 2026): الـ `selectedModules` signal بقى bridge بسيط بين
+ * `Domains` component و `DemoLauncherService` — اليوزر بيختار الـ modules من
+ * شاشة الـ Domains، و`DemoLauncherService` بيقرا نفس الـ signal عشان يبني
+ * الـ domains اللي بيتبعتوا لزرار "Open Demo". لسه مفيش overlap مع
+ * `domain.config.ts` ولا `ProjectConfigService` الأصليين.
+ *
+ * تحديث تاني (Step 8): نفس الـ signal بقى كمان بيغذّي ConfigBuilderService
+ * تلقائيًا (effect() تحت) — يعني `selectedModules` بقاله 3 مستهلكين دلوقتي:
+ * Domains component (write)، DemoLauncherService (read، مع fallback خاص بيه)،
+ * و ConfigBuilderService (read، من غير fallback). الكوبلينج ده مقصود، مش
+ * تضارب مع كلام "مفيش overlap" فوق — ده لسه بيتكلم عن domain.config.ts/
+ * ProjectConfigService بس.
  */
-import { Injectable } from '@angular/core';
+import { Injectable, signal, effect, inject } from '@angular/core';
 import { Observable, of } from 'rxjs';
 import { delay } from 'rxjs/operators';
+import { ConfigBuilderService } from '@/app/foundation/core/services/config-builder.service';
+import { groupModulesIntoDomains } from '@/app/foundation/core/utils/group-modules-into-domains.util';
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Interfaces
@@ -60,6 +75,28 @@ export interface ConfigData {
 
 @Injectable({ providedIn: 'root' })
 export class ConfigDataService {
+  private readonly configBuilder = inject(ConfigBuilderService);
+
+  /**
+   * Signal مشترك: الـ modules اللي اليوزر اختارها في الـ Domains page.
+   * بيتحدث من Domains component وبيتقرأ من DemoLauncherService لبناء الـ demo config.
+   */
+  readonly selectedModules = signal<ConfigModule[]>([]);
+
+  /**
+   * ── ربط بـ ConfigBuilderService (Step 8) ───────────────────────────────────
+   * نفس باترن BrandingService بالظبط (Step 7): effect() في الـ constructor
+   * بيراقب selectedModules() وبينادي configBuilder.setDomains() تلقائيًا —
+   * مفيش أي تعديل مطلوب في Domains component. بيستخدم groupModulesIntoDomains
+   * المشتركة (foundation/core/utils) من غير fallback — لو المستخدم لسه ما
+   * اختارش أي module، domains[] في ConfigBuilderService بتفضل فاضية فعليًا،
+   * عشان الـ JSON Preview يعكس الواقع بالظبط (الـ fallback بتاع الـ demo
+   * بقى في DemoLauncherService بس، مش هنا).
+   */
+  private readonly _syncDomainsToConfigBuilder = effect(() => {
+    const domains = groupModulesIntoDomains(this.selectedModules());
+    this.configBuilder.setDomains(domains);
+  });
 
   getData$(): Observable<ConfigData> {
     return of(this.buildData()).pipe(delay(300));
