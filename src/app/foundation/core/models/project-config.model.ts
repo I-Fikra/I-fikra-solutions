@@ -19,10 +19,16 @@
  *     وتتولّد تلقائيًا في project-config.generated.ts.
  */
 
-// ── Re-exports من generated (backward compatibility) ─────────────────────────
+// ── Import + Re-export من generated (backward compatibility) ─────────────────
 // أي ملف بيستورد ProjectConfigInput / ConfigInputDomain / ProjectStyleConfig ...
 // من هنا هيفضل شغّال من غير ما تعدّل الـ imports بتاعته.
-export type {
+//
+// ملحوظة مهمة: لازم import عادي (مش "export type { ... } from") عشان الـ types
+// دي تبقى متاحة داخل الملف نفسه أيضًا — مستخدمة تحت في DEFAULT_SUB_ELEMENT_STYLE
+// و DEFAULT_COMPONENT_STYLE. "export type {...} from" بس بيعمل re-export للخارج
+// ومايجيبش الـ types دي جوه scope الملف، فده كان سبب الخطأ:
+// TS2304: Cannot find name 'SubElementStyle' / 'ComponentStyleConfig'.
+import type {
   ProjectConfigInput,
   ConfigInputDomain,
   ConfigInputModule,
@@ -41,6 +47,26 @@ export type {
   SubElementStyle,
   ComponentShape,
 } from './project-config.generated';
+
+export type {
+  ProjectConfigInput,
+  ConfigInputDomain,
+  ConfigInputModule,
+  ConfigInputSubModule,
+  ProjectColorConfig,
+  ColorZoneTokens,
+  ProjectStyleConfig,
+  TableStyleConfig,
+  DialogStyleConfig,
+  CardStyleConfig,
+  TopbarStyleConfig,
+  SidebarStyleConfig,
+  ButtonStyleConfig,
+  LoginStyleConfig,
+  ComponentStyleConfig,
+  SubElementStyle,
+  ComponentShape,
+};
 
 // ── Runtime project config ────────────────────────────────────────────────────
 // هذا الـ type خاص بالـ app (runtime) — مش جزء من الـ schema المشترك مع الديمو.
