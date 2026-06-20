@@ -1,0 +1,183 @@
+<p-toast />
+
+<!-- ══ DEFAULT CARD (shown by default) ═══════════════════════════════════════ -->
+@if (!showAdvanced()) {
+  <div class="uss-wrapper">
+
+    <!-- Section header -->
+    <div class="flex items-start gap-4 mb-6">
+      <div class="w-11 h-11 rounded-[10px] bg-[color-mix(in_srgb,var(--primary-color)_12%,transparent)] flex items-center justify-center shrink-0">
+        <i class="pi pi-objects-column text-[1.2rem] text-(--primary-color)"></i>
+      </div>
+      <div>
+        <h2 class="text-(--text-color) m-0 mb-1 font-bold text-xl! truncate min-w-0">
+          UI Style
+        </h2>
+        <p class="text-(--text-color-secondary) m-0 leading-[1.5]">
+          Browse the template's real screenshots to see what your website looks like, then use it as-is or fine-tune it via Advanced settings.
+        </p>
+      </div>
+    </div>
+
+    <!-- Template cards grid (card takes ~1/3 of the row) -->
+    <div class="uss-template-grid">
+      <div class="uss-template-card" [class.uss-template-card--selected]="isSelected()">
+
+        <!-- Clickable thumbnail → opens the screenshots gallery -->
+        <button
+          type="button"
+          class="uss-template-card__thumb"
+          (click)="openGallery(0)"
+          [attr.aria-label]="'View screenshots of ' + templateName"
+        >
+          <img
+            class="uss-template-card__thumb-img"
+            [src]="templateImages[0]"
+            [alt]="templateName + ' screenshot'"
+            loading="lazy"
+          />
+          <div class="uss-template-card__thumb-overlay">
+            <i class="pi pi-images"></i>
+            <span>View Screenshots</span>
+          </div>
+          <span class="uss-template-card__thumb-count">
+            <i class="pi pi-images"></i>
+            {{ templateImages.length }}
+          </span>
+
+          @if (isSelected()) {
+            <span class="uss-template-card__selected-badge">
+              <i class="pi pi-check"></i>
+            </span>
+          }
+        </button>
+
+        <!-- Info + actions -->
+        <div class="uss-template-card__body">
+          <div class="uss-template-card__badge">
+            <i class="pi pi-check-circle"></i>
+            Current Design
+          </div>
+          <h3 class="uss-template-card__title">{{ templateName }}</h3>
+          <p class="uss-template-card__desc">
+            Uses your website's current component styles — corner radii, borders, shadows, typography, and spacing — exactly as configured.
+          </p>
+
+          <!-- Style tokens preview -->
+          <div class="uss-tokens-row">
+            <div class="uss-token">
+              <span class="uss-token__label">Radius</span>
+              <span class="uss-token__value">8px</span>
+            </div>
+            <div class="uss-token">
+              <span class="uss-token__label">Border</span>
+              <span class="uss-token__value">Off</span>
+            </div>
+            <div class="uss-token">
+              <span class="uss-token__label">Shadow</span>
+              <span class="uss-token__value">Off</span>
+            </div>
+          </div>
+
+          <!-- Actions: select directly, no need to open the gallery -->
+          <div class="uss-template-card__actions">
+            <p-button
+              styleClass="w-full"
+              [label]="isSelected() ? 'Template In Use' : 'Use This Template'"
+              [icon]="isSelected() ? 'pi pi-check' : 'pi pi-arrow-right'"
+              iconPos="left"
+              [disabled]="isSelected()"
+              (onClick)="useTemplate()"
+            />
+            <button class="uss-template-card__advanced-link" (click)="openAdvanced()">
+              <i class="pi pi-sliders-h"></i>
+              Advanced Settings
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </div>
+
+  </div>
+}
+
+<!-- ══ ADVANCED DESIGNER (shown when toggled) ════════════════════════════════ -->
+@if (showAdvanced()) {
+  <div class="uss-advanced-wrapper">
+
+    <!-- Advanced header with back -->
+    <div class="uss-advanced-header">
+      <button class="uss-back-btn" (click)="closeAdvanced()">
+        <i class="pi pi-arrow-left"></i>
+        Back to Default
+      </button>
+      <div class="uss-advanced-header__title">
+        <i class="pi pi-sliders-h text-(--primary-color)"></i>
+        Advanced Component Styles
+      </div>
+    </div>
+
+    <!-- Full designer -->
+    <app-ui-style-designer />
+
+  </div>
+}
+
+<!-- ══ SCREENSHOTS GALLERY (lightbox) ══════════════════════════════════════════ -->
+@if (galleryOpen()) {
+  <div class="uss-lightbox" (click)="closeGallery()">
+    <div class="uss-lightbox__inner" (click)="$event.stopPropagation()">
+
+      <button class="uss-lightbox__close" (click)="closeGallery()" aria-label="Close">
+        <i class="pi pi-times"></i>
+      </button>
+
+      <div class="uss-lightbox__stage">
+        <button
+          class="uss-lightbox__nav uss-lightbox__nav--prev"
+          (click)="prevImage()"
+          aria-label="Previous screenshot"
+        >
+          <i class="pi pi-chevron-left"></i>
+        </button>
+
+        <img
+          class="uss-lightbox__img"
+          [src]="templateImages[galleryIndex()]"
+          [alt]="templateName + ' screenshot ' + (galleryIndex() + 1)"
+        />
+
+        <button
+          class="uss-lightbox__nav uss-lightbox__nav--next"
+          (click)="nextImage()"
+          aria-label="Next screenshot"
+        >
+          <i class="pi pi-chevron-right"></i>
+        </button>
+      </div>
+
+      <div class="uss-lightbox__footer">
+        <div class="uss-lightbox__dots">
+          @for (img of templateImages; track $index) {
+            <button
+              class="uss-lightbox__dot"
+              [class.uss-lightbox__dot--active]="galleryIndex() === $index"
+              (click)="goToImage($index)"
+              [attr.aria-label]="'Go to screenshot ' + ($index + 1)"
+            ></button>
+          }
+        </div>
+
+        <p-button
+          [label]="isSelected() ? 'Template In Use' : 'Use This Template'"
+          [icon]="isSelected() ? 'pi pi-check' : 'pi pi-arrow-right'"
+          iconPos="left"
+          [disabled]="isSelected()"
+          (onClick)="useTemplate()"
+        />
+      </div>
+
+    </div>
+  </div>
+}

@@ -42,7 +42,7 @@
 
   @if (activeSection() === 'ui-style') {
     <div class="config-section config-section--fullwidth">
-      <app-ui-style-designer />
+      <app-ui-style-section (done)="onUiStyleDone()" />
     </div>
   }
 

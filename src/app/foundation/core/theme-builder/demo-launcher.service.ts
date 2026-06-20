@@ -3,7 +3,9 @@ import { isPlatformBrowser } from '@angular/common';
 import { ConfigBuilderService } from '@/app/foundation/core/services/config-builder.service';
 import type { ProjectConfigInput } from '@/app/foundation/core/models/project-config.generated';
 
-const DEMO_URL = 'https://platform-demo-chi.vercel.app/';
+// const DEMO_URL = 'https://platform-demo-chi.vercel.app/';
+const DEMO_URL = 'http://localhost:4200/';
+
 
 /**
  * ── DemoLauncherService ────────────────────────────────────────────────────────
