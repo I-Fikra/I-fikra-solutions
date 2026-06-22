@@ -2,8 +2,11 @@
  * ── Config Source of Truth (Phase 3) ──────────────────────────────────────────
  * THIS SERVICE is the single source of truth for the ADMIN SHELL'S OWN
  * branding: active project name, logo, primary color, and document title for
- * *this* admin application (loaded from `/api/projects.json`, switchable
- * between e.g. SIMW / Lady Driver / I-Fikra). It has no menu/route knowledge.
+ * *this* admin application. It has no menu/route knowledge.
+ *
+ * Branding is a fixed, static snapshot (`STATIC_PROJECTS`, the former
+ * `/api/projects.json` payload) — there is no runtime switching between
+ * projects anymore, so the admin shell's branding never changes after boot.
  *
  * This is NOT the sidebar config (see `DOMAINS` in `domain.config.ts`) and NOT
  * the generated-CLIENT-app's own branding form (see `BrandingService` in
@@ -24,22 +27,20 @@ import {
   signal
 } from '@angular/core';
 import { isPlatformBrowser } from '@angular/common';
-import { HttpClient } from '@angular/common/http';
-import { tap } from 'rxjs/operators';
-import { Observable } from 'rxjs';
 import { updatePreset } from '@primeuix/themes';
 import { LayoutService } from '@/app/foundation/core/layout/service/layout.service';
 import { ProjectConfig } from '@/app/foundation/core/models';
+import { STATIC_PROJECTS } from '@/app/foundation/core/models/static-projects.data';
 import { generatePalette } from '@/app/foundation/core/utils/color-palette.util';
 
 @Injectable({ providedIn: 'root' })
 export class ProjectConfigService {
-  private readonly http = inject(HttpClient);
   private readonly layoutService = inject(LayoutService);
   private readonly platformId = inject(PLATFORM_ID);
 
   private readonly _config = signal<ProjectConfig | null>(null);
-  readonly availableProjects = signal<ProjectConfig[]>([]);
+  /** Read-only reference list — kept for pages like Platforms that display it; no switching. */
+  readonly availableProjects = signal<ProjectConfig[]>(STATIC_PROJECTS);
 
   readonly projectName = computed(() => this._config()?.projectName ?? '');
   readonly activeProjectId = computed(() => this._config()?.id ?? '');
@@ -53,22 +54,12 @@ export class ProjectConfigService {
   });
 
   /**
-   * Loads initial config + available projects list.
+   * Applies the static default project's branding.
    * Called once at app startup via APP_INITIALIZER.
    */
-  load(): Observable<void> {
-    return this.http.get<ProjectConfig[]>('/api/projects.json').pipe(
-      tap((projects) => {
-        this.availableProjects.set(projects);
-        const defaultProject = projects.find(p => p.isDefault) ?? projects[0];
-        this._applyConfig(defaultProject);
-      })
-    ) as unknown as Observable<void>;
-  }
-
-  /** Switches to a different project immediately (no HTTP call needed). */
-  switchProject(project: ProjectConfig): void {
-    this._applyConfig(project);
+  load(): void {
+    const defaultProject = STATIC_PROJECTS.find(p => p.isDefault) ?? STATIC_PROJECTS[0];
+    this._applyConfig(defaultProject);
   }
 
   private _applyConfig(config: ProjectConfig): void {

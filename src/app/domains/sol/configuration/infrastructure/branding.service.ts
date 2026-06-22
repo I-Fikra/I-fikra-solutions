@@ -5,7 +5,7 @@
  * (`appName`, `logo`, `themeColor`, social links, etc.) describes the
  * GENERATED CLIENT APP being scaffolded, persisted to `localStorage` as wizard
  * draft state. Despite similarly-named fields, this is NOT this admin shell's
- * own branding (see `ProjectConfigService`, loaded from `/api/projects.json`)
+ * own branding (see `ProjectConfigService`, a static built-in config)
  * and NOT the sidebar config (`domain.config.ts`). No overlap with either —
  * two different products' branding, not a duplicate.
  *

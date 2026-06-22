@@ -1,13 +1,13 @@
 .builder-platforms {
   padding: 2rem;
 
-  &__header {
+  &__toolbar {
     display: flex;
     align-items: flex-start;
     justify-content: space-between;
     flex-wrap: wrap;
     gap: 1rem;
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
   &__heading {
@@ -15,13 +15,13 @@
   }
 
   &__title {
-    font-size: 1.5rem;
+    font-size: 1.25rem;
     font-weight: 700;
     color: var(--text-color);
     display: flex;
     align-items: center;
-    gap: 0.6rem;
-    margin: 0 0 0.4rem;
+    gap: 0.5rem;
+    margin: 0 0 0.25rem;
 
     i {
       color: var(--primary-color);
@@ -35,88 +35,27 @@
   }
 }
 
-// ── View toggle ───────────────────────────────────────────────────────────
-.view-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.25rem;
-  padding: 0.25rem;
-  border-radius: 0.625rem;
-  border: 1px solid var(--surface-border);
-  background: var(--surface-section, var(--surface-hover));
-  flex-shrink: 0;
-
-  &__btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    width: 34px;
-    height: 34px;
-    border: none;
-    border-radius: 0.45rem;
-    background: transparent;
-    color: var(--text-color-secondary);
-    cursor: pointer;
-    transition: background 0.15s, color 0.15s;
-
-    &:hover {
-      color: var(--text-color);
-    }
-
-    &--active {
-      background: var(--surface-card);
-      color: var(--primary-color);
-      box-shadow: 0 1px 2px rgba(0, 0, 0, 0.06);
-    }
-  }
-}
-
-// ── Tree expand button ────────────────────────────────────────────────────
-.tree-expand-btn {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 26px;
-  height: 26px;
-  border: 1px solid var(--surface-border);
-  border-radius: 0.35rem;
-  background: var(--surface-hover);
-  color: var(--text-color-secondary);
-  cursor: pointer;
-  flex-shrink: 0;
-  transition: background 0.15s, color 0.15s, border-color 0.15s;
-
-  &:hover {
-    background: var(--surface-border);
-    color: var(--text-color);
-    border-color: var(--primary-color);
-  }
-
-  i {
-    font-size: 0.7rem;
-  }
-}
-
 // ── Tree Table ──────────────────────────────────────────────────────────────
 .builder-tree {
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   border: 1px solid var(--surface-border);
   background: var(--surface-card);
   overflow: hidden;
 
-  $cols: 32px 72px 1fr 110px 180px;
+  $cols: 32px 72px 1fr 110px 200px;
 
   &__head {
     display: grid;
     grid-template-columns: $cols;
     gap: 1rem;
-    padding: 0.75rem 1.25rem;
+    padding-block: 0.625rem;
+    padding-inline: 0.875rem;
     background: var(--surface-section, var(--surface-hover));
-    border-bottom: 1px solid var(--surface-border);
-    font-size: 0.75rem;
+    border-bottom: 2px solid var(--surface-border);
+    font-size: 0.8125rem;
     font-weight: 600;
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: 0.01em;
     color: var(--text-color-secondary);
   }
 
@@ -125,7 +64,8 @@
     grid-template-columns: $cols;
     gap: 1rem;
     align-items: center;
-    padding: 1rem 1.25rem;
+    padding-block: 0.75rem;
+    padding-inline: 0.875rem;
     border-bottom: 1px solid var(--surface-border);
     transition: background 0.15s;
 
@@ -139,14 +79,13 @@
 
     &--active {
       background: color-mix(in srgb, var(--primary-color) 6%, transparent);
-      border-left: 3px solid var(--primary-color);
-      padding-left: calc(1.25rem - 3px);
+      border-inline-start: 3px solid var(--primary-color);
+      padding-inline-start: calc(0.875rem - 3px);
     }
 
     &--child {
       background: var(--surface-ground, var(--surface-hover));
-      padding-top: 0.75rem;
-      padding-bottom: 0.75rem;
+      padding-block: 0.75rem;
     }
   }
 
@@ -172,6 +111,20 @@
       justify-content: flex-end;
     }
   }
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2.5rem 1rem;
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
 }
 
 // نص الوصف الصافي للجدول
@@ -183,25 +136,52 @@
   direction: rtl;
 }
 
+.tree-child-indent {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tree-child-icon {
+  font-size: 0.65rem;
+  color: var(--text-color-secondary);
+}
+
 // ── Cards Grid ────────────────────────────────────────────────────────────
 .builder-cards {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
-  gap: 1.5rem;
+  gap: 1.25rem;
+
+  &__empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 2.5rem 1rem;
+    color: var(--text-color-secondary);
+    font-size: 0.875rem;
+    grid-column: 1 / -1;
+
+    i {
+      font-size: 1.5rem;
+    }
+  }
 }
 
-// ── Platform Card Redesign ────────────────────────────────────────────────
+// ── Platform Card ───────────────────────────────────────────────────────────
 .platform-card {
   display: flex;
   flex-direction: column;
-  padding: 1.5rem;
-  border-radius: 0.875rem;
+  border-radius: 0.75rem;
   border: 1px solid var(--surface-border);
   background: var(--surface-card);
-  transition: box-shadow 0.15s, border-color 0.15s, background 0.15s;
+  overflow: hidden;
+  transition: box-shadow 0.18s ease, transform 0.18s ease, border-color 0.18s ease;
 
   &:hover {
-    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 8px 20px color-mix(in srgb, var(--primary-color) 15%, transparent);
+    transform: translateY(-2px);
   }
 
   &--active {
@@ -213,16 +193,16 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    padding: 1.5rem 0;
-    background: transparent;
+    padding-block: 1rem;
+    background: var(--surface-100);
     border-bottom: 1px solid var(--surface-border);
-    margin: -1.5rem -1.5rem 1rem -1.5rem;
   }
 
   &__content {
     display: flex;
     flex-direction: column;
-    gap: 1.25rem;
+    gap: 0.75rem;
+    padding: 1rem;
   }
 
   &__row {
@@ -237,8 +217,8 @@
       justify-content: space-between;
 
       .platform-name-main {
-        font-size: 1.2rem;
-        font-weight: 700;
+        font-size: 0.9375rem;
+        font-weight: 600;
         color: var(--text-color);
       }
     }
@@ -248,9 +228,8 @@
       flex-direction: row !important;
       justify-content: space-between !important;
       direction: ltr !important; // يضمن بقاء المحاذاة الهندسية: الوصف يسار، والزرار يمين
-border-top: 1px solid rgba(128, 128, 128, 0.6); // Fallback للمتصفحات القديمة (Chrome < 111)
-  border-top: 1px solid color-mix(in srgb, var(--surface-border) 60%, transparent); // للمتصفحات الحديثة
-      padding-top: 1rem;
+      border-top: 1px solid color-mix(in srgb, var(--surface-border) 60%, transparent);
+      padding-top: 0.75rem;
     }
   }
 
@@ -263,13 +242,13 @@ border-top: 1px solid rgba(128, 128, 128, 0.6); // Fallback للمتصفحات �
 
 // نص الوصف الصافي بداخل الكارد (محاذاة للشمال تماماً مع بقاء دعم التكست العربي متناسق)
 .platform-clean-desc-card {
-  font-size: 0.875rem;
+  font-size: 0.8125rem;
   color: var(--text-color-secondary);
   font-weight: 500;
   text-align: left;
   direction: rtl; // يحافظ على تركيب الجملة العربية والشرطة المائلة سليمة
   flex: 1;
-  margin-right: 1rem;
+  margin-inline-end: 1rem;
 }
 
 // ── Logo Design (Transparent Background) ──────────────────────────────────
@@ -293,80 +272,9 @@ border-top: 1px solid rgba(128, 128, 128, 0.6); // Fallback للمتصفحات �
   }
 }
 
-// ── UI Components & Badges ────────────────────────────────────────────────
+// ── UI Components ──────────────────────────────────────────────────────────
 .platform-name {
   font-weight: 600;
-  font-size: 0.95rem;
+  font-size: 0.875rem;
   color: var(--text-color);
-}
-
-.platform-badge {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.25rem 0.65rem;
-  border-radius: 1rem;
-  font-size: 0.75rem;
-  font-weight: 600;
-  flex-shrink: 0;
-
-  &--active {
-    background: color-mix(in srgb, var(--green-500, #22c55e) 15%, transparent);
-    color: var(--green-600, #16a34a);
-  }
-
-  &--idle {
-    background: var(--surface-hover);
-    color: var(--text-color-secondary);
-  }
-}
-
-.platform-btn-apply {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.35rem;
-  padding: 0.4rem 0.9rem;
-  border-radius: 0.5rem;
-  border: 1.5px solid var(--primary-color);
-  background: transparent;
-  color: var(--primary-color);
-  font-size: 0.8rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.15s, color 0.15s;
-  flex-shrink: 0;
-
-  &:hover:not(:disabled) {
-    background: var(--primary-color);
-    color: #fff;
-  }
-
-  &:disabled {
-    opacity: 0.4;
-    cursor: default;
-  }
-
-  &--sm {
-    padding: 0.35rem 0.75rem;
-    font-size: 0.78rem;
-  }
-}
-
-.platform-btn-configure {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  width: 32px;
-  height: 32px;
-  border-radius: 0.4rem;
-  background: var(--surface-hover);
-  color: var(--text-color-secondary);
-  border: 1px solid var(--surface-border);
-  text-decoration: none;
-  transition: background 0.15s, color 0.15s;
-
-  &:hover {
-    background: var(--surface-border);
-    color: var(--text-color);
-  }
 }

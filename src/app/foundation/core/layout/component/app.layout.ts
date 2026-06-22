@@ -7,12 +7,6 @@ import { AppSidebar } from './app.sidebar';
 import { AppFooter } from './app.footer';
 import { LayoutService } from '@/app/foundation/core/layout/service/layout.service';
 import { PageLoadingComponent } from '@/app/foundation/shared/components/loading/page-loading.component';
-import {
-  ThemePersonalityService,
-  applyComponentDetails,
-  applyColorZones,
-  tokensFromCustom,
-} from '@/app/foundation/core/theme-builder/theme-personality.service';
 import { ThemeConfigurationStore } from '@/app/foundation/core/theme-builder/theme-configuration.store';
 
 @Component({
@@ -40,44 +34,17 @@ import { ThemeConfigurationStore } from '@/app/foundation/core/theme-builder/the
   </div> `
 })
 export class AppLayout {
-  layoutService          = inject(LayoutService);
-  private personalitySvc = inject(ThemePersonalityService);
-  private themeStore     = inject(ThemeConfigurationStore);
-  private platformId     = inject(PLATFORM_ID);
+  layoutService      = inject(LayoutService);
+  private themeStore = inject(ThemeConfigurationStore);
+  private platformId  = inject(PLATFORM_ID);
 
   constructor() {
     if (isPlatformBrowser(this.platformId)) {
-      // ── 1. ThemeConfigurationStore (new) — push all CSS vars eagerly ──────
-      //    applyNow() writes every CSS variable to documentElement immediately,
-      //    before Angular's first change-detection cycle, so there's no flash
-      //    of un-styled components even if localStorage has no saved config
-      //    (defaults are written automatically in that case).
+      // applyNow() writes every CSS variable to documentElement immediately,
+      // before Angular's first change-detection cycle, so there's no flash
+      // of un-styled components even if localStorage has no saved config
+      // (defaults are written automatically in that case).
       this.themeStore.applyNow();
-
-      // ── 2. ThemePersonalityService (legacy) — still active in parallel ────
-      //    Kept so that the PersonalityPicker / CustomBuilder continue to work
-      //    while the full migration to ThemeConfigurationStore is in progress.
-      const custom = this.personalitySvc.customPersonality();
-      const root   = document.documentElement;
-
-      applyComponentDetails(custom.componentDetails, root);
-      applyColorZones(custom.colorZones, root);
-
-      const tokens = tokensFromCustom(custom);
-      this.personalitySvc.applyPersonality(tokens);
-
-      if (custom.topbarAccented && !custom.colorZones.topbarBg) {
-        root.style.setProperty('--app-topbar-bg',    'var(--primary-color)');
-        root.style.setProperty('--app-topbar-color', '#ffffff');
-      }
-
-      const borderStyle = custom.componentDetails.topbarBorderStyle;
-      if (borderStyle === 'shadow') {
-        root.style.setProperty('--app-topbar-border', 'none');
-        root.style.setProperty('--app-topbar-shadow', '0 2px 8px rgba(0,0,0,0.08)');
-      } else {
-        root.style.setProperty('--app-topbar-shadow', 'none');
-      }
     }
 
     effect(() => {

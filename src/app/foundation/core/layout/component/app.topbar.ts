@@ -12,12 +12,11 @@ import { ProfileMenu } from '@/app/foundation/core/layout/component/ProfileMenu'
 import { LangSwitcher } from '@/app/foundation/shared/components/lang-switcher/lang-switcher';
 import { ProjectConfigService } from '@/app/foundation/core/services/project-config.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ThemeConfigurationStore } from '@/app/foundation/core/theme-builder/theme-configuration.store';
 import {
-  ThemePersonalityService,
   TopbarNavItem,
   TopbarNavStyle,
-  TopbarLogoStyle,
-} from '@/app/foundation/core/theme-builder/theme-personality.service';
+} from '@/app/foundation/core/theme-builder/theme-configuration.model';
 
 @Component({
   selector: 'app-topbar',
@@ -188,29 +187,24 @@ export class AppTopbar {
   readonly transloco             = inject(TranslocoService);
   readonly projectConfigService  = inject(ProjectConfigService);
   private readonly sanitizer     = inject(DomSanitizer);
-  private readonly personalitySvc = inject(ThemePersonalityService);
+  private readonly themeStore    = inject(ThemeConfigurationStore);
   private readonly router        = inject(Router);
   private readonly platformId    = inject(PLATFORM_ID);
 
   readonly logoSvg = (): SafeHtml =>
     this.sanitizer.bypassSecurityTrustHtml(this.projectConfigService.logoSvg());
 
-  private get cd() { return this.personalitySvc.customPersonality().componentDetails; }
-
   readonly navItems    = computed<TopbarNavItem[]>(() =>
-    this.personalitySvc.customPersonality().componentDetails.topbarNavItems.filter(i => i.enabled)
+    this.themeStore.topbar().navItems.filter(i => i.enabled)
   );
-  readonly navAlign    = computed(() => this.personalitySvc.customPersonality().componentDetails.topbarNavAlign);
-  readonly navStyle    = computed<TopbarNavStyle>(() => this.personalitySvc.customPersonality().componentDetails.topbarNavStyle);
-  readonly logoClass   = computed<string>(() => {
-    const s = this.personalitySvc.customPersonality().componentDetails.topbarLogoStyle as TopbarLogoStyle;
-    return `topbar-logo--${s}`;
-  });
-  readonly showLang    = computed(() => this.personalitySvc.customPersonality().componentDetails.topbarShowLang);
-  readonly showTheme   = computed(() => this.personalitySvc.customPersonality().componentDetails.topbarShowTheme);
-  readonly showConfig  = computed(() => this.personalitySvc.customPersonality().componentDetails.topbarShowConfig);
-  readonly showSearch  = computed(() => this.personalitySvc.customPersonality().componentDetails.topbarShowSearch);
-  readonly showNotif   = computed(() => this.personalitySvc.customPersonality().componentDetails.topbarShowNotif);
+  readonly navAlign    = computed(() => this.themeStore.topbar().navAlign);
+  readonly navStyle    = computed<TopbarNavStyle>(() => this.themeStore.topbar().navStyle);
+  readonly logoClass   = computed<string>(() => `topbar-logo--${this.themeStore.topbar().logoStyle}`);
+  readonly showLang    = computed(() => this.themeStore.topbar().showLang);
+  readonly showTheme   = computed(() => this.themeStore.topbar().showTheme);
+  readonly showConfig  = computed(() => this.themeStore.topbar().showConfig);
+  readonly showSearch  = computed(() => this.themeStore.topbar().showSearch);
+  readonly showNotif   = computed(() => this.themeStore.topbar().showNotif);
 
   isActive(route: string): boolean {
     if (!isPlatformBrowser(this.platformId)) return false;
