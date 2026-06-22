@@ -17,6 +17,7 @@ import { TagModule } from 'primeng/tag';
 import { TableComponent, TableColumn } from '@/app/foundation/shared/components/table/table';
 import { DialogShellComponent } from '@/app/foundation/shared/components/dialog-shell';
 import { DeleteButtonComponent } from '@/app/foundation/shared/components/delete-button/delete-button.component';
+import { IconPickerComponent, Icon } from '@/app/foundation/shared/components/icon-picker';
 import { USER_ATTRIBUTES } from './user-attributes.data';
 
 // ── Constants ─────────────────────────────────────────────────────────────────
@@ -43,110 +44,6 @@ export const DATA_TYPES = [
 const UNIQUE_TYPE_OPTIONS    = [{ label: 'Primary Key', value: 'primary key' }, { label: 'Unique Key', value: 'unique key' }];
 const REFERENCE_TYPE_OPTIONS = [{ label: 'Enum', value: 'enum' }, { label: 'Lookup', value: 'lookup' }, { label: 'Foreign Key', value: 'foreign key' }];
 const ENTITY_TYPES = ['Users','Roles','Permission','Organization','Communities','Contacts','Vessels','Visits','Topics','Schemas','Messages','Processes','Conversations','Servers'].map(e => ({ label: e, value: e.toLowerCase() }));
-
-const PI_ICONS: { label: string; value: string }[] = [
-  { label: 'Address Book',         value: 'pi pi-address-book' },
-  { label: 'At',                   value: 'pi pi-at' },
-  { label: 'Barcode',              value: 'pi pi-barcode' },
-  { label: 'Bell',                 value: 'pi pi-bell' },
-  { label: 'Book',                 value: 'pi pi-book' },
-  { label: 'Bookmark',             value: 'pi pi-bookmark' },
-  { label: 'Briefcase',            value: 'pi pi-briefcase' },
-  { label: 'Building',             value: 'pi pi-building' },
-  { label: 'Building Columns',     value: 'pi pi-building-columns' },
-  { label: 'Calendar',             value: 'pi pi-calendar' },
-  { label: 'Calendar Clock',       value: 'pi pi-calendar-clock' },
-  { label: 'Calendar Minus',       value: 'pi pi-calendar-minus' },
-  { label: 'Calendar Plus',        value: 'pi pi-calendar-plus' },
-  { label: 'Camera',               value: 'pi pi-camera' },
-  { label: 'Chart Bar',            value: 'pi pi-chart-bar' },
-  { label: 'Chart Line',           value: 'pi pi-chart-line' },
-  { label: 'Chart Pie',            value: 'pi pi-chart-pie' },
-  { label: 'Check Circle',         value: 'pi pi-check-circle' },
-  { label: 'Clock',                value: 'pi pi-clock' },
-  { label: 'Cloud',                value: 'pi pi-cloud' },
-  { label: 'Code',                 value: 'pi pi-code' },
-  { label: 'Cog',                  value: 'pi pi-cog' },
-  { label: 'Comment',              value: 'pi pi-comment' },
-  { label: 'Comments',             value: 'pi pi-comments' },
-  { label: 'Crown',                value: 'pi pi-crown' },
-  { label: 'Database',             value: 'pi pi-database' },
-  { label: 'Desktop',              value: 'pi pi-desktop' },
-  { label: 'Dollar',               value: 'pi pi-dollar' },
-  { label: 'Envelope',             value: 'pi pi-envelope' },
-  { label: 'Exclamation Circle',   value: 'pi pi-exclamation-circle' },
-  { label: 'Exclamation Triangle', value: 'pi pi-exclamation-triangle' },
-  { label: 'Eye',                  value: 'pi pi-eye' },
-  { label: 'Eye Slash',            value: 'pi pi-eye-slash' },
-  { label: 'File',                 value: 'pi pi-file' },
-  { label: 'File Excel',           value: 'pi pi-file-excel' },
-  { label: 'File PDF',             value: 'pi pi-file-pdf' },
-  { label: 'File Word',            value: 'pi pi-file-word' },
-  { label: 'Flag',                 value: 'pi pi-flag' },
-  { label: 'Folder',               value: 'pi pi-folder' },
-  { label: 'Folder Open',          value: 'pi pi-folder-open' },
-  { label: 'Gauge',                value: 'pi pi-gauge' },
-  { label: 'Globe',                value: 'pi pi-globe' },
-  { label: 'Hammer',               value: 'pi pi-hammer' },
-  { label: 'Hashtag',              value: 'pi pi-hashtag' },
-  { label: 'Heart',                value: 'pi pi-heart' },
-  { label: 'History',              value: 'pi pi-history' },
-  { label: 'Home',                 value: 'pi pi-home' },
-  { label: 'ID Card',              value: 'pi pi-id-card' },
-  { label: 'Image',                value: 'pi pi-image' },
-  { label: 'Images',               value: 'pi pi-images' },
-  { label: 'Inbox',                value: 'pi pi-inbox' },
-  { label: 'Info Circle',          value: 'pi pi-info-circle' },
-  { label: 'Key',                  value: 'pi pi-key' },
-  { label: 'Language',             value: 'pi pi-language' },
-  { label: 'Lightbulb',            value: 'pi pi-lightbulb' },
-  { label: 'Link',                 value: 'pi pi-link' },
-  { label: 'LinkedIn',             value: 'pi pi-linkedin' },
-  { label: 'List',                 value: 'pi pi-list' },
-  { label: 'Lock',                 value: 'pi pi-lock' },
-  { label: 'Lock Open',            value: 'pi pi-lock-open' },
-  { label: 'Map Marker',           value: 'pi pi-map-marker' },
-  { label: 'Microchip',            value: 'pi pi-microchip' },
-  { label: 'Mobile',               value: 'pi pi-mobile' },
-  { label: 'Moon',                 value: 'pi pi-moon' },
-  { label: 'Palette',              value: 'pi pi-palette' },
-  { label: 'Phone',                value: 'pi pi-phone' },
-  { label: 'Print',                value: 'pi pi-print' },
-  { label: 'QR Code',              value: 'pi pi-qrcode' },
-  { label: 'Receipt',              value: 'pi pi-receipt' },
-  { label: 'Search',               value: 'pi pi-search' },
-  { label: 'Send',                 value: 'pi pi-send' },
-  { label: 'Server',               value: 'pi pi-server' },
-  { label: 'Share Alt',            value: 'pi pi-share-alt' },
-  { label: 'Shield',               value: 'pi pi-shield' },
-  { label: 'Sign In',              value: 'pi pi-sign-in' },
-  { label: 'Sign Out',             value: 'pi pi-sign-out' },
-  { label: 'Sitemap',              value: 'pi pi-sitemap' },
-  { label: 'Sliders H',            value: 'pi pi-sliders-h' },
-  { label: 'Sliders V',            value: 'pi pi-sliders-v' },
-  { label: 'Star',                 value: 'pi pi-star' },
-  { label: 'Sun',                  value: 'pi pi-sun' },
-  { label: 'Table',                value: 'pi pi-table' },
-  { label: 'Tag',                  value: 'pi pi-tag' },
-  { label: 'Tags',                 value: 'pi pi-tags' },
-  { label: 'Telegram',             value: 'pi pi-telegram' },
-  { label: 'Ticket',               value: 'pi pi-ticket' },
-  { label: 'Times Circle',         value: 'pi pi-times-circle' },
-  { label: 'Trash',                value: 'pi pi-trash' },
-  { label: 'Trophy',               value: 'pi pi-trophy' },
-  { label: 'User',                 value: 'pi pi-user' },
-  { label: 'User Edit',            value: 'pi pi-user-edit' },
-  { label: 'User Minus',           value: 'pi pi-user-minus' },
-  { label: 'User Plus',            value: 'pi pi-user-plus' },
-  { label: 'Users',                value: 'pi pi-users' },
-  { label: 'Verified',             value: 'pi pi-verified' },
-  { label: 'Video',                value: 'pi pi-video' },
-  { label: 'Wallet',               value: 'pi pi-wallet' },
-  { label: 'Wave Pulse',           value: 'pi pi-wave-pulse' },
-  { label: 'WhatsApp',             value: 'pi pi-whatsapp' },
-  { label: 'WiFi',                 value: 'pi pi-wifi' },
-  { label: 'Wrench',               value: 'pi pi-wrench' },
-];
 
 const RTL_LANGS = new Set(['ar', 'he', 'fa', 'ur']);
 const LANG_LABELS: Record<string, string> = { en: 'English', ar: 'Arabic', fr: 'French', es: 'Spanish', de: 'German', tr: 'Turkish' };
@@ -233,7 +130,7 @@ function parseRangeNum(str: string | null, part: 0 | 1): number | null {
   selector: 'app-attributes',
   imports: [
     CommonModule, FormsModule,
-    TableComponent, DialogShellComponent, DeleteButtonComponent,
+    TableComponent, DialogShellComponent, DeleteButtonComponent, IconPickerComponent,
     SelectModule, InputTextModule, InputNumberModule,
     RadioButton, CheckboxModule, TextareaModule,
     DividerModule, ButtonModule, Chip, Toast, TagModule,
@@ -284,9 +181,21 @@ export class Attributes {
     { label: 'Delete',       icon: 'pi pi-trash',  command: () => this.confirmDelete(item) },
   ];
 
-  // ── Icon picker ────────────────────────────────────────────────────────────
+  // ── Icon helpers ───────────────────────────────────────────────────────────
 
-  readonly piIcons = PI_ICONS;
+  /** Legacy seed data stores PrimeIcons classes (e.g. "pi pi-database"); icons picked
+   *  via app-icon-picker store just the icon id (e.g. "database"). Both need to render. */
+  isPrimeIcon(icon: string | null | undefined): boolean {
+    return !!icon && icon.startsWith('pi ');
+  }
+
+  iconSvgUrl(icon: string): string {
+    return `icons/svg/${icon}.svg`;
+  }
+
+  onIconChange(icon: Icon | null): void {
+    this.form.icon = icon?.id ?? '';
+  }
 
   // ── Dialog constants ───────────────────────────────────────────────────────
 

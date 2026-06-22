@@ -74,8 +74,6 @@
 }
 
 .icon-picker-panel__inner {
-  width: 420px;
-  max-width: 90vw;
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
@@ -89,6 +87,8 @@
 
 .icon-picker-viewport {
   height: 320px;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .icon-picker-skeleton {
@@ -99,10 +99,11 @@
 }
 
 .icon-grid-row {
-  display: grid;
-  grid-template-columns: repeat(8, 1fr);
+  display: flex;
+  flex-wrap: nowrap;
   gap: 4px;
   padding: 0 8px;
+  overflow: hidden;
 }
 
 .icon-cell {
@@ -110,23 +111,29 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  height: 64px;
+  flex-shrink: 0;
+  width: 80px;
+  height: 76px;
   border-radius: 6px;
   cursor: pointer;
   padding: 6px 4px;
   gap: 4px;
+  box-sizing: border-box;
+  overflow: hidden;
 
   img {
     width: 24px;
     height: 24px;
+    flex-shrink: 0;
   }
 
   span {
     font-size: 10px;
+    line-height: 1.2;
     color: var(--text-color-secondary);
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
+    white-space: normal;
+    overflow-wrap: break-word;
+    word-break: break-word;
     width: 100%;
     text-align: center;
   }

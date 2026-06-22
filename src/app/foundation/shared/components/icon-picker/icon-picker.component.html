@@ -22,7 +22,7 @@
   <i class="pi pi-chevron-down icon-picker-trigger__chevron"></i>
 </button>
 
-<p-popover #panel styleClass="icon-picker-panel" appendTo="body" (onHide)="onPanelHide()">
+<p-popover #panel styleClass="icon-picker-panel" appendTo="body" [style]="panelStyle()" (onHide)="onPanelHide()">
   <div class="icon-picker-panel__inner">
     <p-iconfield class="w-full">
       <p-inputicon styleClass="pi pi-search" />
@@ -48,8 +48,8 @@
       <div class="icon-picker-skeleton">
         @for (row of skeletonRows; track $index) {
           <div class="icon-grid-row">
-            @for (col of skeletonCols; track $index) {
-              <p-skeleton shape="rectangle" width="100%" height="56px" borderRadius="6px" />
+            @for (col of skeletonColumns(); track $index) {
+              <p-skeleton shape="rectangle" width="100%" height="100%" borderRadius="6px" />
             }
           </div>
         }
@@ -63,7 +63,7 @@
         }
       </div>
     } @else {
-      <cdk-virtual-scroll-viewport itemSize="72" class="icon-picker-viewport">
+      <cdk-virtual-scroll-viewport [itemSize]="rowItemSize" class="icon-picker-viewport">
         <div *cdkVirtualFor="let row of rows(); trackBy: trackRow" class="icon-grid-row">
           @for (icon of row; track icon.id) {
             <div

@@ -20,14 +20,17 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { Icon } from './models/icon.model';
 import { IconStoreService } from './services/icon-store.service';
 
-const GRID_COLUMNS = 8;
+const CELL_WIDTH = 80;
+const CELL_HEIGHT = 76;
+const CELL_GAP = 4;
+const ROW_ITEM_SIZE = CELL_HEIGHT + CELL_GAP;
 
 function chunk<T>(items: T[], size: number): T[][] {
-  const rows: T[][] = [];
+  const chunks: T[][] = [];
   for (let i = 0; i < items.length; i += size) {
-    rows.push(items.slice(i, i + size));
+    chunks.push(items.slice(i, i + size));
   }
-  return rows;
+  return chunks;
 }
 
 @Component({
@@ -66,9 +69,14 @@ export class IconPickerComponent {
   query = signal('');
   isOpen = signal(false);
   isLoading = signal(false);
+  panelWidth = signal<number | null>(null);
+  panelStyle = computed(() => {
+    const width = this.panelWidth();
+    return width ? { width: `${width}px` } : null;
+  });
 
-  readonly skeletonRows = Array.from({ length: 2 });
-  readonly skeletonCols = Array.from({ length: GRID_COLUMNS });
+  readonly rowItemSize = ROW_ITEM_SIZE;
+  readonly skeletonRows = Array.from({ length: 4 });
 
   // ── Derived ──────────────────────────────────────────────────────────────
   baseList = computed(() => {
@@ -85,7 +93,14 @@ export class IconPickerComponent {
     return fn ? hits.filter(fn) : hits;
   });
 
-  rows = computed(() => chunk(this.results(), GRID_COLUMNS));
+  /** How many fixed-width cells fit per row at the popover's current width. */
+  columnsPerRow = computed(() => {
+    const width = this.panelWidth() ?? 280;
+    const usable = width - 16; // .icon-grid-row's own horizontal padding (0 8px each side)
+    return Math.max(2, Math.floor((usable + CELL_GAP) / (CELL_WIDTH + CELL_GAP)));
+  });
+
+  rows = computed(() => chunk(this.results(), this.columnsPerRow()));
 
   selectedIcon = computed(() => {
     const id = this.value();
@@ -103,9 +118,15 @@ export class IconPickerComponent {
 
   trackRow = (index: number, row: Icon[]): string => row[0]?.id ?? `empty-${index}`;
 
+  skeletonColumns = computed(() => Array.from({ length: this.columnsPerRow() }));
+
   // ── Methods ───────────────────────────────────────────────────────────────
   async open(event: Event): Promise<void> {
     if (this.disabled()) return;
+
+    const trigger = event.currentTarget as HTMLElement;
+    const measured = trigger.offsetWidth;
+    this.panelWidth.set(Math.max(280, Math.min(measured, window.innerWidth * 0.9)));
 
     this.panel.show(event);
     this.isOpen.set(true);
@@ -138,8 +159,11 @@ export class IconPickerComponent {
     this.close();
   }
 
+  /** Invoked from the trigger's clear (x) icon — the popover is always closed
+   *  at this point, so reset state directly instead of going through close(). */
   clear(): void {
     this.iconChange.emit(null);
-    this.close();
+    this.isOpen.set(false);
+    this.query.set('');
   }
 }

@@ -137,14 +137,6 @@
     },
     "actions":{
       "edit":"تعديل"
-    },
-    "iconPicker": {
-      "selectIcon": "اختر أيقونة",
-      "searchPlaceholder": "بحث عن أيقونات...",
-      "totalIcons": "{{count}} أيقونة",
-      "resultsFor": "{{count}} نتيجة لـ \"{{query}}\"",
-      "noResults": "لا توجد أيقونات تطابق \"{{query}}\"",
-      "noIconsAvailable": "لا توجد أيقونات متاحة"
     }
   }
 }

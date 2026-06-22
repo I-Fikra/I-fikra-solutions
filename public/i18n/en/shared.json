@@ -139,14 +139,6 @@
     },
     "actions": {
       "edit": "تعديل"
-    },
-    "iconPicker": {
-      "selectIcon": "Select icon",
-      "searchPlaceholder": "Search icons...",
-      "totalIcons": "{{count}} icons",
-      "resultsFor": "{{count}} results for \"{{query}}\"",
-      "noResults": "No icons matching \"{{query}}\"",
-      "noIconsAvailable": "No icons available"
     }
   }
 }
