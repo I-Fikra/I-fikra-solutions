@@ -2,6 +2,9 @@ import { Component, computed, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
+import { ButtonModule } from 'primeng/button';
+import { TagModule } from 'primeng/tag';
+import { TooltipModule } from 'primeng/tooltip';
 import { ProjectConfigService } from '@/app/foundation/core/services/project-config.service';
 import { ProjectConfig } from '@/app/foundation/core/models';
 
@@ -26,7 +29,7 @@ type PlatformViewMode = 'table' | 'cards';
 @Component({
   selector: 'app-builder-platforms',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, ButtonModule, TagModule, TooltipModule],
   templateUrl: './builder-platforms.html',
   styleUrl: './builder-platforms.scss'
 })
@@ -83,10 +86,6 @@ export class BuilderPlatformsPage {
   private _safeLogo(project: ProjectConfig): SafeHtml {
     const svg = project.logoSvg.replace(/var\(--primary-color\)/g, project.primaryColor);
     return this.sanitizer.bypassSecurityTrustHtml(svg);
-  }
-
-  apply(project: ProjectConfig): void {
-    this.configSvc.switchProject(project);
   }
 
   toggleExpand(row: PlatformRow): void {

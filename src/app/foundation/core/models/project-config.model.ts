@@ -70,7 +70,7 @@ export type {
 
 // ── Runtime project config ────────────────────────────────────────────────────
 // هذا الـ type خاص بالـ app (runtime) — مش جزء من الـ schema المشترك مع الديمو.
-// يُستخدم في ProjectConfigService, ProjectSwitcher, Platforms, etc.
+// يُستخدم في ProjectConfigService, Platforms, etc.
 export interface ProjectConfig {
   id: string;
   projectName: string;

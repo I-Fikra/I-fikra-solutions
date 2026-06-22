@@ -1,26 +1,25 @@
-<div class="builder-platforms">
-  <!-- ── Page Header ─────────────────────────────────────────────────── -->
-  <div class="builder-platforms__header">
-    <div class="builder-platforms__heading">
-      <h2 class="builder-platforms__title">
-        <i class="pi pi-th-large"></i>
-        Platforms
-      </h2>
-      <p class="builder-platforms__subtitle">
-        Manage and switch between your generated platform projects.
-      </p>
-    </div>
-
+<div class="card builder-platforms">
+  <!-- ── Page Toolbar ────────────────────────────────────────────────── -->
+  <div class="builder-platforms__toolbar">
+    <h2 class="font-bold !text-xl truncate min-w-0">Platforms</h2>
     <!-- View toggle -->
-    <div class="view-toggle">
-      <button type="button" class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'table'"
-        (click)="setViewMode('table')" title="Table view">
-        <i class="pi pi-list"></i>
-      </button>
-      <button type="button" class="view-toggle__btn" [class.view-toggle__btn--active]="viewMode() === 'cards'"
-        (click)="setViewMode('cards')" title="Card view">
-        <i class="pi pi-th-large"></i>
-      </button>
+    <div class="flex items-center gap-1 shrink-0">
+      <p-button
+        [severity]="viewMode() === 'table' ? 'primary' : 'secondary'"
+        [outlined]="viewMode() !== 'table'"
+        icon="pi pi-list"
+        pTooltip="Table View"
+        tooltipPosition="top"
+        (onClick)="setViewMode('table')"
+      />
+      <p-button
+        [severity]="viewMode() === 'cards' ? 'primary' : 'secondary'"
+        [outlined]="viewMode() !== 'cards'"
+        icon="pi pi-th-large"
+        pTooltip="Cards view"
+        tooltipPosition="top"
+        (onClick)="setViewMode('cards')"
+      />
     </div>
   </div>
 
@@ -40,14 +39,24 @@
     @for (row of rows(); track trackById($index, row)) {
 
     <!-- Parent row -->
-    <div class="builder-tree__row" [class.builder-tree__row--active]="row.isActive">
+    <div
+      class="builder-tree__row"
+      [class.builder-tree__row--active]="row.isActive"
+    >
       <!-- Expand toggle -->
       <div class="builder-tree__col builder-tree__col--toggle">
         @if (row.children.length > 0) {
-<button class="tree-expand-btn" (click)="toggleExpand(row)" [title]="row.expanded ? 'Collapse' : 'Expand'"
-  [attr.aria-label]="row.expanded ? 'Collapse row' : 'Expand row'">
-  <i class="pi" [class.pi-chevron-down]="row.expanded" [class.pi-chevron-right]="!row.expanded"></i>
-</button>
+        <p-button
+          [icon]="row.expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-right'"
+          [text]="true"
+          [rounded]="true"
+          size="small"
+          severity="secondary"
+          (onClick)="toggleExpand(row)"
+          [pTooltip]="row.expanded ? 'Collapse' : 'Expand'"
+          tooltipPosition="bottom"
+          [ariaLabel]="row.expanded ? 'Collapse row' : 'Expand row'"
+        />
         }
       </div>
 
@@ -63,31 +72,36 @@
 
       <!-- Status -->
       <div class="builder-tree__col builder-tree__col--status">
-        @if (row.isActive) {
-        <span class="platform-badge platform-badge--active">
-          <i class="pi pi-check-circle"></i> Active
-        </span>
-        } @else {
-        <span class="platform-badge platform-badge--idle">Idle</span>
-        }
+        <p-tag
+          [value]="row.isActive ? 'Active' : 'Idle'"
+          [severity]="row.isActive ? 'success' : 'secondary'"
+          [icon]="row.isActive ? 'pi pi-check-circle' : ''"
+          styleClass="rounded-full"
+        />
       </div>
 
       <!-- Actions -->
       <div class="builder-tree__col builder-tree__col--actions">
-        <button class="platform-btn-apply" [disabled]="row.isActive" (click)="apply(row.project)">
-          <i class="pi pi-play"></i>
-          {{ row.isActive ? 'Active' : 'Apply' }}
-        </button>
-        <a class="platform-btn-configure" [routerLink]="['/sol/app-config']" title="Configure">
-          <i class="pi pi-cog"></i>
-        </a>
+        <p-button
+          icon="pi pi-cog"
+          size="small"
+          severity="secondary"
+          [outlined]="true"
+          [rounded]="true"
+          [routerLink]="['/sol/app-config']"
+          pTooltip="Configure"
+          tooltipPosition="bottom"
+        />
       </div>
     </div>
 
     <!-- Child rows -->
-    @if (row.expanded) {
-    @for (child of row.children; track trackByChildId($index, child)) {
-    <div class="builder-tree__row builder-tree__row--child" [class.builder-tree__row--active]="child.isActive">
+    @if (row.expanded) { @for (child of row.children; track
+    trackByChildId($index, child)) {
+    <div
+      class="builder-tree__row builder-tree__row--child"
+      [class.builder-tree__row--active]="child.isActive"
+    >
       <div class="builder-tree__col builder-tree__col--toggle">
         <span class="tree-child-indent">
           <i class="pi pi-minus tree-child-icon"></i>
@@ -103,11 +117,7 @@
       <div class="builder-tree__col builder-tree__col--status"></div>
       <div class="builder-tree__col builder-tree__col--actions"></div>
     </div>
-    }
-    }
-    }
-
-    @if (rows().length === 0) {
+    } } } @if (rows().length === 0) {
     <div class="builder-tree__empty">
       <i class="pi pi-inbox"></i>
       <span>No platforms found.</span>
@@ -116,58 +126,53 @@
   </div>
   }
 
-  <!-- ── Cards View Redesign ─────────────────────────────────────────── -->
+  <!-- ── Cards View ─────────────────────────────────────────────────── -->
   @if (viewMode() === 'cards') {
   <div class="builder-cards">
     @for (row of rows(); track trackById($index, row)) {
     <div class="platform-card" [class.platform-card--active]="row.isActive">
-
       <!-- منطقة اللوجو الشفافة -->
       <div class="platform-card__logo-wrapper">
-        <div class="platform-logo platform-logo--transparent" [innerHTML]="row.safeLogo"></div>
+        <div
+          class="platform-logo platform-logo--transparent"
+          [innerHTML]="row.safeLogo"
+        ></div>
       </div>
 
       <!-- محتوى الكارد الموزع حسب الهيكل الجديد -->
       <div class="platform-card__content">
-
         <!-- السطر الأول: الاسم (يسار) + الـ Status وأيقونة الإعدادات (يمين) -->
         <div class="platform-card__row platform-card__row--top">
           <span class="platform-name-main">{{ row.displayName }}</span>
 
           <div class="platform-card__meta-actions">
-            <!-- الـ Status -->
-            @if (row.isActive) {
-            <span class="platform-badge platform-badge--active">
-              <i class="pi pi-check-circle"></i> Active
-            </span>
-            } @else {
-            <span class="platform-badge platform-badge--idle">Idle</span>
-            }
+            <p-tag
+              [value]="row.isActive ? 'Active' : 'Idle'"
+              [severity]="row.isActive ? 'success' : 'secondary'"
+              [icon]="row.isActive ? 'pi pi-check-circle' : ''"
+              styleClass="rounded-full"
+            />
 
-            <!-- أيقونة الإعدادات -->
-            <a class="platform-btn-configure" [routerLink]="['/sol/app-config']" title="Configure">
-              <i class="pi pi-cog"></i>
-            </a>
+            <p-button
+              icon="pi pi-cog"
+              size="small"
+              severity="secondary"
+              [outlined]="true"
+              [rounded]="true"
+              [routerLink]="['/sol/app-config']"
+              pTooltip="Configure"
+              tooltipPosition="bottom"
+            />
           </div>
         </div>
 
-        <!-- السطر الثاني: الوصف على الشمال تماماً والزرار على اليمين تماماً -->
+        <!-- السطر الثاني: الوصف على الشمال تماماً -->
         <div class="platform-card__row platform-card__row--bottom">
           <span class="platform-clean-desc-card">{{ row.description }}</span>
-
-          <button class="platform-btn-apply platform-btn-apply--sm" [disabled]="row.isActive"
-            (click)="apply(row.project)">
-            <i class="pi pi-play"></i>
-            {{ row.isActive ? 'Active' : 'Apply' }}
-          </button>
         </div>
-
       </div>
-
     </div>
-    }
-
-    @if (rows().length === 0) {
+    } @if (rows().length === 0) {
     <div class="builder-cards__empty">
       <i class="pi pi-inbox"></i>
       <span>No platforms found.</span>

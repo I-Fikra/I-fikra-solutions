@@ -8,15 +8,15 @@ const solRoutes: Routes = [
         (m) => m.AppConfigurationComponent
       ),
     data: { titleKey: 'menu.configuration' }
-  },
-  {
-    path: 'platforms/:id',
-    loadComponent: () =>
-      import('./platforms/presentation/platforms/platforms').then(
-        (m) => m.Platforms
-      ),
-    data: { titleKey: 'menu.platforms' }
   }
+  // {
+  //   path: 'platforms/:id',
+  //   loadComponent: () =>
+  //     import('./platforms/presentation/platforms/platforms').then(
+  //       (m) => m.Platforms
+  //     ),
+  //   data: { titleKey: 'menu.platforms' }
+  // }
 ];
 
 export default solRoutes;

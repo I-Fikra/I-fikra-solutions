@@ -42,7 +42,7 @@ export const appConfig: ApplicationConfig = {
 
     provideAppInitializer(() => {
       const svc = inject(ProjectConfigService);
-      return svc.load();
+      svc.load();
     }),
 
     provideRouter(
