@@ -329,23 +329,6 @@
   }
 }
 
-/* ══════════════════════════════════════════════════════════════════════════
-   7. ROW ACTIONS CLUSTER
-══════════════════════════════════════════════════════════════════════════ */
-
-:host ::ng-deep .row-actions {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: nowrap;
-  align-items: center;
-  gap: 0.25rem;
-
-  > p-button,
-  > app-delete-button {
-    flex-shrink: 0;
-    display: inline-flex;
-  }
-}
 
 /* ══════════════════════════════════════════════════════════════════════════
    8. CELL STACK — primary + secondary hover-reveal lines

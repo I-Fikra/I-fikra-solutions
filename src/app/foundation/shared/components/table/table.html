@@ -185,48 +185,6 @@
           (click)="openRowMenu($event, item)"
           ariaLabel="Row actions"
         />
-        } @else {
-        <div class="row-actions">
-          <!--
-                                    ✅ PERF — @for + track action.key
-                                -->
-          @for (action of customActions; track action.key) {
-          <p-button
-            [icon]="action.icon"
-            [severity]="action.severity || 'secondary'"
-            [rounded]="true"
-            [outlined]="true"
-            size="small"
-            [pTooltip]="action.tooltip || ''"
-            tooltipPosition="top"
-            (click)="onCustomAction(action.key, item)"
-          />
-          } @if (showView) {
-          <p-button
-            icon="pi pi-eye"
-            severity="secondary"
-            [rounded]="true"
-            [outlined]="true"
-            (click)="viewItem(item)"
-          />
-          }
-
-          <p-button
-            icon="pi pi-pencil"
-            severity="secondary"
-            [rounded]="true"
-            [outlined]="true"
-            (click)="editItem(item)"
-          />
-
-          <p-button
-            icon="pi pi-trash"
-            severity="danger"
-            [rounded]="true"
-            [outlined]="true"
-            (click)="confirmDelete(item)"
-          />
-        </div>
         }
       </td>
       }

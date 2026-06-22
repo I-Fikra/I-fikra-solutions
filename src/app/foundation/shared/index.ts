@@ -6,7 +6,6 @@ export type { JiraFilterOption } from './components/filter/filter.component';
 export { SharedToolbarComponent } from './components/toolbar/shared-toolbar.component';
 export { TableComponent } from './components/table/table';
 export type {
-    CustomAction,
     TableColumn,
     // TableRow
 } from './components/table/table';

@@ -86,13 +86,6 @@ import { TableViewService } from './table-view.service';
 // Re-export so consumers can import from a single location
 export type { TableColumn, ToolbarFilterDefinition, BottomBarAction };
 
-export interface CustomAction {
-  key: string;
-  icon: string;
-  tooltip?: string;
-  severity?: 'success' | 'info' | 'warn' | 'danger' | 'secondary' | 'contrast';
-}
-
 @Component({
   selector: 'app-table',
   standalone: true,
@@ -160,14 +153,12 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   // Columns / actions
   @Input() showActions = true;
-  @Input() showView = false;
   @Input() useExternalForm = false;
   @Input() statusOptions: { label: string; value: string }[] = [];
   @Input() severityMap: Record<
     string,
     'success' | 'warn' | 'danger' | 'info' | 'secondary'
   > | null = null;
-  @Input() customActions: CustomAction[] = [];
   @Input() rowActions: ((item: any) => MenuItem[]) | null = null;
   @Input() bulkActions: BottomBarAction[] = [];
   @Input() showBulkDelete = true;
@@ -191,7 +182,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   @Output() onView = new EventEmitter<any>();
   @Output() onNew = new EventEmitter<void>();
   @Output() onEdit = new EventEmitter<any>();
-  @Output() customAction = new EventEmitter<{ key: string; item: any }>();
   @Output() bulkAction = new EventEmitter<string>();
   /** بيبعت الداتا المفلترة الحالية بعد كل تغيير في الفلتر */
   @Output() filteredDataChange = new EventEmitter<any[]>();
@@ -207,7 +197,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
   @ViewChild('dt') dt!: Table;
   @ViewChild('rowMenu') rowMenu!: Menu;
   @ViewChild('sharedHeaderPopover') sharedHeaderPopover!: any;
-  @ContentChild('actionTemplate') actionTemplate!: TemplateRef<any>;
   @ContentChild('cardTemplate') cardTemplate!: TemplateRef<any>;
 
   // ── Services ──────────────────────────────────────────────────────────────
@@ -948,10 +937,6 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
 
   clearFilters(table: Table): void {
     table.clear();
-  }
-
-  onCustomAction(key: string, item: unknown): void {
-    this.customAction.emit({ key, item });
   }
 
   viewItem(item: unknown): void {
