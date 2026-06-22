@@ -37,7 +37,11 @@
         <span
           class="flex items-center justify-center w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500 shrink-0"
         >
-          <i [class]="(viewingItem?.icon || 'pi pi-database') + ' text-xl'"></i>
+          <img
+            [src]="iconSvgUrl(viewingItem?.icon || 'database')"
+            [alt]="viewingItem?.icon || 'database'"
+            class="w-5 h-5"
+          />
         </span>
         <div class="flex flex-col gap-1 min-w-0">
           <div class="text-lg font-semibold">{{ viewingItem.name }}</div>
@@ -138,7 +142,11 @@
           >
           @if (viewingItem.icon) {
           <span class="flex items-center gap-2">
-            <i [class]="viewingItem.icon" style="font-size: 1.1rem"></i>
+            <img
+              [src]="iconSvgUrl(viewingItem.icon)"
+              [alt]="viewingItem.icon"
+              style="width: 1.1rem; height: 1.1rem"
+            />
             <span class="font-mono text-xs text-surface-400"
               >{{ viewingItem.icon }}</span
             >
@@ -472,39 +480,10 @@
       <!-- Icon -->
       <div class="flex flex-col gap-1">
         <label class="font-bold text-sm">Icon</label>
-        <p-select
-          [options]="piIcons"
-          optionLabel="label"
-          optionValue="value"
-          [(ngModel)]="form.icon"
-          placeholder="Select an icon"
-          appendTo="body"
-          [filter]="true"
-          filterBy="label"
-          [showClear]="true"
-        >
-          <ng-template pTemplate="selectedItem" let-opt>
-            @if (opt) {
-            <div class="flex items-center gap-2">
-              <i
-                [class]="opt.value"
-                style="font-size: 1rem; width: 1rem; text-align: center"
-              ></i>
-              <span>{{ opt.label }}</span>
-              <span class="font-mono text-xs text-surface-400">{{ opt.value }}</span>
-            </div>
-            }
-          </ng-template>
-          <ng-template let-opt pTemplate="item">
-            <div class="flex items-center gap-2 py-1">
-              <i
-                [class]="opt.value"
-                style="font-size: 1rem; width: 1.25rem; text-align: center"
-              ></i>
-              <span>{{ opt.label }}</span>
-            </div>
-          </ng-template>
-        </p-select>
+        <app-icon-picker
+          [value]="form.icon || null"
+          (iconChange)="onIconChange($event)"
+        />
       </div>
 
       <p-divider class="my-0" />
@@ -554,7 +533,9 @@
               [(ngModel)]="form.isPublic"
               inputId="vis_private"
             />
-            <label for="vis_private" class="cursor-pointer text-sm">Private</label>
+            <label for="vis_private" class="cursor-pointer text-sm"
+              >Private</label
+            >
           </div>
           <div class="flex items-center gap-2">
             <p-radioButton
@@ -563,7 +544,9 @@
               [(ngModel)]="form.isPublic"
               inputId="vis_public"
             />
-            <label for="vis_public" class="cursor-pointer text-sm">Public</label>
+            <label for="vis_public" class="cursor-pointer text-sm"
+              >Public</label
+            >
           </div>
         </div>
       </div>
@@ -576,7 +559,9 @@
           inputId="chk_unique"
           (onChange)="onUniqueChange()"
         />
-        <label for="chk_unique" class="cursor-pointer text-sm font-medium">Unique</label>
+        <label for="chk_unique" class="cursor-pointer text-sm font-medium"
+          >Unique</label
+        >
         @if (form.isUnique) {
         <p-select
           [options]="uniqueTypes"
@@ -724,7 +709,10 @@
             @if (refConditionError) {
             <small class="text-red-500">{{ refConditionError }}</small>
             } @else {
-            <small class="text-surface-400">SQL WHERE expression — supports =, &lt;&gt;, &lt;, &gt;, LIKE, IN, BETWEEN, IS NULL, AND, OR, parentheses.</small>
+            <small class="text-surface-400"
+              >SQL WHERE expression — supports =, &lt;&gt;, &lt;, &gt;, LIKE,
+              IN, BETWEEN, IS NULL, AND, OR, parentheses.</small
+            >
             }
           </div>
           }

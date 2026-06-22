@@ -153,7 +153,7 @@
         } @case ('icon') {
         <span class="flex items-center justify-center">
           @if (item[col.field]) {
-          <i [class]="item[col.field]" style="font-size: 1.1rem"></i>
+          <img [src]="iconSvgUrl(item[col.field])" [alt]="item[col.field]" style="width: 1.1rem; height: 1.1rem" />
           } @else {
           <span class="text-surface-400">—</span>
           }
@@ -310,7 +310,7 @@
               } @else if (col.type === 'icon') {
               <span class="dynamic-card__value">
                 @if (item[col.field]) {
-                <i [class]="item[col.field]"></i>
+                <img [src]="iconSvgUrl(item[col.field])" [alt]="item[col.field]" style="width: 1rem; height: 1rem" />
                 } @else { — }
               </span>
               } @else {
