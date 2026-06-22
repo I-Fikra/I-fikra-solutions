@@ -183,12 +183,6 @@ export class Attributes {
 
   // ── Icon helpers ───────────────────────────────────────────────────────────
 
-  /** Legacy seed data stores PrimeIcons classes (e.g. "pi pi-database"); icons picked
-   *  via app-icon-picker store just the icon id (e.g. "database"). Both need to render. */
-  isPrimeIcon(icon: string | null | undefined): boolean {
-    return !!icon && icon.startsWith('pi ');
-  }
-
   iconSvgUrl(icon: string): string {
     return `icons/svg/${icon}.svg`;
   }

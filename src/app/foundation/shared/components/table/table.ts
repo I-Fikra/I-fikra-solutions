@@ -924,6 +924,11 @@ export class TableComponent implements OnInit, OnChanges, AfterContentInit {
     return this.view.isValidDate(value);
   }
 
+  /** `type: 'icon'` columns hold an icon id resolved against the icon-picker's SVG set. */
+  iconSvgUrl(value: string): string {
+    return `icons/svg/${value}.svg`;
+  }
+
   getCardFieldIndex(col: TableColumn, colIndex: number): number {
     return this.view.getCardFieldIndex(col, this.exportColumns());
   }

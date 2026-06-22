@@ -37,15 +37,11 @@
         <span
           class="flex items-center justify-center w-12 h-12 rounded-xl bg-primary-50 dark:bg-primary-900/30 text-primary-500 shrink-0"
         >
-          @if (!viewingItem?.icon || isPrimeIcon(viewingItem?.icon)) {
-          <i [class]="(viewingItem?.icon || 'pi pi-database') + ' text-xl'"></i>
-          } @else {
           <img
-            [src]="iconSvgUrl(viewingItem.icon)"
-            [alt]="viewingItem.icon"
+            [src]="iconSvgUrl(viewingItem?.icon || 'database')"
+            [alt]="viewingItem?.icon || 'database'"
             class="w-5 h-5"
           />
-          }
         </span>
         <div class="flex flex-col gap-1 min-w-0">
           <div class="text-lg font-semibold">{{ viewingItem.name }}</div>
@@ -146,15 +142,11 @@
           >
           @if (viewingItem.icon) {
           <span class="flex items-center gap-2">
-            @if (isPrimeIcon(viewingItem.icon)) {
-            <i [class]="viewingItem.icon" style="font-size: 1.1rem"></i>
-            } @else {
             <img
               [src]="iconSvgUrl(viewingItem.icon)"
               [alt]="viewingItem.icon"
               style="width: 1.1rem; height: 1.1rem"
             />
-            }
             <span class="font-mono text-xs text-surface-400"
               >{{ viewingItem.icon }}</span
             >
