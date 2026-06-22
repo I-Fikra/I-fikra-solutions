@@ -68,8 +68,7 @@ interface Icon {
   id: string;       // == name, unique
   name: string;      // e.g. "arrow-right"
   tags: string[];    // name split on "-", e.g. ["arrow", "right"]
-  svg?: string;       // unused by the current dataset (reserved for inline-SVG sources)
-  url?: string;        // "icons/svg/arrow-right.svg"
+  url: string;        // "icons/svg/arrow-right.svg"
   category: string;   // always '' today — see Limitations
 }
 ```
@@ -110,25 +109,15 @@ Note there are no brand/social logos (Facebook, LinkedIn, etc.) in this set — 
 
 `filter` is applied both to the unfiltered "browse" list and to search results, so the status row ("X icons" / "X results for ...") and the empty state stay accurate for the constrained set.
 
-### Retrofitting onto a field that already holds icon-font classes
-
-`value`/`iconChange` deal in icon **ids** (e.g. `"database"`), not CSS classes. If a field used to store something like `"pi pi-database"` (PrimeIcons, Material, etc.), migrate the data rather than rendering both formats conditionally: for each distinct class in use, find the closest equivalent id in `public/icons/icons-manifest.json` and rewrite the stored values to match (this was done for `user-attributes.data.ts`'s ~44 distinct `pi pi-*` values via a throwaway one-off script — not kept around since it was hardcoded to that one file/mapping). The one case with no equivalent is brand/social logos, since this Font Awesome "Light" set ships UI icons only, not the separate FA Brands family — see Limitations.
-
-Any other read-path for that field (a shared table column, a detail view, an export) needs to switch to rendering `<img [src]="...">` against this picker's SVG set too — `TableComponent`'s `type: 'icon'` column (`iconSvgUrl()` in `table.ts`) is the example for this app's generic table; it assumes the value is always one of this picker's icon ids, not a CSS class.
-
 ---
 
 ## i18n
 
-Copy lives under the `shared.iconPicker.*` namespace in the root `public/i18n/{en,ar}.json` files (not `public/i18n/{en,ar}/shared.json` — those aren't loaded by any registered Transloco scope, so keys placed there are silently never applied):
-
-`selectIcon`, `searchPlaceholder`, `totalIcons`, `resultsFor`, `noResults`, `noIconsAvailable`.
+Copy lives under the `shared.iconPicker.*` namespace in the root `public/i18n/{en,ar}.json` files 
 
 ---
 
 ## Limitations / known gaps
 
-- **No real category taxonomy.** The source `icons.zip` (Font Awesome Pro, "Light" style, 3,671 icons) ships SVGs only — no metadata file with Font Awesome's actual categories. `category` is set to `''` for every icon; `tags` are just the icon's name split on `-`. Use `filter` for any context-specific grouping instead of relying on `category`.
-- **Single style.** Only the "Light" style was in the source archive — there's no solid/regular/duotone variant to switch between.
 - **No brand/logo icons.** This is Font Awesome's UI icon family only — brand logos (Facebook, LinkedIn, etc.) belong to a separate "Brands" family that wasn't part of this archive. A field that used to store a brand icon has no equivalent here; pick the closest generic icon (e.g. `link`) or leave it unset.
 - **Licensing.** These are Font Awesome **Pro** icons (commercial license, per the SVG file headers) — keep usage within whatever license the project already holds; don't redistribute the `public/icons/` assets outside the app.
