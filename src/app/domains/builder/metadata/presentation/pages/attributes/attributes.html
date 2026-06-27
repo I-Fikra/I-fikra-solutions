@@ -296,6 +296,8 @@
               [min]="0"
               placeholder="Min"
               [showButtons]="false"
+              [class.ng-invalid]="!!lengthRangeError"
+              [class.ng-dirty]="!!lengthRangeError"
             />
           </div>
           <div class="flex flex-col gap-1 flex-1">
@@ -305,9 +307,14 @@
               [min]="0"
               placeholder="Max"
               [showButtons]="false"
+              [class.ng-invalid]="!!lengthRangeError"
+              [class.ng-dirty]="!!lengthRangeError"
             />
           </div>
         </div>
+        @if (lengthRangeError) {
+        <small class="text-red-500">{{ lengthRangeError }}</small>
+        }
       </div>
 
       <!-- Value -->
@@ -320,6 +327,8 @@
               [(ngModel)]="form.valueMin"
               placeholder="Min"
               [showButtons]="false"
+              [class.ng-invalid]="!!valueRangeError"
+              [class.ng-dirty]="!!valueRangeError"
             />
           </div>
           <div class="flex flex-col gap-1 flex-1">
@@ -328,9 +337,14 @@
               [(ngModel)]="form.valueMax"
               placeholder="Max"
               [showButtons]="false"
+              [class.ng-invalid]="!!valueRangeError"
+              [class.ng-dirty]="!!valueRangeError"
             />
           </div>
         </div>
+        @if (valueRangeError) {
+        <small class="text-red-500">{{ valueRangeError }}</small>
+        }
       </div>
 
       <!-- Repeat -->
@@ -344,6 +358,8 @@
               [min]="0"
               placeholder="Min"
               [showButtons]="false"
+              [class.ng-invalid]="!!repeatRangeError"
+              [class.ng-dirty]="!!repeatRangeError"
             />
           </div>
           <div class="flex flex-col gap-1 flex-1">
@@ -353,9 +369,14 @@
               [min]="0"
               placeholder="Max"
               [showButtons]="false"
+              [class.ng-invalid]="!!repeatRangeError"
+              [class.ng-dirty]="!!repeatRangeError"
             />
           </div>
         </div>
+        @if (repeatRangeError) {
+        <small class="text-red-500">{{ repeatRangeError }}</small>
+        }
       </div>
 
       <!-- Occurrence radio -->

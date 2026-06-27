@@ -20,10 +20,15 @@ import { TranslocoModule } from '@jsverse/transloco';
 import { Icon } from './models/icon.model';
 import { IconStoreService } from './services/icon-store.service';
 
-const CELL_WIDTH = 80;
-const CELL_HEIGHT = 76;
+const CELL_WIDTH = 40;
+const CELL_HEIGHT = 40;
 const CELL_GAP = 4;
 const ROW_ITEM_SIZE = CELL_HEIGHT + CELL_GAP;
+// Reserved via `scrollbar-gutter: stable` on .icon-picker-viewport so it's
+// always subtracted, scrollbar visible or not — otherwise the last column
+// gets clipped by .icon-grid-row's overflow: hidden once a real (non-overlay)
+// scrollbar actually appears and eats into the row's content width.
+const SCROLLBAR_GUTTER = 16;
 
 function chunk<T>(items: T[], size: number): T[][] {
   const chunks: T[][] = [];
@@ -96,7 +101,7 @@ export class IconPickerComponent {
   /** How many fixed-width cells fit per row at the popover's current width. */
   columnsPerRow = computed(() => {
     const width = this.panelWidth() ?? 280;
-    const usable = width - 16; // .icon-grid-row's own horizontal padding (0 8px each side)
+    const usable = width - 16 - SCROLLBAR_GUTTER; // row padding (0 8px each side) + scrollbar gutter
     return Math.max(2, Math.floor((usable + CELL_GAP) / (CELL_WIDTH + CELL_GAP)));
   });
 

@@ -1,6 +1,6 @@
 import { Component, OnInit, signal, ChangeDetectorRef } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { TreeNode } from 'primeng/api';
+import { MenuItem, TreeNode } from 'primeng/api';
 import { TreeTableModule } from 'primeng/treetable';
 import { TableComponent } from '@/app/foundation/shared/components/table/table';
 import { DeleteButtonComponent } from '@/app/foundation/shared/components/delete-button/delete-button.component';
@@ -295,22 +295,19 @@ export class RoleDetailsComponent implements OnInit {
     }
   ];
 
-  onSave(user: any): void {
-    if (user.id) {
-      this.users = this.users.map((u) => (u.id === user.id ? user : u));
-    } else {
-      user.id = Date.now();
-      this.users = [...this.users, user];
-    }
-  }
-
-  onDelete(user: any): void {
-    this.users = this.users.filter((u) => u.id !== user.id);
-  }
-
   onBulkDelete(users: any[]): void {
     this.users = this.users.filter((u) => !users.includes(u));
   }
+
+  readonly getRowActions = (user: any): MenuItem[] => [
+    { label: 'View', icon: 'pi pi-eye', command: () => this.viewUser(user) },
+    {
+      label: 'Unassign',
+      icon: 'pi pi-user-minus',
+      styleClass: 'text-red-500',
+      command: () => this.onUnassign(user)
+    }
+  ];
 
   onUnassign(user: any): void {
     this.users = this.users.filter((u) => u.id !== user.id);

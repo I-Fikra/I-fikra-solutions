@@ -6,7 +6,12 @@
   (click)="open($event)"
 >
   @if (selectedIcon(); as icon) {
-    <img [src]="icon.url" [alt]="icon.name" class="icon-picker-trigger__icon" loading="lazy" />
+    <img
+      [src]="icon.url"
+      [alt]="icon.name"
+      class="icon-picker-trigger__icon"
+      loading="lazy"
+    />
     <span class="icon-picker-trigger__label">{{ icon.name }}</span>
     <i
       class="pi pi-times icon-picker-trigger__clear"
@@ -15,16 +20,24 @@
     ></i>
   } @else {
     <i class="pi pi-image icon-picker-trigger__placeholder-icon"></i>
-    <span class="icon-picker-trigger__label icon-picker-trigger__label--placeholder">
+    <span
+      class="icon-picker-trigger__label icon-picker-trigger__label--placeholder"
+    >
       {{ 'shared.iconPicker.selectIcon' | transloco }}
     </span>
   }
   <i class="pi pi-chevron-down icon-picker-trigger__chevron"></i>
 </button>
 
-<p-popover #panel styleClass="icon-picker-panel" appendTo="body" [style]="panelStyle()" (onHide)="onPanelHide()">
+<p-popover
+  #panel
+  styleClass="icon-picker-panel"
+  appendTo="body"
+  [style]="panelStyle()"
+  (onHide)="onPanelHide()"
+>
   <div class="icon-picker-panel__inner">
-    <p-iconfield class="w-full">
+    <p-iconfield class="">
       <p-inputicon styleClass="pi pi-search" />
       <input
         pInputText
@@ -32,15 +45,24 @@
         class="w-full"
         [ngModel]="query()"
         (ngModelChange)="onSearch($event)"
-        [placeholder]="placeholder() || ('shared.iconPicker.searchPlaceholder' | transloco)"
+        [placeholder]="
+          placeholder() || ('shared.iconPicker.searchPlaceholder' | transloco)
+        "
       />
     </p-iconfield>
 
     <div class="icon-picker-status">
       @if (statusInfo().searching) {
-        <span>{{ 'shared.iconPicker.resultsFor' | transloco: { count: statusInfo().count, query: statusInfo().query } }}</span>
+        <span>{{
+          'shared.iconPicker.resultsFor'
+            | transloco
+              : { count: statusInfo().count, query: statusInfo().query }
+        }}</span>
       } @else {
-        <span>{{ 'shared.iconPicker.totalIcons' | transloco: { count: statusInfo().count } }}</span>
+        <span>{{
+          'shared.iconPicker.totalIcons'
+            | transloco: { count: statusInfo().count }
+        }}</span>
       }
     </div>
 
@@ -49,7 +71,12 @@
         @for (row of skeletonRows; track $index) {
           <div class="icon-grid-row">
             @for (col of skeletonColumns(); track $index) {
-              <p-skeleton shape="rectangle" width="100%" height="100%" borderRadius="6px" />
+              <p-skeleton
+                shape="rectangle"
+                width="100%"
+                height="100%"
+                borderRadius="6px"
+              />
             }
           </div>
         }
@@ -57,14 +84,23 @@
     } @else if (results().length === 0) {
       <div class="empty-state">
         @if (statusInfo().searching) {
-          {{ 'shared.iconPicker.noResults' | transloco: { query: statusInfo().query } }}
+          {{
+            'shared.iconPicker.noResults'
+              | transloco: { query: statusInfo().query }
+          }}
         } @else {
           {{ 'shared.iconPicker.noIconsAvailable' | transloco }}
         }
       </div>
     } @else {
-      <cdk-virtual-scroll-viewport [itemSize]="rowItemSize" class="icon-picker-viewport">
-        <div *cdkVirtualFor="let row of rows(); trackBy: trackRow" class="icon-grid-row">
+      <cdk-virtual-scroll-viewport
+        [itemSize]="rowItemSize"
+        class="icon-picker-viewport"
+      >
+        <div
+          *cdkVirtualFor="let row of rows(); trackBy: trackRow"
+          class="icon-grid-row"
+        >
           @for (icon of row; track icon.id) {
             <div
               class="icon-cell"
@@ -73,7 +109,6 @@
               (click)="select(icon)"
             >
               <img [src]="icon.url" [alt]="icon.name" loading="lazy" />
-              <span>{{ icon.name }}</span>
             </div>
           }
         </div>
