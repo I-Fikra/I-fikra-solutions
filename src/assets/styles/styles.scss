@@ -240,3 +240,7 @@ body.dark .dynamic-card,
         border-color: var(--surface-border) !important;
     }
 }
+.icon-picker-panel .p-popover-content {
+  padding-right: 0 !important;
+  padding-left: 0 !important;
+}
