@@ -124,6 +124,11 @@ function parseRangeNum(str: string | null, part: 0 | 1): number | null {
   return isNaN(n) ? null : n;
 }
 
+function rangeError(min: number | null, max: number | null): string | null {
+  if (min != null && max != null && min > max) return 'Min must be lower than max.';
+  return null;
+}
+
 // ── Component ─────────────────────────────────────────────────────────────────
 
 @Component({
@@ -227,6 +232,10 @@ export class Attributes {
 
   get refConditionError(): string | null { return validateSqlCondition(this.form.refCondition); }
 
+  get lengthRangeError(): string | null { return rangeError(this.form.lengthMin, this.form.lengthMax); }
+  get valueRangeError():  string | null { return rangeError(this.form.valueMin,  this.form.valueMax); }
+  get repeatRangeError(): string | null { return rangeError(this.form.repeatMin, this.form.repeatMax); }
+
   get refAttributeOptions(): { label: string; value: string }[] {
     if (this.form.refEntityType === 'users') return USER_ATTRIBUTES.map(a => ({ label: a.name, value: a.code }));
     return ['id', 'code', 'name', 'createdAt', 'updatedAt'].map(v => ({ label: v, value: v }));
@@ -247,7 +256,8 @@ export class Attributes {
       v.trim() && !/\s/.test(v) && /^[a-zA-Z_][a-zA-Z0-9_]*$/.test(v) &&
       this.form.nameSingular[this.primaryLang]?.trim() &&
       this.form.type && this.form.occurrence &&
-      !this.refConditionError
+      !this.refConditionError &&
+      !this.lengthRangeError && !this.valueRangeError && !this.repeatRangeError
     );
   }
 
